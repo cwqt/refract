@@ -1,4 +1,4 @@
-import { Model } from "./models";
+import { Block } from "./blocks";
 
 export type Datasource = {
   provider: "postgresql" | "mysql" | "sqlite" | "sqlserver" | "mongodb";
@@ -19,5 +19,5 @@ export type Generator = {
 export type Config = {
   datasource: Datasource;
   generators: Generator[];
-  models: Model[];
+  blocks: Block[];
 };

@@ -2,20 +2,23 @@
 
 Generate Prisma from TypeScript
 
+```sh
+npm install
+npm run test
+```
+
+## Example
+
 ```ts
 const Timestamps = Mixin("Timestamps")
   .Field("createdAt", DateTime(Default("now")))
   .Field("updatedAt", DateTime(Nullable));
 
-const Status = Enum("Status")
-  .Key("Voided")
-  .Key("Pending")
-  .Key("Paid")
-  .Key("Unpaid");
+const Status = Enum("Status", ["Active", "Pending"]);
 
 export const Invoice = Model("Invoice")
   .Id("id", Int(Index, Default("autoincrement")))
-  .Field("status", Status(Default(Status.Pending)))
+  .Field("status", Status(Default(Status("Active"))))
   .Mixin(Timestamps);
 
 export const User = Model("User")

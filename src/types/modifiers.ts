@@ -1,13 +1,8 @@
-import { TypeData, Modifier, PrimitiveType, Type, AnyType } from "./models";
+import { PrimitiveType } from "./fields";
+import { Type, TypeData } from "./types";
 
-export const Default = <
-  T extends PrimitiveType,
-  K extends TypeData[T]["default"]
->(
-  value: K
-): Modifier<T, "default"> => ({ type: "default", value });
-
-export const Nullable = <T extends AnyType>(): Modifier<T, "nullable"> => ({
-  type: "nullable",
-  value: true,
-});
+// Column modifiers, e.g. @default(), @nullable() etc.
+export type Modifier<
+  T extends Type = Type,
+  Property extends keyof TypeData[T] = keyof TypeData[T]
+> = { type: Property; value: TypeData[T][Property] };

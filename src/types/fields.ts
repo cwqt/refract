@@ -1,47 +1,28 @@
-import * as Types from "./models";
+import { Column } from "./columns";
+import { Modifier } from "./modifiers";
+import { Type, TypeData } from "./types";
 
-export const Model = (name: string) => {
-  const model: Types.Model = { name, columns: [] };
-
-  const Field = (name: string, type: Types.Field) => {
-    model.columns.push({ name, ...type });
-    return { Field, ...model };
-  };
-
-  return { Field, ...model };
+// Column data-type, Varchar, Int etc.
+export type Field<T extends Type = keyof TypeData> = {
+  type: T;
+  modifiers: Array<Modifier>;
 };
 
-export const Int = (...modifiers: Types.Modifier<"Int">[]) =>
-  ({ type: "Int", modifiers } as Types.Field<"Int">);
+export type Primitive = "Int" | "Varchar" | "Boolean" | "DateTime" | "Enum";
+export type Relation = "OneToMany" | "OneToOne";
+export type Any = Primitive | Relation;
 
-export const Varchar = (
-  ...modifiers: Types.Modifier<"Varchar">[]
-): Types.Field<"Varchar"> =>
-  ({ type: "Varchar", modifiers } as Types.Field<"Varchar">);
+export function isEnum(column: Column<Any>): column is Column<"Enum"> {
+  return column.type == "Enum";
+}
 
-export const Boolean = (
-  ...modifiers: Types.Modifier<"Boolean">[]
-): Types.Field<"Boolean"> =>
-  ({ type: "Boolean", modifiers } as Types.Field<"Boolean">);
+export function isRelation(column: Column<Any>): column is Column<Relation> {
+  return ["OneToMany", "ManyToOne"].includes(column.type);
+}
 
-export const DateTime = (
-  ...modifiers: Types.Modifier<"DateTime">[]
-): Types.Field<"DateTime"> =>
-  ({ type: "DateTime", modifiers } as Types.Field<"DateTime">);
-
-export const Index: { type: "index"; value: true } = {
-  type: "index",
-  value: true,
-};
-
-export const OneToMany = (
-  model: Types.Model,
-  ...modifiers: Types.Modifier<"OneToMany">[]
-): Types.Field<"OneToMany"> =>
-  ({
-    type: "OneToMany",
-    modifiers: [{ type: "model", value: model }, ...modifiers],
-  } as Types.Field<"OneToMany">);
+export function isPrimitive(column: Column<Any>): column is Column<Primitive> {
+  return [isRelation(column), isEnum(column)].every((v) => v == false);
+}
 
 // export const OneToOne = (
 //   model: Types.Model,

@@ -1,5 +1,5 @@
-import { generate } from "../types/codegen";
-import models from "./schema";
+import { generate } from "../codegen";
+import blocks from "./schema";
 
 describe("refract", () => {
   it("should generate the schema", () => {
@@ -23,7 +23,7 @@ describe("refract", () => {
           previewFeatures: ["referentialIntegrity"],
         },
       ],
-      models,
+      blocks,
     });
 
     console.log(schema);
