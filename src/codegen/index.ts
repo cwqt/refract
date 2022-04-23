@@ -1,13 +1,13 @@
-import dedent from 'ts-dedent';
 import * as Types from '../types';
 import { block, header } from './block';
 import { kv } from './transform';
 import { column } from './column';
 import { del } from '../types/utils';
+import { dedent } from './dedent';
 
 // Takes a Config input & returns a generated Prisma schema file as a string
 // which can then be written to a file / formatted by Prisma CLI
-export const generate = (config: Types.Config): string => {
+export default (config: Types.Config): string => {
   config.schema = config.schema.map(
     model => (['Field', 'Relation'].forEach(v => del(model, v)), model),
   );

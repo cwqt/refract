@@ -4,8 +4,8 @@
   "description": "Generate Prisma from TypeScript",
   "main": "jest.config.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -18,9 +18,7 @@
     "url": "https://gitlab.com/cxss/refract/issues"
   },
   "homepage": "https://gitlab.com/cxss/refract#readme",
-  "dependencies": {
-    "ts-dedent": "^2.2.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.23",

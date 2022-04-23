@@ -8,8 +8,12 @@
     "noImplicitUseStrict": true,
     "removeComments": true,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "lib": ["es2017", "dom"],
-    "typeRoots": ["node_modules/@types", "src/@types"]
+    "typeRoots": ["node_modules/@types", "src/@types"],
+    "declaration": true,
+    "outDir": "./dist"
   },
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "out", ".next"]
 }

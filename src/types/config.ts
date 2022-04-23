@@ -19,5 +19,6 @@ export type Generator = {
 export type Config = {
   datasource: Datasource;
   generators: Generator[];
+  output?: string;
   schema: Block[];
 };

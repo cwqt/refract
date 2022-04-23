@@ -1,9 +1,9 @@
-import { generate } from '../codegen';
+import codegen from '../codegen';
 import schema from './schema';
 
 describe('refract', () => {
   it('should generate the schema', () => {
-    const prisma = generate({
+    const prisma = codegen({
       datasource: {
         url: 'secret-url',
         provider: 'postgresql',
