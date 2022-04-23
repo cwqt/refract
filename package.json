@@ -1,7 +1,9 @@
 {
-  "name": "refract",
+  "name": "@cwqt/refract",
   "version": "1.0.0",
   "description": "A TypeScript CDK for Prisma",
+  "author": "cwqt",
+  "license": "GPL-3.0-or-later",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -20,10 +22,11 @@
     "cdk",
     "typescript"
   ],
-  "author": "",
-  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://gitlab.com/cxss/refract/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "homepage": "https://gitlab.com/cxss/refract#readme",
   "dependencies": {},
