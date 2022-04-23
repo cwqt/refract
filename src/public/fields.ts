@@ -47,15 +47,15 @@ export const Fields = (...fields: string[]) => {
     Refs: (...references: string[]) => {
       return (model: Types.Blocks.Model): Relation => {
         // Assert that the referenced fields do actually exist in the opposite Model
-        const missing = references.filter(
+        const missing = fields.filter(
           (r) => !model.columns.map((c) => c.name).includes(r)
         );
 
         if (missing.length)
           throw new Error(
-            `Referenced columns don't exist in Model '${model.name}': ${missing
-              .map((m) => `'${m}'`)
-              .join(", ")}`
+            `RelationshipErr: Referenced columns in 'fields' don't exist in Model '${
+              model.name
+            }': ${missing.map((m) => `'${m}'`).join(", ")}`
           );
 
         return { fields, references };

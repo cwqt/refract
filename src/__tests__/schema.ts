@@ -24,7 +24,7 @@ const User = Model("User");
 
 // prettier-ignore
 User
-  // .Field("id",          Int(Index, Default("autoincrement()")))
+  .Field("id",          Int(Index, Default("autoincrement()")))
   .Field("createdAt",   DateTime(Default("now()")))
   .Field("email",       Varchar(Unique))
   .Field("name",        Varchar(Nullable))

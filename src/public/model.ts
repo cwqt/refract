@@ -8,15 +8,21 @@ export const Model = (name: string) => {
     type: Types.Fields.Field<Types.Fields.Relation>
   ) => {
     if (type.type == "ManyToOne") {
-      // const [model, fields, references, ...modifiers] = type.modifiers;
-      // const missing = fields.filter(
-      //   (f) => !model.value.columns.map((c) => c.name).includes(f)
-      // );
-      //
-      // if (missing.length)
-      //   throw new Error(
-      //     `Cannot find fields on model '${model.name}: ${missing.join(",")}`
-      //   );
+      const references = type.modifiers[2] as unknown as Types.Modifier<
+        "ManyToOne",
+        "references"
+      >;
+
+      const missing = references.value.filter(
+        (f) => !model.columns.map((c) => c.name).includes(f)
+      );
+
+      if (missing.length)
+        throw new Error(
+          `RelationshipErr: Referenced columns in 'references' don't exist in Model '${
+            model.name
+          }': ${missing.map((m) => `'${m}'`).join(", ")}`
+        );
     }
 
     model.columns.push({ name, ...type });
