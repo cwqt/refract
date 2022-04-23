@@ -13,19 +13,19 @@ import {
   UpdatedAt,
   Varchar,
   ManyToOne,
-  Fields,
   Mixin,
-} from "../";
+  Pk,
+} from '../';
 
 // from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
-const Role = Enum("Role", ["USER", "ADMIN"] as const);
+const Role = Enum('Role', ['USER', 'ADMIN'] as const);
 
-const Post = Model("Post");
-const User = Model("User");
+const Post = Model('Post');
+const User = Model('User');
 
 const Timestamps = Mixin()
-  .Field("createdAt", DateTime(Default("now()")))
-  .Field("updatedAt", DateTime(UpdatedAt));
+  .Field('createdAt', DateTime(Default('now()')))
+  .Field('updatedAt', DateTime(UpdatedAt));
 
 // prettier-ignore
 User
@@ -42,7 +42,7 @@ Post
   .Field("published",   Boolean(Default(false)))
   .Field("title",       Varchar(Limit(255)))
   .Field("authorId",    Int(Nullable))
-  .Relation("author",   ManyToOne(User, Fields("id").Refs("authorId"), Nullable))
+  .Relation("author",   ManyToOne(User, Pk("id").Fk("authorId"), Nullable))
   .Mixin(Timestamps)
   .Raw(`@@map("comments")`);
 

@@ -42,9 +42,9 @@ export type Relation = {
   references: string[];
 };
 
-export const Fields = (...fields: string[]) => {
+export const Pk = (...fields: string[]) => {
   return {
-    Refs: (...references: string[]) => {
+    Fk: (...references: string[]) => {
       return (model: Types.Blocks.Model): Relation => {
         // Assert that the referenced fields do actually exist in the opposite Model
         const missing = fields.filter(

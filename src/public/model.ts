@@ -1,6 +1,20 @@
 import * as Types from '../types';
 
-export const Model = (name: string) => {
+// Self-referential type
+type Model = {
+  Mixin: (mixin: Types.Mixin) => Model;
+  Raw: (value: string) => Model;
+  Relation: (
+    name: string,
+    type: Types.Fields.Field<Types.Fields.Relation>,
+  ) => Model;
+  Field: (
+    name: string,
+    type: Types.Fields.Field<Types.Fields.Primitive>,
+  ) => Model;
+} & Types.Blocks.Model;
+
+export const Model = (name: string): Model => {
   const model: Types.Blocks.Model = { type: 'model', name, columns: [] };
 
   const Mixin = (mixin: Types.Mixin) => {
@@ -8,7 +22,7 @@ export const Model = (name: string) => {
     return { Mixin, Raw, Field, Relation, ...model };
   };
 
-  const Raw = (value: string) => {
+  const Raw = (value: string): Model => {
     const modifier: Types.Modifier<'Raw', 'value'> = { type: 'value', value };
     const column = {
       name: 'raw',
@@ -24,7 +38,7 @@ export const Model = (name: string) => {
   const Relation = (
     name: string,
     type: Types.Fields.Field<Types.Fields.Relation>,
-  ) => {
+  ): Model => {
     if (type.type == 'ManyToOne') {
       const references = type.modifiers[2] as unknown as Types.Modifier<
         'ManyToOne',
@@ -51,7 +65,7 @@ export const Model = (name: string) => {
   const Field = (
     name: string,
     type: Types.Fields.Field<Types.Fields.Primitive>,
-  ) => {
+  ): Model => {
     model.columns.push({ name, ...type });
     return { Mixin, Raw, Field, Relation, ...model };
   };

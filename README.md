@@ -5,7 +5,8 @@ A TypeScript CDK for [Prisma](https://www.prisma.io).
 ```sh
 yarn add @cwqt/refract
 
-// Create refract.ts (see below example)
+# First create a refract.ts file (see below example)
+# Then to generate the Prisma schema
 npx ts-node refract.ts
 ```
 
@@ -24,7 +25,6 @@ const Timestamps = Mixin()
   .Field('createdAt', DateTime(Default('now()')))
   .Field('updatedAt', DateTime(UpdatedAt));
 
-// prettier-ignore
 User
   .Field("id",          Int(Index, Default("autoincrement()")))
   .Field("email",       Varchar(Unique))
@@ -33,7 +33,6 @@ User
   .Relation("posts",    OneToMany(Post))
   .Mixin(Timestamps);
 
-// prettier-ignore
 Post
   .Field("id",          Int(Index, Default("autoincrement()")))
   .Field("published",   Boolean(Default(false)))
@@ -64,7 +63,7 @@ Refract({
   generators: [
     {
       provider: 'prisma-client-js',
-      previewFeatures: ['interactiveTransactions'],
+      previewFeatures: ['referentialIntegrity'],
       engineType: 'library',
       binaryTargets: ['native'],
     },
