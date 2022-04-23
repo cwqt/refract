@@ -1,4 +1,3 @@
-import { PrimitiveType } from "./fields";
 import { Type, TypeData } from "./types";
 
 // Column modifiers, e.g. @default(), @nullable() etc.

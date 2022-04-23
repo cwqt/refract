@@ -9,7 +9,7 @@ export type Field<T extends Type = keyof TypeData> = {
 };
 
 export type Primitive = "Int" | "Varchar" | "Boolean" | "DateTime" | "Enum";
-export type Relation = "OneToMany" | "OneToOne";
+export type Relation = "OneToMany" | "OneToOne" | "ManyToOne";
 export type Any = Primitive | Relation;
 
 export function isEnum(column: Column<Any>): column is Column<"Enum"> {
@@ -17,7 +17,7 @@ export function isEnum(column: Column<Any>): column is Column<"Enum"> {
 }
 
 export function isRelation(column: Column<Any>): column is Column<Relation> {
-  return ["OneToMany", "ManyToOne"].includes(column.type);
+  return ["OneToMany", "ManyToOne", "ManyToOne"].includes(column.type);
 }
 
 export function isPrimitive(column: Column<Any>): column is Column<Primitive> {

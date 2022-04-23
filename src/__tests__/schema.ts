@@ -12,7 +12,15 @@ import {
   Unique,
   UpdatedAt,
   Varchar,
+  ManyToOne,
 } from "../";
+
+export interface ForwardReference<T = any> {
+  forwardRef: () => T;
+}
+export const ref = <T>(fn: () => T): ForwardReference<T> => ({
+  forwardRef: fn,
+});
 
 // from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
 //
@@ -25,18 +33,18 @@ import {
 //   author    User?    @relation(fields: [authorId], references: [id])
 //   authorId  Int?
 // }
-const Post = Model("Post")
-  .Field("id", Int(Index, Default("autoincrement()")))
-  .Field("createdAt", DateTime(Default("now()")))
-  .Field("updatedAt", DateTime(UpdatedAt))
-  .Field("published", Boolean(Default(false)))
-  .Field("title", Varchar(Limit(255)));
+const Post = Model("Post").Field("id", Int(Index, Default("autoincrement()")));
+// .Field("createdAt", DateTime(Default("now()")))
+// .Field("updatedAt", DateTime(UpdatedAt))
+// .Field("published", Boolean(Default(false)))
+// .Field("title", Varchar(Limit(255)));
+//
 
 // enum Role {
 //   USER
 //   ADMIN
 // }
-const Role = Enum("Role", ["USER", "ADMIN"] as const);
+// const Role = Enum("Role", ["USER", "ADMIN"] as const);
 
 // model User {
 //   id        Int      @id @default(autoincrement())
@@ -47,11 +55,12 @@ const Role = Enum("Role", ["USER", "ADMIN"] as const);
 //   posts     Post[]
 // }
 const User = Model("User")
-  .Field("id", Int(Index, Default("autoincrement()")))
-  .Field("createdAt", DateTime(Default("now()")))
-  .Field("email", Varchar(Unique))
-  .Field("name", Varchar(Nullable))
-  .Field("role", Role("USER"))
-  .Field("posts", OneToMany(Post));
+  // .Field("id", Int(Index, Default("autoincrement()")))
+  // .Field("createdAt", DateTime(Default("now()")))
+  // .Field("email", Varchar(Unique))
+  // .Field("name", Varchar(Nullable))
+  // .Field("role", Role("USER"))
+  .Relation("posts", OneToMany(Post));
 
-export default [Role, User, Post];
+export default [User, Post];
+// export default [Role, User, Post];

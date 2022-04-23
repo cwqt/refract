@@ -16,6 +16,7 @@ export type TypeData = {
   // @relation(fields: [customerId], references: [id])
   OneToMany: { model: Model; nullable?: true };
   OneToOne: { model: Model; nullable?: true };
+  ManyToOne: { model: Model; nullable?: true };
 };
 
 // All possible column datatypes & their accepted modifiers/parameters

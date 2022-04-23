@@ -1,4 +1,5 @@
 import * as Types from "../types";
+import { ForwardReference } from "../__tests__/schema";
 import { Enum as CallableEnum } from "./enum";
 
 export const Enum = <K extends readonly string[]>(
@@ -28,11 +29,56 @@ export const DateTime = (
 ): Types.Fields.Field<"DateTime"> =>
   ({ type: "DateTime", modifiers } as Types.Fields.Field<"DateTime">);
 
-export const OneToMany = (
-  model: Types.Blocks.Model,
+type Relation = {
+  fields: string[];
+  references: string[];
+};
+
+const Fields = (...fields: string[]) => {
+  return {
+    Refs: (...references: string[]) => {
+      return (model: Types.Blocks.Model): Relation => {
+        const missing = model.columns
+          .map((c) => c.name)
+          .filter((k) => !fields.includes(k));
+
+        if (missing.length) throw new Error("Missing field!");
+
+        return { fields, references };
+      };
+    },
+  };
+};
+
+Fields("hello").Refs("id");
+
+const Relation = (model: Types.Blocks.Model) => {
+  const relation: Relation = {
+    fields: [],
+    references: [],
+  };
+};
+
+export const OneToMany = <M extends Types.Blocks.Model>(
+  model: M,
   ...modifiers: Types.Modifier<"OneToMany">[]
 ): Types.Fields.Field<"OneToMany"> =>
   ({
     type: "OneToMany",
     modifiers: [{ type: "model", value: model }, ...modifiers],
   } as Types.Fields.Field<"OneToMany">);
+
+export const ManyToOne = (
+  model: Types.Blocks.Model,
+  ...modifiers: Types.Modifier<"ManyToOne">[]
+): Types.Fields.Field<"ManyToOne"> =>
+  ({
+    type: "ManyToOne",
+    modifiers: [
+      {
+        type: "model",
+        value: model,
+      },
+      ...modifiers,
+    ],
+  } as Types.Fields.Field<"ManyToOne">);

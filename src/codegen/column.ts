@@ -5,7 +5,7 @@ import * as Types from "../types";
 export const column = (column: Types.Column): string => {
   if (Types.Fields.isEnum(column)) return enumeration(column);
   if (Types.Fields.isPrimitive(column)) return primitive(column);
-  if (Types.Fields.isRelation(column)) return relation(column);
+  if (Types.Fields.isRelation(column)) return relationship(column);
 
   return `ERROR: Couldn't figure out type for column: ${column.name}`;
 };
@@ -32,7 +32,7 @@ const primitive = (column: Types.Column<Types.Fields.Primitive>) => {
 };
 
 // TODO: relationships!
-const relation = (column: Types.Column<Types.Fields.Relation>) => {
+const relationship = (column: Types.Column<Types.Fields.Relation>) => {
   const relationship: any = column.modifiers.find(
     (m) => (m.type as any) == "model"
   );

@@ -1,8 +1,13 @@
 import dedent from "ts-dedent";
+import * as Types from "../types";
+import { block, header } from "./block";
+import { kv } from "./transform";
+import { column } from "./column";
+import { del } from "../types/utils";
 
 // Takes a Config input & returns a generated Prisma schema file as a string
 // which can then be written to a file / formatted by Prisma CLI
-export const generate = (config: Config): string => {
+export const generate = (config: Types.Config): string => {
   config.blocks = config.blocks.map((model) => del(model, "Field"));
 
   return dedent`
@@ -19,7 +24,7 @@ export const generate = (config: Config): string => {
 
     ${header("enums")}
     ${config.blocks
-      .filter(isEnum)
+      .filter(Types.Blocks.isEnum)
       .map((e) =>
         block(`enum ${e.name}`, e.columns.map((c) => `\t${c.name}`).join(",\n"))
       )
@@ -27,7 +32,7 @@ export const generate = (config: Config): string => {
 
     ${header("models")}
     ${config.blocks
-      .filter(isModel)
+      .filter(Types.Blocks.isModel)
       .map((model) =>
         block(`model ${model.name}`, model.columns.map(column).join("\n"))
       )
