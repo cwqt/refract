@@ -3,11 +3,15 @@
 A TypeScript CDK for [Prisma](https://www.prisma.io).
 
 ```sh
-npm install
-npm run test
+yarn add @cwqt/refract
+
+// Create refract.ts (see below example)
+npx ts-node refract.ts
 ```
 
 ## Example
+
+`schema.ts`
 
 ```ts
 // inspired from from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
@@ -43,6 +47,8 @@ export default [Role, User, Post];
 ```
 
 ---
+
+`refract.ts`
 
 ```ts
 import Refract from '@cwqt/refract';
