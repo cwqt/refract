@@ -1,5 +1,4 @@
 import * as Types from "../types";
-import { ForwardReference } from "../__tests__/schema";
 import { Enum as CallableEnum } from "./enum";
 
 export const Enum = <K extends readonly string[]>(
@@ -29,36 +28,6 @@ export const DateTime = (
 ): Types.Fields.Field<"DateTime"> =>
   ({ type: "DateTime", modifiers } as Types.Fields.Field<"DateTime">);
 
-type Relation = {
-  fields: string[];
-  references: string[];
-};
-
-const Fields = (...fields: string[]) => {
-  return {
-    Refs: (...references: string[]) => {
-      return (model: Types.Blocks.Model): Relation => {
-        const missing = model.columns
-          .map((c) => c.name)
-          .filter((k) => !fields.includes(k));
-
-        if (missing.length) throw new Error("Missing field!");
-
-        return { fields, references };
-      };
-    },
-  };
-};
-
-Fields("hello").Refs("id");
-
-const Relation = (model: Types.Blocks.Model) => {
-  const relation: Relation = {
-    fields: [],
-    references: [],
-  };
-};
-
 export const OneToMany = <M extends Types.Blocks.Model>(
   model: M,
   ...modifiers: Types.Modifier<"OneToMany">[]
@@ -68,17 +37,56 @@ export const OneToMany = <M extends Types.Blocks.Model>(
     modifiers: [{ type: "model", value: model }, ...modifiers],
   } as Types.Fields.Field<"OneToMany">);
 
-export const ManyToOne = (
-  model: Types.Blocks.Model,
+export type Relation = {
+  fields: string[];
+  references: string[];
+};
+
+export const Fields = (...fields: string[]) => {
+  return {
+    Refs: (...references: string[]) => {
+      return (model: Types.Blocks.Model): Relation => {
+        // Assert that the referenced fields do actually exist in the opposite Model
+        const missing = references.filter(
+          (r) => !model.columns.map((c) => c.name).includes(r)
+        );
+
+        if (missing.length)
+          throw new Error(
+            `Referenced columns don't exist in Model '${model.name}': ${missing
+              .map((m) => `'${m}'`)
+              .join(", ")}`
+          );
+
+        return { fields, references };
+      };
+    },
+  };
+};
+
+export const ManyToOne = <M extends Types.Blocks.Model>(
+  model: M,
+  relation: (m: M) => Relation,
   ...modifiers: Types.Modifier<"ManyToOne">[]
-): Types.Fields.Field<"ManyToOne"> =>
-  ({
+): Types.Fields.Field<"ManyToOne"> => {
+  const { fields, references } = relation(model);
+
+  return {
     type: "ManyToOne",
     modifiers: [
       {
         type: "model",
         value: model,
       },
+      {
+        type: "fields",
+        value: fields,
+      },
+      {
+        type: "references",
+        value: references,
+      },
       ...modifiers,
     ],
-  } as Types.Fields.Field<"ManyToOne">);
+  } as Types.Fields.Field<"ManyToOne">;
+};

@@ -31,17 +31,36 @@ const primitive = (column: Types.Column<Types.Fields.Primitive>) => {
     .join(" ")}`;
 };
 
-// TODO: relationships!
 const relationship = (column: Types.Column<Types.Fields.Relation>) => {
-  const relationship: any = column.modifiers.find(
-    (m) => (m.type as any) == "model"
-  );
+  if (column.type == "ManyToOne") {
+    const [model, fields, references, ...modifiers] =
+      column.modifiers as unknown as [
+        Types.Modifier<"ManyToOne", "model">,
+        Types.Modifier<"ManyToOne", "fields">,
+        Types.Modifier<"ManyToOne", "references">,
+        Types.Modifier<"ManyToOne">[]
+      ];
 
-  console.log("----->", relationship);
+    const isNullable = column.modifiers.find(({ type }) => type == "nullable");
+
+    return `\t${column.name} ${model.value.name}${
+      isNullable ? "?" : ""
+    } @relation(fields: [${fields.value.join(
+      ", "
+    )}], references: [${references.value.join(", ")}])`;
+  }
 
   if (column.type == "OneToMany") {
-    const relation = `\t${column.name} ${relationship.value.name}[]`;
-    return relation;
+    const [model, ...modifiers] = column.modifiers as unknown as [
+      Types.Modifier<"OneToMany", "model">,
+      Types.Modifier<"OneToMany">[]
+    ];
+
+    return `\t${column.name} ${model.value.name}[]`;
+  }
+
+  if (column.type == "OneToOne") {
+    const isNullable = column.modifiers.find(({ type }) => type == "nullable");
   }
 
   return "";

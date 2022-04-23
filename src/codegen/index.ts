@@ -8,7 +8,9 @@ import { del } from "../types/utils";
 // Takes a Config input & returns a generated Prisma schema file as a string
 // which can then be written to a file / formatted by Prisma CLI
 export const generate = (config: Types.Config): string => {
-  config.blocks = config.blocks.map((model) => del(model, "Field"));
+  config.blocks = config.blocks.map(
+    (model) => (["Field", "Relation"].forEach((v) => del(model, v)), model)
+  );
 
   return dedent`
     ${header(`refract - ${process.env.npm_package_version}`)}

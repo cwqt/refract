@@ -13,54 +13,32 @@ import {
   UpdatedAt,
   Varchar,
   ManyToOne,
+  Fields,
 } from "../";
 
-export interface ForwardReference<T = any> {
-  forwardRef: () => T;
-}
-export const ref = <T>(fn: () => T): ForwardReference<T> => ({
-  forwardRef: fn,
-});
-
 // from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
-//
-// model Post {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   published Boolean  @default(false)
-//   title     String   @db.VarChar(255)
-//   author    User?    @relation(fields: [authorId], references: [id])
-//   authorId  Int?
-// }
-const Post = Model("Post").Field("id", Int(Index, Default("autoincrement()")));
-// .Field("createdAt", DateTime(Default("now()")))
-// .Field("updatedAt", DateTime(UpdatedAt))
-// .Field("published", Boolean(Default(false)))
-// .Field("title", Varchar(Limit(255)));
-//
+const Role = Enum("Role", ["USER", "ADMIN"] as const);
 
-// enum Role {
-//   USER
-//   ADMIN
-// }
-// const Role = Enum("Role", ["USER", "ADMIN"] as const);
+const Post = Model("Post");
+const User = Model("User");
 
-// model User {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   email     String   @unique
-//   name      String?
-//   role      Role     @default(USER)
-//   posts     Post[]
-// }
-const User = Model("User")
-  // .Field("id", Int(Index, Default("autoincrement()")))
-  // .Field("createdAt", DateTime(Default("now()")))
-  // .Field("email", Varchar(Unique))
-  // .Field("name", Varchar(Nullable))
-  // .Field("role", Role("USER"))
-  .Relation("posts", OneToMany(Post));
+// prettier-ignore
+User
+  // .Field("id",          Int(Index, Default("autoincrement()")))
+  .Field("createdAt",   DateTime(Default("now()")))
+  .Field("email",       Varchar(Unique))
+  .Field("name",        Varchar(Nullable))
+  .Field("role",        Role("USER"))
+  .Relation("posts",    OneToMany(Post));
 
-export default [User, Post];
-// export default [Role, User, Post];
+// prettier-ignore
+Post
+  .Field("id",          Int(Index, Default("autoincrement()")))
+  .Field("createdAt",   DateTime(Default("now()")))
+  .Field("updatedAt",   DateTime(UpdatedAt))
+  .Field("published",   Boolean(Default(false)))
+  .Field("title",       Varchar(Limit(255)))
+  .Field("authorId",    Int(Nullable))
+  .Relation("author",   ManyToOne(User, Fields("id").Refs("authorId"), Nullable));
+
+export default [Role, User, Post];
