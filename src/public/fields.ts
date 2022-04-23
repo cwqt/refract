@@ -1,10 +1,14 @@
 import * as Types from "../types";
-import { Enum as EnumClass } from "./enum";
+import { Enum as CallableEnum } from "./enum";
 
 export const Enum = <K extends readonly string[]>(
   name: string,
   keys: K
-): EnumClass<K> => new EnumClass(name, keys);
+): ((
+  initial: K[number] | null,
+  ...modifiers: Types.Modifier<"Enum">[]
+) => Types.Fields.Field<"Enum">) &
+  Types.Blocks.Enum => new CallableEnum(name, keys) as any; // _call
 
 export const Int = (...modifiers: Types.Modifier<"Int">[]) =>
   ({ type: "Int", modifiers } as Types.Fields.Field<"Int">);

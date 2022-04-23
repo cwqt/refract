@@ -15,7 +15,7 @@ import {
 } from "../";
 
 // from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
-
+//
 // model Post {
 //   id        Int      @id @default(autoincrement())
 //   createdAt DateTime @default(now())

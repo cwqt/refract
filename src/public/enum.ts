@@ -20,7 +20,11 @@ export class Enum<K extends readonly string[]>
     );
 
     return new Proxy(this, {
-      apply: (target, _, args) =>
+      apply: (
+        target,
+        _,
+        args: [K[number] | null, ...Types.Modifier<"Enum">[]]
+      ) =>
         target._call(
           args[0] as K[number],
           ...(args.slice(1, args.length - 1) as Types.Modifier<"Enum">[])
