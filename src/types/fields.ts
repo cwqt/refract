@@ -10,7 +10,11 @@ export type Field<T extends Type = keyof TypeData> = {
 
 export type Primitive = "Int" | "Varchar" | "Boolean" | "DateTime" | "Enum";
 export type Relation = "OneToMany" | "OneToOne" | "ManyToOne";
-export type Any = Primitive | Relation;
+export type Any = Primitive | Relation | "Raw";
+
+export function isRaw(column: Column<Any>): column is Column<"Raw"> {
+  return column.type == "Raw";
+}
 
 export function isEnum(column: Column<Any>): column is Column<"Enum"> {
   return column.type == "Enum";

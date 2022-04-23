@@ -3,6 +3,7 @@ import * as Types from "../types";
 
 // Converts a Column to a Prisma row string
 export const column = (column: Types.Column): string => {
+  if (Types.Fields.isRaw(column)) return `\t${column.modifiers[0].value}`;
   if (Types.Fields.isEnum(column)) return enumeration(column);
   if (Types.Fields.isPrimitive(column)) return primitive(column);
   if (Types.Fields.isRelation(column)) return relationship(column);

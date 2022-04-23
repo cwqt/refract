@@ -3,6 +3,19 @@ import * as Types from "../types";
 export const Model = (name: string) => {
   const model: Types.Blocks.Model = { type: "model", name, columns: [] };
 
+  const Raw = (value: string) => {
+    const modifier: Types.Modifier<"Raw", "value"> = { type: "value", value };
+    const column = {
+      name: "raw",
+      type: "Raw",
+      modifiers: [modifier],
+    };
+
+    model.columns.push(column as Types.Column);
+
+    return { Raw, Field, Relation, ...model };
+  };
+
   const Relation = (
     name: string,
     type: Types.Fields.Field<Types.Fields.Relation>
@@ -27,7 +40,7 @@ export const Model = (name: string) => {
 
     model.columns.push({ name, ...type });
 
-    return { Field, Relation, ...model };
+    return { Raw, Field, Relation, ...model };
   };
 
   const Field = (
@@ -35,8 +48,8 @@ export const Model = (name: string) => {
     type: Types.Fields.Field<Types.Fields.Primitive>
   ) => {
     model.columns.push({ name, ...type });
-    return { Field, Relation, ...model };
+    return { Raw, Field, Relation, ...model };
   };
 
-  return { Field, Relation, ...model };
+  return { Raw, Field, Relation, ...model };
 };
