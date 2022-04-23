@@ -1,8 +1,12 @@
 {
   "name": "refract",
   "version": "1.0.0",
-  "description": "Generate Prisma from TypeScript",
-  "main": "jest.config.js",
+  "description": "A TypeScript CDK for Prisma",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "test": "jest",
     "build": "tsc"
@@ -11,9 +15,13 @@
     "type": "git",
     "url": "git+ssh://git@gitlab.com/cxss/refract.git"
   },
-  "keywords": [],
+  "keywords": [
+    "prisma",
+    "cdk",
+    "typescript"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://gitlab.com/cxss/refract/issues"
   },
