@@ -14,8 +14,11 @@ export const kv = (properties: Properties): string => {
 // Converts from Type to Prisma row string
 export const transform = (value: Properties[string]): string => {
   switch (typeof value) {
-    case 'string':
+    case 'string': {
+      if (value.endsWith('()')) return value;
+
       return `"${value}"`;
+    }
     case 'number':
       return value.toString();
     case 'boolean':

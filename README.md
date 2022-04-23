@@ -15,14 +15,14 @@ npx ts-node refract.ts
 
 ```ts
 // inspired from from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
-const Role = Enum("Role", ["USER", "ADMIN"] as const);
+const Role = Enum('Role', ['USER', 'ADMIN'] as const);
 
-const Post = Model("Post");
-const User = Model("User");
+const Post = Model('Post');
+const User = Model('User');
 
 const Timestamps = Mixin()
-  .Field("createdAt", DateTime(Default("now()")))
-  .Field("updatedAt", DateTime(UpdatedAt));
+  .Field('createdAt', DateTime(Default('now()')))
+  .Field('updatedAt', DateTime(UpdatedAt));
 
 // prettier-ignore
 User
@@ -59,7 +59,7 @@ Refract({
     provider: 'postgresql',
     url: process.env.PG_URL,
     shadowDatabaseUrl: process.env.PG_SHADOW_URL,
-    referentialIntegrity: true,
+    referentialIntegrity: 'prisma',
   },
   generators: [
     {
