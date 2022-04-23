@@ -1,10 +1,10 @@
-import { Block } from "./blocks";
+import { Block } from './blocks';
 
 export type Datasource = {
-  provider: "postgresql" | "mysql" | "sqlite" | "sqlserver" | "mongodb";
+  provider: 'postgresql' | 'mysql' | 'sqlite' | 'sqlserver' | 'mongodb';
   url: string;
   shadowDatabaseUrl?: string;
-  referentialIntegrity?: "prisma" | "foreignKeys";
+  referentialIntegrity?: 'prisma' | 'foreignKeys';
 };
 
 export type Generator = {
@@ -12,12 +12,12 @@ export type Generator = {
   provider: string;
   output?: string;
   previewFeatures?: string[];
-  engineType?: "library" | "binary";
+  engineType?: 'library' | 'binary';
   binaryTargets?: string[]; // TODO: enum
 };
 
 export type Config = {
   datasource: Datasource;
   generators: Generator[];
-  blocks: Block[];
+  schema: Block[];
 };

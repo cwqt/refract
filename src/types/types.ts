@@ -1,16 +1,16 @@
-import { Model } from "./blocks";
+import { Model } from './blocks';
 
 // Primitive data-types
 export type TypeData = {
   Int: {
     unique?: true;
     index?: true;
-    default?: "autoincrement()" | number;
+    default?: 'autoincrement()' | number;
     nullable?: true;
   };
   Varchar: { unique?: true; default?: string; nullable?: true; limit?: number };
   Boolean: { unique?: true; index?: true; default?: boolean; nullable?: true };
-  DateTime: { default?: "now()"; nullable?: true; updatedAt?: true };
+  DateTime: { default?: 'now()'; nullable?: true; updatedAt?: true };
   // Escape hatch
   Raw: { value: string };
   //   status           SubscriptionStatus @default(Paused)

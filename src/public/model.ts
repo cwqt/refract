@@ -1,11 +1,11 @@
-import * as Types from "../types";
+import * as Types from '../types';
 
 export const Mixin = () => {
   const columns: Types.Column[] = [];
 
   const Field = (
     name: string,
-    type: Types.Fields.Field<Types.Fields.Primitive>
+    type: Types.Fields.Field<Types.Fields.Primitive>,
   ) => {
     columns.push({ name, ...type });
     return { Field, columns };
@@ -15,7 +15,7 @@ export const Mixin = () => {
 };
 
 export const Model = (name: string) => {
-  const model: Types.Blocks.Model = { type: "model", name, columns: [] };
+  const model: Types.Blocks.Model = { type: 'model', name, columns: [] };
 
   const Mixin = (mixin: Types.Mixin) => {
     model.columns.push(...mixin.columns);
@@ -23,10 +23,10 @@ export const Model = (name: string) => {
   };
 
   const Raw = (value: string) => {
-    const modifier: Types.Modifier<"Raw", "value"> = { type: "value", value };
+    const modifier: Types.Modifier<'Raw', 'value'> = { type: 'value', value };
     const column = {
-      name: "raw",
-      type: "Raw",
+      name: 'raw',
+      type: 'Raw',
       modifiers: [modifier],
     };
 
@@ -37,23 +37,23 @@ export const Model = (name: string) => {
 
   const Relation = (
     name: string,
-    type: Types.Fields.Field<Types.Fields.Relation>
+    type: Types.Fields.Field<Types.Fields.Relation>,
   ) => {
-    if (type.type == "ManyToOne") {
+    if (type.type == 'ManyToOne') {
       const references = type.modifiers[2] as unknown as Types.Modifier<
-        "ManyToOne",
-        "references"
+        'ManyToOne',
+        'references'
       >;
 
       const missing = references.value.filter(
-        (f) => !model.columns.map((c) => c.name).includes(f)
+        f => !model.columns.map(c => c.name).includes(f),
       );
 
       if (missing.length)
         throw new Error(
           `RelationshipErr: Referenced columns in 'references' don't exist in Model '${
             model.name
-          }': ${missing.map((m) => `'${m}'`).join(", ")}`
+          }': ${missing.map(m => `'${m}'`).join(', ')}`,
         );
     }
 
@@ -64,7 +64,7 @@ export const Model = (name: string) => {
 
   const Field = (
     name: string,
-    type: Types.Fields.Field<Types.Fields.Primitive>
+    type: Types.Fields.Field<Types.Fields.Primitive>,
   ) => {
     model.columns.push({ name, ...type });
     return { Mixin, Raw, Field, Relation, ...model };

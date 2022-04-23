@@ -43,7 +43,7 @@ Post
   .Field("title",       Varchar(Limit(255)))
   .Field("authorId",    Int(Nullable))
   .Relation("author",   ManyToOne(User, Fields("id").Refs("authorId"), Nullable))
-  .Raw(`@@map("comments")`)
-  .Mixin(Timestamps);
+  .Mixin(Timestamps)
+  .Raw(`@@map("comments")`);
 
 export default [Role, User, Post];

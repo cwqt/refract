@@ -1,4 +1,4 @@
-import { Column } from "./columns";
+import { Column } from './columns';
 
 export type Mixin = {
   columns: Column[];

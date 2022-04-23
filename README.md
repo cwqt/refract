@@ -1,6 +1,6 @@
 # refract
 
-Generate Prisma from TypeScript
+A TypeScript CDK for [Prisma](https://www.prisma.io).
 
 ```sh
 npm install
@@ -10,45 +10,55 @@ npm run test
 ## Example
 
 ```ts
-const Timestamps = Mixin("Timestamps")
-  .Field("createdAt", DateTime(Default("now")))
-  .Field("updatedAt", DateTime(Nullable));
+// inspired from from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
+const Role = Enum('Role', ['USER', 'ADMIN'] as const);
 
-const Status = Enum("Status", ["Active", "Pending"]);
+const Post = Model('Post');
+const User = Model('User');
 
-export const Invoice = Model("Invoice")
-  .Id("id", Int(Index, Default("autoincrement")))
-  .Field("status", Status(Default(Status("Active"))))
+const Timestamps = Mixin()
+  .Field('createdAt', DateTime(Default('now()')))
+  .Field('updatedAt', DateTime(UpdatedAt));
+
+User.Field('id', Int(Index, Default('autoincrement()')))
+  .Field('email', Varchar(Unique))
+  .Field('name', Varchar(Nullable))
+  .Field('role', Role('USER'))
+  .Relation('posts', OneToMany(Post))
   .Mixin(Timestamps);
 
-export const User = Model("User")
-  .Field("id", Int(Index, Default("autoincrement")))
-  .Field("name", Varchar(Nullable, Unique))
-  .Field("invoices", OneToMany(Invoice, "id"))
+Post.Field('id', Int(Index, Default('autoincrement()')))
+  .Field('published', Boolean(Default(false)))
+  .Field('title', Varchar(Limit(255)))
+  .Field('authorId', Int(Nullable))
+  .Relation('author', ManyToOne(User, Fields('id').Refs('authorId'), Nullable))
+  .Raw(`@@map("comments")`)
   .Mixin(Timestamps);
+
+export default [Role, User, Post];
 ```
 
 ---
 
 ```ts
-import Refract from "@cwqt/refract";
-import * as models from "./models";
+import Refract from '@cwqt/refract';
+import * as schema from './schema';
 
 Refract({
   datasource: {
-    provider: "postgresql",
+    provider: 'postgresql',
     url: process.env.PG_URL,
     shadowDatabaseUrl: process.env.PG_SHADOW_URL,
     referentialIntegrity: true,
   },
   generators: [
     {
-      provider: "prisma-client-js",
-      previewFeatures: ["interactiveTransactions"],
-      engineType: "library",
-      binaryTargets: ["native"],
+      provider: 'prisma-client-js',
+      previewFeatures: ['interactiveTransactions'],
+      engineType: 'library',
+      binaryTargets: ['native'],
     },
   ],
-  models,
+  schema,
 });
 ```
