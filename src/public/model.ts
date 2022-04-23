@@ -1,7 +1,26 @@
 import * as Types from "../types";
 
+export const Mixin = () => {
+  const columns: Types.Column[] = [];
+
+  const Field = (
+    name: string,
+    type: Types.Fields.Field<Types.Fields.Primitive>
+  ) => {
+    columns.push({ name, ...type });
+    return { Field, columns };
+  };
+
+  return { Field, columns };
+};
+
 export const Model = (name: string) => {
   const model: Types.Blocks.Model = { type: "model", name, columns: [] };
+
+  const Mixin = (mixin: Types.Mixin) => {
+    model.columns.push(...mixin.columns);
+    return { Mixin, Raw, Field, Relation, ...model };
+  };
 
   const Raw = (value: string) => {
     const modifier: Types.Modifier<"Raw", "value"> = { type: "value", value };
@@ -13,7 +32,7 @@ export const Model = (name: string) => {
 
     model.columns.push(column as Types.Column);
 
-    return { Raw, Field, Relation, ...model };
+    return { Mixin, Raw, Field, Relation, ...model };
   };
 
   const Relation = (
@@ -40,7 +59,7 @@ export const Model = (name: string) => {
 
     model.columns.push({ name, ...type });
 
-    return { Raw, Field, Relation, ...model };
+    return { Mixin, Raw, Field, Relation, ...model };
   };
 
   const Field = (
@@ -48,8 +67,8 @@ export const Model = (name: string) => {
     type: Types.Fields.Field<Types.Fields.Primitive>
   ) => {
     model.columns.push({ name, ...type });
-    return { Raw, Field, Relation, ...model };
+    return { Mixin, Raw, Field, Relation, ...model };
   };
 
-  return { Raw, Field, Relation, ...model };
+  return { Mixin, Raw, Field, Relation, ...model };
 };
