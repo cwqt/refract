@@ -1,5 +1,5 @@
 import * as Types from '../types';
-import { entries, isFn, shift } from '../types/utils';
+import { entries, isFn, nonNullable, shift } from '../types/utils';
 import { Enum as CallableEnum } from './enum';
 import { Model } from './model';
 
@@ -38,21 +38,21 @@ export const OneToMany = <M extends Types.Blocks.Model>(
     modifiers: [{ type: 'model', value: model }, ...modifiers],
   } as Types.Fields.Field<'OneToMany'>);
 
-type RelationFn<T extends Types.Blocks.Model> = (m: T) => Relation;
+type RelationFn<T extends Types.Blocks.Model> = (m: T | string) => Relation;
 export type Relation = {
   fields: string[];
   references: string[];
 };
 
-export const Pk = (...fields: string[]) => {
+export const Pk = (...references: string[]) => {
   return {
-    Fk: (...references: string[]) => {
-      return (model: Types.Blocks.Model): Relation => {
+    Fk: (...fields: string[]) => {
+      return (model: Types.Blocks.Model | string): Relation => {
         // Assert that the referenced fields do actually exist in the opposite Model
         console.log(fields, references, model);
-        const missing = fields.filter(
-          r => !model.columns.map(c => c.name).includes(r),
-        );
+        // const missing = fields.filter(
+        //   r => !model.columns.map(c => c.name).includes(r),
+        // );
 
         // if (missing.length)
         //   throw new Error(
@@ -68,7 +68,7 @@ export const Pk = (...fields: string[]) => {
 };
 
 export const ManyToOne = <M extends Types.Blocks.Model>(
-  model: M,
+  model: M | string,
   relation: RelationFn<M>,
   ...modifiers: Types.Modifier<'ManyToOne'>[]
 ) => {
@@ -102,8 +102,6 @@ export const OneToOne = <M extends Types.Blocks.Model>(
 ) => {
   const relation = modifiers.shift();
 
-  console.log('-->', (relation as any)?.());
-
   const relations = isFn<RelationFn<M>>(relation)
     ? entries(relation(model)).map(([key, value]) => ({
         type: key,
@@ -120,6 +118,6 @@ export const OneToOne = <M extends Types.Blocks.Model>(
       },
       ...relations,
       ...modifiers,
-    ],
+    ].filter(nonNullable),
   } as Types.Fields.Field<'OneToOne'>;
 };

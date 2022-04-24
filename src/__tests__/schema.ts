@@ -15,6 +15,7 @@ import {
   ManyToOne,
   Mixin,
   Pk,
+  OneToOne,
 } from '../';
 
 // from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
@@ -34,7 +35,8 @@ User
   .Field("name",        Varchar(Nullable))
   .Field("role",        Role("USER"))
   .Relation("posts",    OneToMany(Post))
-  // .Relation("bestPost",   OneToOne(Post, Pk("id").Fk("bestPostId")))
+  .Field("bestPostId",  Int())
+  .Relation("bestPost", OneToOne(Post, Pk("id").Fk("bestPostId")))
   .Mixin(Timestamps);
 
 // prettier-ignore

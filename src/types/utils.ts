@@ -4,6 +4,8 @@ export const isDate = (v: any): v is Date =>
 export const isFn = <F extends Function>(v: any): v is F =>
   typeof v == 'function';
 
+export const isString = (v: any): v is string => typeof v == 'string';
+
 type Entries<T> = {
   [K in keyof T]: [K, T[K]];
 }[keyof T][];

@@ -15,13 +15,9 @@ type CodegenResult = { schema: string; time: number; output: string };
 export default (config: Types.Config): CodegenResult => {
   const start = performance.now();
 
-  console.log(config.schema);
+  console.log('-->', config.schema);
 
   config = validate(config);
-
-  config.schema = config.schema.map(
-    model => (['Field', 'Relation'].forEach(v => del(model, v)), model),
-  );
 
   const datasource = config.datasource;
   const generators = config.generators;

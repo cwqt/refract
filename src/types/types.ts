@@ -18,16 +18,16 @@ export type TypeData = {
   //   status           SubscriptionStatus @default(Paused)
   Enum: { nullable?: true; default?: string; enum: string };
   // @relation(fields: [customerId], references: [id])
-  OneToMany: { model: Model; nullable?: true };
+  OneToMany: { model: Model | string; nullable?: true };
   OneToOne: {
-    model: Model;
+    model: Model | string;
     nullable?: true;
     fields: string[];
     references: string[];
   };
   ManyToOne: {
     nullable?: true;
-    model: Model;
+    model: Model | string;
     fields: string[];
     references: string[];
   };

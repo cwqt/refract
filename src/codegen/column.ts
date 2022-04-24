@@ -1,5 +1,6 @@
 import { modifier } from './modifiers';
 import * as Types from '../types';
+import { isString } from '../types/utils';
 
 // Converts a Column to a Prisma row string
 export const column = (column: Types.Column): string => {
@@ -48,14 +49,16 @@ const relationship = (column: Types.Column<Types.Fields.Relation>) => {
 
     if (column.type == 'OneToOne') {
       // Not FK holder
-      if (fields.type !== 'fields' || references.type !== 'references') {
-        return `\t${column.name} ${model.value.name}${isNullable ? '?' : ''}`;
+      if (fields?.type !== 'fields' || references?.type !== 'references') {
+        return `\t${column.name} ${
+          isString(model.value) ? model.value : model.value.name
+        }${isNullable ? '?' : ''}`;
       }
     }
 
-    return `\t${column.name} ${model.value.name}${
-      isNullable ? '?' : ''
-    } @relation(fields: [${fields.value.join(
+    return `\t${column.name} ${
+      isString(model.value) ? model.value : model.value.name
+    }${isNullable ? '?' : ''} @relation(fields: [${fields.value.join(
       ', ',
     )}], references: [${references.value.join(', ')}])`.trimEnd();
   }
@@ -66,7 +69,9 @@ const relationship = (column: Types.Column<Types.Fields.Relation>) => {
       Types.Modifier<'OneToMany'>[],
     ];
 
-    return `\t${column.name} ${model.value.name}[]`;
+    return `\t${column.name} ${
+      isString(model.value) ? model.value : model.value.name
+    }[]`;
   }
 
   return '';

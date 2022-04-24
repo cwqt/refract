@@ -3,7 +3,7 @@ import schema from './schema';
 
 describe('refract', () => {
   it('should generate the schema', () => {
-    const prisma = codegen({
+    const { schema: prisma } = codegen({
       datasource: {
         url: 'secret-url',
         provider: 'postgresql',
