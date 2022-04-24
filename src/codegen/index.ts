@@ -68,7 +68,7 @@ export default (config: Types.Config): CodegenResult => {
   return {
     time,
     output: config.output,
-    schema: [header(`refract 1.0.3 - generated in ${time} ms`), schema].join(
+    schema: [header(`refract 1.0.5 - generated in ${time} ms`), schema].join(
       '\n',
     ),
   };
