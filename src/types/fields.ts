@@ -8,7 +8,14 @@ export type Field<T extends Type = keyof TypeData> = {
   modifiers: Array<Modifier>;
 };
 
-export type Primitive = 'Int' | 'Varchar' | 'Boolean' | 'DateTime' | 'Enum';
+export type Primitive =
+  | 'Int'
+  | 'Varchar'
+  | 'Boolean'
+  | 'DateTime'
+  | 'Enum'
+  | 'Json';
+
 export type Relation = 'OneToMany' | 'OneToOne' | 'ManyToOne';
 export type Any = Primitive | Relation | 'Raw';
 
@@ -21,7 +28,7 @@ export function isEnum(column: Column<Any>): column is Column<'Enum'> {
 }
 
 export function isRelation(column: Column<Any>): column is Column<Relation> {
-  return ['OneToMany', 'ManyToOne', 'ManyToOne'].includes(column.type);
+  return ['OneToMany', 'ManyToOne', 'OneToOne'].includes(column.type);
 }
 
 export function isPrimitive(column: Column<Any>): column is Column<Primitive> {

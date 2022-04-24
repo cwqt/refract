@@ -1,4 +1,5 @@
 import * as Types from '../types';
+import { nonNullable } from '../types/utils';
 
 export class Enum<K extends readonly string[]>
   extends Function
@@ -33,7 +34,7 @@ export class Enum<K extends readonly string[]>
   }
 
   _call(
-    initial: K[number] | null,
+    initial?: K[number] | null,
     ...modifiers: Types.Modifier<'Enum'>[]
   ): Types.Fields.Field<'Enum'> {
     return {
@@ -42,9 +43,13 @@ export class Enum<K extends readonly string[]>
         { type: 'enum', value: this.name },
         initial
           ? { type: 'default', value: initial }
-          : { type: 'nullable', value: true },
+          : initial === null
+          ? { type: 'nullable', value: true }
+          : null,
         ...modifiers,
-      ].filter((v, i, a) => a.findIndex(m => m.type == v.type) === i),
+      ].filter(
+        (v, i, a) => nonNullable(v) && a.findIndex(m => m.type == v.type) === i,
+      ),
     } as Types.Fields.Field<'Enum'>;
   }
 }

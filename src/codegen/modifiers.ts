@@ -6,7 +6,9 @@ import { transform } from './transform';
 export const modifier = (type: Type, modifier: Modifier): string => {
   switch (modifier.type as any) {
     case 'default':
-      return `@default(${transform(modifier.value)})`;
+      return `@default(${
+        type == 'Enum' ? modifier.value : transform(modifier.value)
+      })`;
     case 'index':
       return `@id`;
     case 'unique':

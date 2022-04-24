@@ -1,3 +1,4 @@
+import path from 'path';
 import { Block } from './blocks';
 
 export type Datasource = {
@@ -33,7 +34,7 @@ export type Config = {
   schema: Block[];
 };
 
-export const validate = (config: Config) => {
+export const validate = (config: Config): Config => {
   if (config.datasource.referentialIntegrity) {
     if (
       !config.generators.some(g =>
@@ -44,4 +45,9 @@ export const validate = (config: Config) => {
         "Must have a generator with the 'referentialIntegrity' preview feature enabled to use referential integrity in the datasource",
       );
   }
+
+  return {
+    ...config,
+    output: config.output || path.join(process.cwd(), 'schema.prisma'),
+  };
 };

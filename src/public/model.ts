@@ -14,15 +14,23 @@ type Model = {
   ) => Model;
 } & Types.Blocks.Model;
 
-export const Model = (name: string): Model => {
-  const model: Types.Blocks.Model = { type: 'model', name, columns: [] };
+export const Model = (name: string): Model => new CallableModel(name);
 
-  const Mixin = (mixin: Types.Mixin) => {
-    model.columns.push(...mixin.columns);
-    return { Mixin, Raw, Field, Relation, ...model };
-  };
+export class CallableModel implements Types.Blocks.Model, Model {
+  name: string;
+  type: 'model' = 'model';
+  columns: Types.Column<keyof Types.TypeData>[] = [];
 
-  const Raw = (value: string): Model => {
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  Mixin(mixin: Types.Mixin) {
+    this.columns.push(...mixin.columns);
+    return this;
+  }
+
+  Raw(value: string) {
     const modifier: Types.Modifier<'Raw', 'value'> = { type: 'value', value };
     const column = {
       name: 'raw',
@@ -30,15 +38,11 @@ export const Model = (name: string): Model => {
       modifiers: [modifier],
     };
 
-    model.columns.push(column as Types.Column);
+    this.columns.push(column as Types.Column);
+    return this;
+  }
 
-    return { Mixin, Raw, Field, Relation, ...model };
-  };
-
-  const Relation = (
-    name: string,
-    type: Types.Fields.Field<Types.Fields.Relation>,
-  ): Model => {
+  Relation(name: string, type: Types.Fields.Field<Types.Fields.Relation>) {
     if (type.type == 'ManyToOne') {
       const references = type.modifiers[2] as unknown as Types.Modifier<
         'ManyToOne',
@@ -46,29 +50,24 @@ export const Model = (name: string): Model => {
       >;
 
       const missing = references.value.filter(
-        f => !model.columns.map(c => c.name).includes(f),
+        f => !this.columns.map(c => c.name).includes(f),
       );
 
-      if (missing.length)
-        throw new Error(
-          `RelationshipErr: Referenced columns in 'references' don't exist in Model '${
-            model.name
-          }': ${missing.map(m => `'${m}'`).join(', ')}`,
-        );
+      // if (missing.length)
+      //   throw new Error(
+      //     `RelationshipErr: Referenced columns in 'references' don't exist in Model '${
+      //       this.name
+      //     }': ${missing.map(m => `'${m}'`).join(', ')}`,
+      //   );
     }
 
-    model.columns.push({ name, ...type });
+    this.columns.push({ name, ...type });
 
-    return { Mixin, Raw, Field, Relation, ...model };
-  };
+    return this;
+  }
 
-  const Field = (
-    name: string,
-    type: Types.Fields.Field<Types.Fields.Primitive>,
-  ): Model => {
-    model.columns.push({ name, ...type });
-    return { Mixin, Raw, Field, Relation, ...model };
-  };
-
-  return { Mixin, Raw, Field, Relation, ...model };
-};
+  Field(name: string, type: Types.Fields.Field<Types.Fields.Primitive>) {
+    this.columns.push({ name, ...type });
+    return this;
+  }
+}

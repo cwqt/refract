@@ -35,16 +35,23 @@ const primitive = (column: Types.Column<Types.Fields.Primitive>) => {
 };
 
 const relationship = (column: Types.Column<Types.Fields.Relation>) => {
-  if (column.type == 'ManyToOne') {
+  if (column.type == 'ManyToOne' || column.type == 'OneToOne') {
+    const isNullable = column.modifiers.find(({ type }) => type == 'nullable');
+
     const [model, fields, references, ...modifiers] =
       column.modifiers as unknown as [
-        Types.Modifier<'ManyToOne', 'model'>,
-        Types.Modifier<'ManyToOne', 'fields'>,
-        Types.Modifier<'ManyToOne', 'references'>,
-        Types.Modifier<'ManyToOne'>[],
+        Types.Modifier<'OneToOne' | 'ManyToOne', 'model'>,
+        Types.Modifier<'OneToOne' | 'ManyToOne', 'fields'>,
+        Types.Modifier<'OneToOne' | 'ManyToOne', 'references'>,
+        Types.Modifier<'OneToOne' | 'ManyToOne'>[],
       ];
 
-    const isNullable = column.modifiers.find(({ type }) => type == 'nullable');
+    if (column.type == 'OneToOne') {
+      // Not FK holder
+      if (fields.type !== 'fields' || references.type !== 'references') {
+        return `\t${column.name} ${model.value.name}${isNullable ? '?' : ''}`;
+      }
+    }
 
     return `\t${column.name} ${model.value.name}${
       isNullable ? '?' : ''
@@ -60,10 +67,6 @@ const relationship = (column: Types.Column<Types.Fields.Relation>) => {
     ];
 
     return `\t${column.name} ${model.value.name}[]`;
-  }
-
-  if (column.type == 'OneToOne') {
-    const isNullable = column.modifiers.find(({ type }) => type == 'nullable');
   }
 
   return '';
