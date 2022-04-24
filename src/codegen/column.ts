@@ -19,7 +19,7 @@ const enumeration = (column: Types.Column<'Enum'>) => {
 
   return `\t${column.name} ${type.value}${isNullable ? '?' : ''} ${modifiers
     .map(m => modifier(column.type, m))
-    .join(' ')}`;
+    .join(' ')}`.trimEnd();
 };
 
 const primitive = (column: Types.Column<Types.Fields.Primitive>) => {
@@ -31,7 +31,7 @@ const primitive = (column: Types.Column<Types.Fields.Primitive>) => {
       : column.type
   }${isNullable ? '?' : ''} ${column.modifiers
     .map(m => modifier(column.type, m))
-    .join(' ')}`;
+    .join(' ')}`.trimEnd();
 };
 
 const relationship = (column: Types.Column<Types.Fields.Relation>) => {
@@ -50,7 +50,7 @@ const relationship = (column: Types.Column<Types.Fields.Relation>) => {
       isNullable ? '?' : ''
     } @relation(fields: [${fields.value.join(
       ', ',
-    )}], references: [${references.value.join(', ')}])`;
+    )}], references: [${references.value.join(', ')}])`.trimEnd();
   }
 
   if (column.type == 'OneToMany') {

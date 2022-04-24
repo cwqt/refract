@@ -6,6 +6,7 @@ import { column } from './column';
 import { del, nonNullable } from '../types/utils';
 import { dedent } from './dedent';
 import { validate } from '../types';
+import { align } from './align';
 
 // Takes a Config input & returns a generated Prisma schema file as a string
 // which can then be written to a file / formatted by Prisma CLI
@@ -26,7 +27,7 @@ export default (config: Types.Config): string => {
   const schema = dedent(
     [
       header('datasource'),
-      block('datasource db', kv(datasource)),
+      block('datasource db', align(kv(datasource), '=')),
 
       generators.length
         ? [
@@ -35,7 +36,7 @@ export default (config: Types.Config): string => {
               .map(generator =>
                 block(
                   `generator ${generator.name}`,
-                  kv(del(generator, 'name')),
+                  align(kv(del(generator, 'name')), '='),
                 ),
               )
               .join('\n'),
@@ -49,7 +50,7 @@ export default (config: Types.Config): string => {
               .map(e =>
                 block(
                   `enum ${e.name}`,
-                  e.columns.map(c => `\t${c.name}`).join(',\n'),
+                  e.columns.map(c => `\t${c.name}`).join('\n'),
                 ),
               )
               .join('\n\n'),
@@ -63,7 +64,7 @@ export default (config: Types.Config): string => {
               .map(model =>
                 block(
                   `model ${model.name}`,
-                  model.columns.map(column).join('\n'),
+                  align(model.columns.map(column).join('\n')),
                 ),
               )
               .join('\n\n'),

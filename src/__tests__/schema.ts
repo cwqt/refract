@@ -34,6 +34,7 @@ User
   .Field("name",        Varchar(Nullable))
   .Field("role",        Role("USER"))
   .Relation("posts",    OneToMany(Post))
+  // .Relation("bestPost",   OneToOne(Post, Pk("id").Fk("bestPostId")))
   .Mixin(Timestamps);
 
 // prettier-ignore
