@@ -49,7 +49,6 @@ export const Pk = (...references: string[]) => {
     Fk: (...fields: string[]) => {
       return (model: Types.Blocks.Model | string): Relation => {
         // Assert that the referenced fields do actually exist in the opposite Model
-        console.log(fields, references, model);
         // const missing = fields.filter(
         //   r => !model.columns.map(c => c.name).includes(r),
         // );

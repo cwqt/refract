@@ -15,8 +15,6 @@ type CodegenResult = { schema: string; time: number; output: string };
 export default (config: Types.Config): CodegenResult => {
   const start = performance.now();
 
-  console.log('-->', config.schema);
-
   config = validate(config);
 
   const datasource = config.datasource;
@@ -70,7 +68,7 @@ export default (config: Types.Config): CodegenResult => {
   return {
     time,
     output: config.output,
-    schema: [header(`refract 1.0.1 - generated in ${time} ms`), schema].join(
+    schema: [header(`refract 1.0.3 - generated in ${time} ms`), schema].join(
       '\n',
     ),
   };
