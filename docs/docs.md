@@ -1,6 +1,6 @@
 # refract
 
-See [./demo.md](here for a full demo).
+See [here for a full demo](./demo.md).
 
 ---
 

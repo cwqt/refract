@@ -18,7 +18,7 @@ npm install @cwqt/refract --save-dev
 yarn add -D @cwqt/refract
 ```
 
-See [./docs/docs.md](the docs) for a demo & full overview of features.
+See [the docs](./docs/docs.md) for a demo & full overview of features.
 
 ## Disclaimer
 

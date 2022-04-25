@@ -1,6 +1,6 @@
 {
   "name": "@cwqt/refract",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A TypeScript CDK for Prisma",
   "author": "cwqt",
   "license": "GPL-3.0-or-later",
