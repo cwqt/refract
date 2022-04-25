@@ -16,7 +16,7 @@ export const column = (column: Types.Column): string => {
 
 const enumeration = (column: Types.Column<'Enum'>) => {
   const [type, ...modifiers] = column.modifiers;
-  const isNullable = modifiers;
+  const isNullable = column.modifiers.find(({ type }) => type == 'nullable');
 
   return `\t${column.name} ${type.value}${isNullable ? '?' : ''} ${modifiers
     .map(m => modifier(column.type, m))

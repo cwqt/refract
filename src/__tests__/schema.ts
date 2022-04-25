@@ -19,6 +19,7 @@ import {
 } from '../';
 
 // from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
+
 const Role = Enum('Role', ['USER', 'ADMIN'] as const);
 
 const Post = Model('Post');

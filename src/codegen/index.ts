@@ -68,8 +68,11 @@ export default (config: Types.Config): CodegenResult => {
   return {
     time,
     output: config.output,
-    schema: [header(`refract 1.0.5 - generated in ${time} ms`), schema].join(
-      '\n',
-    ),
+    schema: [
+      header(
+        `refract https://github.com/cwqt/refract - generated in ${time} ms`,
+      ),
+      schema,
+    ].join('\n'),
   };
 };
