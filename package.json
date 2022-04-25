@@ -1,7 +1,7 @@
 {
   "name": "@cwqt/refract",
   "version": "1.0.7",
-  "description": "A TypeScript CDK for Prisma",
+  "description": "A TypeScript SDK for Prisma",
   "author": "cwqt",
   "license": "GPL-3.0-or-later",
   "main": "dist/index.js",
@@ -19,7 +19,7 @@
   },
   "keywords": [
     "prisma",
-    "cdk",
+    "sdk",
     "typescript"
   ],
   "bugs": {

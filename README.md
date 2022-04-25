@@ -1,6 +1,6 @@
 # refract
 
-A TypeScript CDK for [Prisma](https://www.prisma.io).
+A TypeScript SDK for [Prisma](https://www.prisma.io).
 
 <div align="center">
   <img src="https://ftp.cass.si/70c~4vjp4.png" width="75%" />
