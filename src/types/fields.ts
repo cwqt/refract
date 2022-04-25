@@ -1,36 +1,63 @@
 import { Column } from './columns';
-import { Modifier } from './modifiers';
+import { Modifier, Modifiers } from './modifiers';
 import { Type, TypeData } from './types';
+import { UnionToIntersection } from './utils';
 
-// Column data-type, Varchar, Int etc.
-export type Field<T extends Type = keyof TypeData> = {
+// Column data-type, String, Int etc.
+export type Field<T extends Type, M extends Modifiers<T> = Modifiers<T>> = {
   type: T;
-  modifiers: Array<Modifier>;
+  modifiers: Modifier<T, M>[];
 };
 
-export type Primitive =
+export type EnumKey<T extends string = string> = {
+  name: T;
+  modifiers: Modifier<'EnumKey'>[];
+};
+
+export type Scalar =
   | 'Int'
-  | 'Varchar'
+  | 'Float'
+  | 'BigInt'
+  | 'Bytes'
+  | 'Decimal'
+  | 'String'
   | 'Boolean'
   | 'DateTime'
-  | 'Enum'
   | 'Json';
 
+export type Enum = 'Enum' | 'EnumKey';
 export type Relation = 'OneToMany' | 'OneToOne' | 'ManyToOne';
-export type Any = Primitive | Relation | 'Raw';
 
-export function isRaw(column: Column<Any>): column is Column<'Raw'> {
+export type Any = Scalar | Relation | Enum | 'Raw';
+
+// Top type for columns
+type TopColumn = {
+  name: string;
+  type: Type;
+  modifiers: Array<{
+    type: keyof UnionToIntersection<{ [type in Type]: TypeData[type] }[Type]>;
+    value: any;
+  }>;
+};
+
+export function isRaw(column: TopColumn): column is Column<'Raw'> {
   return column.type == 'Raw';
 }
 
-export function isEnum(column: Column<Any>): column is Column<'Enum'> {
+export function isEnumKey(column: TopColumn): column is Column<'EnumKey'> {
+  return column.type == 'EnumKey';
+}
+
+export function isEnum(column: TopColumn): column is Column<'Enum'> {
   return column.type == 'Enum';
 }
 
-export function isRelation(column: Column<Any>): column is Column<Relation> {
+export function isRelation(column: TopColumn): column is Column<Relation> {
   return ['OneToMany', 'ManyToOne', 'OneToOne'].includes(column.type);
 }
 
-export function isPrimitive(column: Column<Any>): column is Column<Primitive> {
-  return [isRelation(column), isEnum(column)].every(v => v == false);
+export function isPrimitive(column: TopColumn): column is Column<Scalar> {
+  return [isRelation(column), isEnumKey(column), isEnum(column)].every(
+    v => v == false,
+  );
 }

@@ -5,7 +5,7 @@ import { kv } from './transform';
 import { column } from './column';
 import { del, nonNullable } from '../types/utils';
 import { dedent } from './lib/dedent';
-import { validate } from '../types';
+import { Column, validate } from '../types';
 import { align } from './align';
 
 type CodegenResult = { schema: string; time: number; output: string };
@@ -43,7 +43,10 @@ export default (config: Types.Config): CodegenResult => {
       group(
         header('enums'),
         enums.map(e =>
-          block(`enum ${e.name}`, e.columns.map(c => `\t${c.name}`).join('\n')),
+          block(
+            `enum ${e.name}`,
+            e.columns.map(e => column(e as Column)).join('\n'),
+          ),
         ),
       ),
 

@@ -34,7 +34,7 @@ Refract({
 // example from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
 
 // Enums
-const Role = Enum('Role', ['USER', 'ADMIN'] as const);
+const Role = Enum('Role', Key('User', Map('user')), Key('Admin'));
 
 // Define models first for circular relations
 const Post = Model('Post');
@@ -47,20 +47,20 @@ const Timestamps = Mixin()
 
 // prettier-ignore
 User
-  .Field('id',       Int(Index, Default('autoincrement()')))
-  .Field('email',    Varchar(Unique))
-  .Field('name',     Varchar(Nullable))
-  .Field('role',     Role('USER'))
+  .Field('id',       Int(Id, Default('autoincrement()')))
+  .Field('email',    String(Unique))
+  .Field('name',     String(Nullable))
+  .Field('role',     Role('User'))
   .Relation('posts', OneToMany(Post))
   // Use a mixin, adds createdAt & updatedAt columns to Model
   .Mixin(Timestamps);
 
 // prettier-ignore
 Post
-  .Field('id',        Int(Index, Default('autoincrement()')))
+  .Field('id',        Int(Id, Default('autoincrement()')))
   // Defaults are type-safe
   .Field('published', Boolean(Default(false)))
-  .Field('title',     Varchar(Limit(255)))
+  .Field('title',     String(Limit(255)))
   .Field('authorId',  Int(Nullable))
   // All kinds of relationships
   .Relation('author', ManyToOne(User, Pk('id').Fk('authorId'), Nullable))

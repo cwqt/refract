@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.0.9]
+
+- Adds `Map` decorator (e.g. `@map("foo")`)
+- Renames `Varchar` to `String`
+- Renames `Index` to `Id`
+  - Adds `cuid()`, `uuid()`
+- Adds `Ignore` decorator (e.g. `@ignore`)
+- Adds `Float`, `BigInt`, `Bytes`, `Decimal` scalars
+- Refactors how Enums are created
+  - Adds `Key`
+  - Enums definitions can now have decorators
+- Refactors types on data-types to be more specific
+
+## [1.0.8]
+
+## [1.0.7]
+
 ## [1.0.6]
 
 - Fix issue with `Enum` codegen always being nullable when having >=1 modifier

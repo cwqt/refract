@@ -6,6 +6,7 @@ import { isString } from '../types/utils';
 export const column = (column: Types.Column): string => {
   if (Types.Fields.isRaw(column)) return `\t${column.modifiers[0].value}`;
   if (Types.Fields.isEnum(column)) return enumeration(column);
+  if (Types.Fields.isEnumKey(column)) return enumKey(column);
   if (Types.Fields.isPrimitive(column)) return primitive(column);
   if (Types.Fields.isRelation(column)) return relationship(column);
 
@@ -14,25 +15,27 @@ export const column = (column: Types.Column): string => {
   );
 };
 
-const enumeration = (column: Types.Column<'Enum'>) => {
+// enum { Foo Bar }
+const enumKey = (column: Types.Column<'EnumKey'>) =>
+  `\t${column.name} ${column.modifiers
+    .map(m => modifier<'EnumKey'>(column.type, m))
+    .join(' ')}`.trimEnd();
+
+export const enumeration = (column: Types.Column<'Enum'>) => {
   const [type, ...modifiers] = column.modifiers;
-  const isNullable = column.modifiers.find(({ type }) => type == 'nullable');
+  const isNullable = modifiers.find(({ type }) => type == 'nullable');
 
   return `\t${column.name} ${type.value}${isNullable ? '?' : ''} ${modifiers
     .map(m => modifier(column.type, m))
     .join(' ')}`.trimEnd();
 };
 
-const primitive = (column: Types.Column<Types.Fields.Primitive>) => {
+const primitive = (column: Types.Column<Types.Fields.Scalar>) => {
   const isNullable = column.modifiers.find(({ type }) => type == 'nullable');
 
-  return `\t${column.name} ${
-    column.type == 'Varchar' // "String" is a keyword
-      ? 'String'
-      : column.type
-  }${isNullable ? '?' : ''} ${column.modifiers
-    .map(m => modifier(column.type, m))
-    .join(' ')}`.trimEnd();
+  return `\t${column.name} ${column.type}${
+    isNullable ? '?' : ''
+  } ${column.modifiers.map(m => modifier(column.type, m)).join(' ')}`.trimEnd();
 };
 
 const relationship = (column: Types.Column<Types.Fields.Relation>) => {
@@ -73,6 +76,4 @@ const relationship = (column: Types.Column<Types.Fields.Relation>) => {
       isString(model.value) ? model.value : model.value.name
     }[]`;
   }
-
-  return '';
 };

@@ -11,7 +11,7 @@ const myModel = Model('ModelName');
 
 // prettier-ignore
 myModel
-  .Field('id', Int(Index, Default('autoincrement()')));
+  .Field('id', Int(Id, Default('autoincrement()')));
 
 // model ModelName {
 //    id  Int @id @default(autoincrement())
@@ -30,19 +30,27 @@ All data-types take args (...modifiers), e.g: `DataType`: Modifier(args), Modifi
 
 ```ts
 // Int @id @default(autoincrement())
-const PrimaryKey = Int(Index, Default('autoincrement()'));
+const PrimaryKey = Int(Id, Default('autoincrement()'));
 ```
 
 - `Int`
-  - Default(number), Unique, Index, Nullable
-- `Varchar`
-  - Default(string), Unique, Limit, Nullable
+  - Default(number), Unique, Id, Nullable, Map
+- `Float`
+  - Default(Float), Nullable, Map
+- `String`
+  - Default(string), Unique, Limit, Nullable, Map
 - `Boolean`
-  - Default(boolean), Unique, Index, Limit(number), Nullable
+  - Default(boolean), Unique, Id, Limit(number), Nullable, Map
 - `DateTime`
-  - Default("now()"), UpdatedAt, Nullable
+  - Default("now()"), UpdatedAt, Nullable, Map
 - `Json`
-  - Default(JsonValue), Nullable
+  - Default(JsonValue), Nullable, Map
+- `BigInt`
+  - Default(BigInt), Nullable, Map
+- `Decimal`
+  - Default(number), Nullable, Map
+- `Bytes`
+  - Nullable, Map
 
 # Enums
 
@@ -118,14 +126,14 @@ const Post = Model("Posts");
 import { User, Post } from './models'
 
 User
-  .Field("id",        Int(Index, Default("autoincrement()")))
+  .Field("id",        Int(Id, Default("autoincrement()")))
   .Relation("posts",  OneToMany(Post))
 
 // posts.ts  ------------------------------
 import { User, Post } from './models'
 
 Post
-  .Field("id",        Int(Index, Default("autoincrement()")))
+  .Field("id",        Int(Id, Default("autoincrement()")))
   .Field("authorId",  Int())
   .Relation("author", ManyToOne(User, Pk("id").Fk("authorId")))
 

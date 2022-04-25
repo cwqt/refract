@@ -1,7 +1,17 @@
 import { Column } from '../types/columns';
+import { JsonValue } from './lib/json';
 
 // Prisma KV column types
-type Primitive = Date | boolean | number | string;
+type Primitive =
+  | Date
+  | boolean
+  | number
+  | string
+  | true
+  | false
+  | BigInt
+  | JsonValue;
+
 type Properties = Record<string, Primitive | Array<Primitive> | Column>;
 
 // Converts a Key-Value value into a Prisma KV value string

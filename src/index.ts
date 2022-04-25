@@ -2,6 +2,7 @@ export * from './public/modifiers';
 export * from './public/fields';
 export * from './public/model';
 export * from './public/mixin';
+export * as Types from './types';
 
 import { writeFile } from 'fs/promises';
 import * as Types from './types';

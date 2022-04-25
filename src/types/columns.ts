@@ -1,7 +1,9 @@
-import { Type, TypeData } from './types';
-import { Field } from './fields';
+import { Modifier } from './modifiers';
+import { Type } from './types';
 
 // Physical column in the database
-export type Column<T extends Type = keyof TypeData> = {
+export type Column<T extends Type = Type> = {
   name: string;
-} & Field<T>;
+  type: T;
+  modifiers: Modifier<T>[];
+};

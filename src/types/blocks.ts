@@ -1,11 +1,11 @@
 import { Column } from './columns';
 
 // A Prisma block level element
-export type BlockType = 'model' | 'enum' | 'datasource' | 'db';
+export type BlockType = 'model' | 'enum';
 export type Block<T extends BlockType = BlockType> = {
   name: string;
   type: T;
-  columns: Column[];
+  columns: T extends 'enum' ? Column<'EnumKey'>[] : Column[];
 };
 
 export type Model = Block<'model'>;

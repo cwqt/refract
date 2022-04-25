@@ -1,34 +1,80 @@
 import * as Types from '../types';
-import { entries, isFn, nonNullable, shift } from '../types/utils';
+import { entries, isFn, nonNullable } from '../types/utils';
 import { Enum as CallableEnum } from './enum';
-import { Model } from './model';
 
-export const Enum = <K extends readonly string[]>(
+// Scalars ------------------------------------------------
+export const Int = <M extends Types.Modifiers<'Int'>>(
+  ...modifiers: Types.Modifier<'Int', M>[]
+) => ({
+  type: 'Int' as const,
+  modifiers,
+});
+
+export const String = <M extends Types.Modifiers<'String'>>(
+  ...modifiers: Types.Modifier<'String', M>[]
+) => ({
+  type: 'String' as const,
+  modifiers,
+});
+
+export const Float = <M extends Types.Modifiers<'Float'>>(
+  ...modifiers: Types.Modifier<'Float', M>[]
+) => ({
+  type: 'Float' as const,
+  modifiers,
+});
+
+export const BigInt = <M extends Types.Modifiers<'BigInt'>>(
+  ...modifiers: Types.Modifier<'BigInt', M>[]
+) => ({
+  type: 'BigInt' as const,
+  modifiers,
+});
+
+export const Bytes = <M extends Types.Modifiers<'Bytes'>>(
+  ...modifiers: Types.Modifier<'Bytes', M>[]
+) => ({
+  type: 'Bytes' as const,
+  modifiers,
+});
+
+export const Boolean = <M extends Types.Modifiers<'Boolean'>>(
+  ...modifiers: Types.Modifier<'Boolean', M>[]
+) => ({
+  type: 'Boolean' as const,
+  modifiers,
+});
+
+export const Json = <M extends Types.Modifiers<'Json'>>(
+  ...modifiers: Types.Modifier<'Json', M>[]
+) => ({
+  type: 'Json' as const,
+  modifiers,
+});
+
+export const DateTime = <M extends Types.Modifiers<'DateTime'>>(
+  ...modifiers: Types.Modifier<'DateTime', M>[]
+): Types.Fields.Field<'DateTime'> => ({
+  type: 'DateTime' as const,
+  modifiers,
+});
+
+// Enums --------------------------------------------------
+export const Enum = <E extends Types.Fields.EnumKey[]>(
   name: string,
-  keys: K,
-): ((
-  initial?: K[number] | null,
-  ...modifiers: Types.Modifier<'Enum'>[]
-) => Types.Fields.Field<'Enum'>) &
+  ...keys: E
+): (<M extends Types.Modifiers<'Enum'>>(
+  initial?: E[number]['name'] | null,
+  ...modifiers: Types.Modifier<'Enum', M>[]
+) => Types.Fields.Field<'Enum', M>) &
   Types.Blocks.Enum => new CallableEnum(name, keys) as any; // _call
 
-export const Int = (...modifiers: Types.Modifier<'Int'>[]) =>
-  ({ type: 'Int', modifiers } as Types.Fields.Field<'Int'>);
+export const Key = <T extends string>(
+  name: T,
+  ...modifiers: Types.Modifier<'EnumKey'>[]
+): Types.Fields.EnumKey<T> => ({ name, modifiers });
 
-export const Varchar = (...modifiers: Types.Modifier<'Varchar'>[]) =>
-  ({ type: 'Varchar', modifiers } as Types.Fields.Field<'Varchar'>);
-
-export const Boolean = (...modifiers: Types.Modifier<'Boolean'>[]) =>
-  ({ type: 'Boolean', modifiers } as Types.Fields.Field<'Boolean'>);
-
-export const Json = (...modifiers: Types.Modifier<'Json'>[]) =>
-  ({ type: 'Json', modifiers } as Types.Fields.Field<'Json'>);
-
-export const DateTime = (
-  ...modifiers: Types.Modifier<'DateTime'>[]
-): Types.Fields.Field<'DateTime'> =>
-  ({ type: 'DateTime', modifiers } as Types.Fields.Field<'DateTime'>);
-
+// Relationships ------------------------------------------
 export const OneToMany = <M extends Types.Blocks.Model>(
   model: M,
   ...modifiers: Types.Modifier<'OneToMany'>[]
@@ -48,11 +94,11 @@ export const Pk = (...references: string[]) => {
   return {
     Fk: (...fields: string[]) => {
       return (model: Types.Blocks.Model | string): Relation => {
+        // FIXME: causes issues with circular relations because of field addition race condition
         // Assert that the referenced fields do actually exist in the opposite Model
         // const missing = fields.filter(
         //   r => !model.columns.map(c => c.name).includes(r),
         // );
-
         // if (missing.length)
         //   throw new Error(
         //     `RelationshipErr: Referenced columns in 'fields' don't exist in Model '${
@@ -74,7 +120,7 @@ export const ManyToOne = <M extends Types.Blocks.Model>(
   const { fields, references } = relation(model);
 
   return {
-    type: 'ManyToOne',
+    type: 'ManyToOne' as const,
     modifiers: [
       {
         type: 'model',
@@ -109,7 +155,7 @@ export const OneToOne = <M extends Types.Blocks.Model>(
     : [relation];
 
   return {
-    type: 'OneToOne',
+    type: 'OneToOne' as const,
     modifiers: [
       {
         type: 'model',
