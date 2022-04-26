@@ -1,14 +1,10 @@
 # refract
 
-A TypeScript SDK for [Prisma](https://www.prisma.io).
+Generate [Prisma](https://www.prisma.io) from TypeScript
 
 <div align="center">
   <img src="https://ftp.cass.si/9888e=mw7.png" width="75%" />
 </div>
-
-- Write your schema in TypeScript
-- Generate Prisma schema with `Refract`
-- Generate client & perform migrations with generated schema
 
 ## Installation & usage
 
@@ -23,5 +19,4 @@ See [the docs](./docs/docs.md) for a demo & full overview of features.
 ## Disclaimer
 
 - Only tested on `mysql`
-- Doesn't have all features, yet (PRs welcome!)
-- Made in two weekends while drinking 🥴
+- Doesn't have all features yet (PRs welcome!)
