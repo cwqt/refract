@@ -39,6 +39,8 @@ export const Ignore = {
   value: true,
 } as const;
 
+export const Raw = (value: string) => ({ type: 'raw' as const, value });
+
 export const Limit = <K extends Types.TypeData['String']['limit']>(
   value: K,
 ): Types.Modifier<'String', 'limit'> => ({ type: 'limit', value });

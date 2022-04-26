@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.10]
+
+- Adds `Raw` decorator escape hatch, similar to `.Raw()` model method
+  - Can now do `Raw('@db.ObjectId')` etc to use un-supported decorators
+- Fixes some out of date documentation
+
 ## [1.0.9]
 
 - Adds `Map` decorator (e.g. `@map("foo")`)

@@ -34,28 +34,49 @@ const PrimaryKey = Int(Id, Default('autoincrement()'));
 ```
 
 - `Int`
-  - Default(number), Unique, Id, Nullable, Map
+  - Default(number), Unique, Id, Nullable, Map, Raw
 - `Float`
-  - Default(Float), Nullable, Map
+  - Default(Float), Nullable, Map, Raw
 - `String`
-  - Default(string), Unique, Limit, Nullable, Map
+  - Default(string), Unique, Limit, Nullable, Map, Raw
 - `Boolean`
-  - Default(boolean), Unique, Id, Limit(number), Nullable, Map
+  - Default(boolean), Unique, Id, Limit(number), Nullable, Map, Raw
 - `DateTime`
-  - Default("now()"), UpdatedAt, Nullable, Map
+  - Default("now()"), UpdatedAt, Nullable, Map, Raw
 - `Json`
-  - Default(JsonValue), Nullable, Map
+  - Default(JsonValue), Nullable, Map, Raw
 - `BigInt`
-  - Default(BigInt), Nullable, Map
+  - Default(BigInt), Nullable, Map, Raw
 - `Decimal`
-  - Default(number), Nullable, Map
+  - Default(number), Nullable, Map, Raw
 - `Bytes`
-  - Nullable, Map
+  - Nullable, Map, Raw
+
+You can use the `Raw()` modifier to use currently unsupported decorators, e.g.
+
+```ts
+const ObjectId = Raw('@db.ObjectId');
+
+model.Field('id', String(ObjectId, Map('_id'), Default('auto()')));
+
+// id   String  @db.ObjectId  @map("_id") @default(auto())
+```
 
 # Enums
 
+Composed of two parts:
+
+- `Enum(name, ...Key)`
+- `Key(value, ...modifiers)`
+  - Map
+
 ```ts
-const Animal = Enum('Animals', ['Seacow', 'Lemur'] as const);
+const Animal = Enum(
+  'Animal',
+  Key('Seacow'),
+  Key('Capybara'),
+  Key('Otter', Map('otter')),
+);
 
 // fave  Animal @default(Seacow)
 model.Field('fave', Animal('Seacow'));

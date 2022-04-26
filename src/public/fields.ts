@@ -3,61 +3,22 @@ import { entries, isFn, nonNullable } from '../types/utils';
 import { Enum as CallableEnum } from './enum';
 
 // Scalars ------------------------------------------------
-export const Int = <M extends Types.Modifiers<'Int'>>(
-  ...modifiers: Types.Modifier<'Int', M>[]
-) => ({
-  type: 'Int' as const,
-  modifiers,
-});
+const scalar =
+  <T extends Types.Type>(type: T) =>
+  <M extends Types.Modifiers<T>>(...modifiers: Types.Modifier<T, M>[]) => ({
+    type,
+    modifiers,
+  });
 
-export const String = <M extends Types.Modifiers<'String'>>(
-  ...modifiers: Types.Modifier<'String', M>[]
-) => ({
-  type: 'String' as const,
-  modifiers,
-});
-
-export const Float = <M extends Types.Modifiers<'Float'>>(
-  ...modifiers: Types.Modifier<'Float', M>[]
-) => ({
-  type: 'Float' as const,
-  modifiers,
-});
-
-export const BigInt = <M extends Types.Modifiers<'BigInt'>>(
-  ...modifiers: Types.Modifier<'BigInt', M>[]
-) => ({
-  type: 'BigInt' as const,
-  modifiers,
-});
-
-export const Bytes = <M extends Types.Modifiers<'Bytes'>>(
-  ...modifiers: Types.Modifier<'Bytes', M>[]
-) => ({
-  type: 'Bytes' as const,
-  modifiers,
-});
-
-export const Boolean = <M extends Types.Modifiers<'Boolean'>>(
-  ...modifiers: Types.Modifier<'Boolean', M>[]
-) => ({
-  type: 'Boolean' as const,
-  modifiers,
-});
-
-export const Json = <M extends Types.Modifiers<'Json'>>(
-  ...modifiers: Types.Modifier<'Json', M>[]
-) => ({
-  type: 'Json' as const,
-  modifiers,
-});
-
-export const DateTime = <M extends Types.Modifiers<'DateTime'>>(
-  ...modifiers: Types.Modifier<'DateTime', M>[]
-): Types.Fields.Field<'DateTime'> => ({
-  type: 'DateTime' as const,
-  modifiers,
-});
+export const Int = scalar('Int');
+export const String = scalar('String');
+export const Float = scalar('Float');
+export const BigInt = scalar('BigInt');
+export const Bytes = scalar('Bytes');
+export const Boolean = scalar('Boolean');
+export const Json = scalar('Json');
+export const DateTime = scalar('DateTime');
+export const Decimal = scalar('Decimal');
 
 // Enums --------------------------------------------------
 export const Enum = <E extends Types.Fields.EnumKey[]>(

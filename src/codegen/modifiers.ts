@@ -22,5 +22,7 @@ export const modifier = <T extends Type>(
       return '@ignore';
     case 'map':
       return `@map("${modifier.value}")`;
+    case 'raw':
+      return modifier.value as unknown as string;
   }
 };
