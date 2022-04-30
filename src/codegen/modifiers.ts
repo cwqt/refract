@@ -12,7 +12,7 @@ export const modifier = <T extends Type>(
       return `@default(${
         type == 'Enum' ? modifier.value : transform(modifier.value)
       })`;
-    case 'index':
+    case 'id':
       return `@id`;
     case 'unique':
       return '@unique';
