@@ -28,6 +28,7 @@ type Scalars = Append<
     };
     String: {
       unique?: true;
+      id?: true;
       default?: string | 'auto()';
       limit?: number;
     };
