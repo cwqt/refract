@@ -6,6 +6,8 @@ export const isFn = <F extends Function>(v: any): v is F =>
 
 export const isString = (v: any): v is string => typeof v == 'string';
 
+export const isArray = (v: any): v is any[] => Array.isArray(v);
+
 type Entries<T> = {
   [K in keyof T]: [K, T[K]];
 }[keyof T][];

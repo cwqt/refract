@@ -1,6 +1,7 @@
 import * as Types from '../types';
-import { entries, isFn, nonNullable } from '../types/utils';
+import { nonNullable } from '../types/utils';
 import { Enum as CallableEnum } from './enum';
+import { ReferentialAction, Relation } from '../types/fields';
 
 // Scalars ------------------------------------------------
 const scalar =
@@ -45,41 +46,45 @@ export const OneToMany = <M extends Types.Blocks.Model>(
     modifiers: [{ type: 'model', value: model }, ...modifiers],
   } as Types.Fields.Field<'OneToMany'>);
 
-type RelationFn<T extends Types.Blocks.Model> = (m: T | string) => Relation;
-export type Relation = {
-  fields: string[];
-  references: string[];
-};
+export const RelationName = <T extends Relation>(
+  name: string,
+): Types.Modifier<T, 'name'> => ({
+  type: 'name',
+  value: name,
+});
 
-export const Pk = (...references: string[]) => {
-  return {
-    Fk: (...fields: string[]) => {
-      return (model: Types.Blocks.Model | string): Relation => {
-        // FIXME: causes issues with circular relations because of field addition race condition
-        // Assert that the referenced fields do actually exist in the opposite Model
-        // const missing = fields.filter(
-        //   r => !model.columns.map(c => c.name).includes(r),
-        // );
-        // if (missing.length)
-        //   throw new Error(
-        //     `RelationshipErr: Referenced columns in 'fields' don't exist in Model '${
-        //       model.name
-        //     }': ${missing.map(m => `'${m}'`).join(', ')}`,
-        //   );
+export const Fields = <T extends 'OneToOne' | 'ManyToOne'>(
+  ...fields: string[]
+): Types.Modifier<T, 'fields'> => ({
+  type: 'fields',
+  value: fields,
+});
 
-        return { fields, references };
-      };
-    },
-  };
-};
+export const References = <T extends 'OneToOne' | 'ManyToOne'>(
+  ...references: string[]
+): Types.Modifier<T, 'references'> => ({
+  type: 'references',
+  value: references,
+});
+
+export const OnUpdate = <T extends 'OneToOne' | 'ManyToOne'>(
+  referentialAction: ReferentialAction,
+): Types.Modifier<T, 'onUpdate'> => ({
+  type: 'onUpdate',
+  value: referentialAction,
+});
+
+export const OnDelete = <T extends 'OneToOne' | 'ManyToOne'>(
+  referentialAction: ReferentialAction,
+): Types.Modifier<T, 'onDelete'> => ({
+  type: 'onDelete',
+  value: referentialAction,
+});
 
 export const ManyToOne = <M extends Types.Blocks.Model>(
   model: M | string,
-  relation: RelationFn<M>,
   ...modifiers: Types.Modifier<'ManyToOne'>[]
 ) => {
-  const { fields, references } = relation(model);
-
   return {
     type: 'ManyToOne' as const,
     modifiers: [
@@ -87,34 +92,15 @@ export const ManyToOne = <M extends Types.Blocks.Model>(
         type: 'model',
         value: model,
       },
-      {
-        type: 'fields',
-        value: fields,
-      },
-      {
-        type: 'references',
-        value: references,
-      },
       ...modifiers,
-    ],
+    ].filter(nonNullable),
   } as Types.Fields.Field<'ManyToOne'>;
 };
 
 export const OneToOne = <M extends Types.Blocks.Model>(
   model: M,
-  ...modifiers:
-    | [RelationFn<M>, ...Types.Modifier<'OneToOne'>[]]
-    | Types.Modifier<'OneToOne'>[]
+  ...modifiers: Types.Modifier<'OneToOne'>[]
 ) => {
-  const relation = modifiers.shift();
-
-  const relations = isFn<RelationFn<M>>(relation)
-    ? entries(relation(model)).map(([key, value]) => ({
-        type: key,
-        value,
-      }))
-    : [relation];
-
   return {
     type: 'OneToOne' as const,
     modifiers: [
@@ -122,7 +108,6 @@ export const OneToOne = <M extends Types.Blocks.Model>(
         type: 'model',
         value: model,
       },
-      ...relations,
       ...modifiers,
     ].filter(nonNullable),
   } as Types.Fields.Field<'OneToOne'>;

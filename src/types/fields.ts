@@ -30,6 +30,13 @@ export type Relation = 'OneToMany' | 'OneToOne' | 'ManyToOne';
 
 export type Any = Scalar | Relation | Enum | 'Raw';
 
+export type ReferentialAction =
+  | 'Cascade'
+  | 'Restrict'
+  | 'NoAction'
+  | 'SetNull'
+  | 'SetDefault';
+
 // Top type for columns
 type TopColumn = {
   name: string;

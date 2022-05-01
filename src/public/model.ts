@@ -29,10 +29,7 @@ export class CallableModel implements Types.Blocks.Model, Model {
   }
 
   Mixin(mixin: Types.Mixin) {
-    // FIXME: as unknown cast
-    this.columns.push(
-      ...(mixin.columns as unknown as Types.Column<Types.Type>[]),
-    );
+    this.columns.push(...(mixin.columns as Types.Column<Types.Type>[]));
     return this;
   }
 
@@ -44,8 +41,7 @@ export class CallableModel implements Types.Blocks.Model, Model {
       modifiers: [modifier],
     };
 
-    // FIXME: as unknown cast
-    this.columns.push(column as unknown as Types.Column<Types.Type>);
+    this.columns.push(column as Types.Column<Types.Type>);
     return this;
   }
 
@@ -53,26 +49,8 @@ export class CallableModel implements Types.Blocks.Model, Model {
     name: string,
     type: Types.Fields.Field<T>,
   ) {
-    if (type.type == 'ManyToOne') {
-      // FIXME: causes issues with circular relations because of field addition race condition
-      // const references = type.modifiers[2] as unknown as Types.Modifier<
-      //   'ManyToOne',
-      //   'references'
-      // >;
-      // const missing = references.value.filter(
-      //   f => !this.columns.map(c => c.name).includes(f),
-      // );
-      // if (missing.length)
-      //   throw new Error(
-      //     `RelationshipErr: Referenced columns in 'references' don't exist in Model '${
-      //       this.name
-      //     }': ${missing.map(m => `'${m}'`).join(', ')}`,
-      //   );
-    }
-
     // FIXME: as unknown cast
     this.columns.push({ name, ...type } as unknown as Types.Column<Types.Type>);
-
     return this;
   }
 

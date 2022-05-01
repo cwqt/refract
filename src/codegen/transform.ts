@@ -1,5 +1,6 @@
 import { Column } from '../types/columns';
 import { JsonValue } from './lib/json';
+import { entries } from '../types/utils';
 
 // Prisma KV column types
 type Primitive =
@@ -16,7 +17,7 @@ type Properties = Record<string, Primitive | Array<Primitive> | Column>;
 
 // Converts a Key-Value value into a Prisma KV value string
 export const kv = (properties: Properties): string => {
-  return Object.entries(properties)
+  return entries(properties)
     .map(([key, value]) => `\t${key} = ${transform(value)}`)
     .join('\n');
 };

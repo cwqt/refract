@@ -1,5 +1,6 @@
 import { JsonValue } from '../codegen/lib/json';
 import { Model } from './blocks';
+import { ReferentialAction } from './fields';
 
 type Append<T, K> = { [index in keyof T]: T[index] & K };
 
@@ -63,21 +64,26 @@ type Enums = {
   };
 };
 
-type Relations = {
-  OneToMany: { model: Model | string; nullable?: true };
-  OneToOne: {
-    model: Model | string;
-    nullable?: true;
-    fields: string[];
-    references: string[];
-  };
-  ManyToOne: {
-    nullable?: true;
-    model: Model | string;
-    fields: string[];
-    references: string[];
-  };
-};
+type Relations = Append<
+  {
+    OneToMany: {};
+    OneToOne: {
+      fields?: string[];
+      references?: string[];
+      onUpdate?: ReferentialAction;
+      onDelete?: ReferentialAction;
+      nullable?: true;
+    };
+    ManyToOne: {
+      fields: string[];
+      references: string[];
+      onUpdate?: ReferentialAction;
+      onDelete?: ReferentialAction;
+      nullable?: true;
+    };
+  },
+  { name?: string; model: Model | string }
+>;
 
 export type TypeData = Scalars &
   Enums &

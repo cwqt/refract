@@ -14,12 +14,13 @@ import {
   String,
   ManyToOne,
   Mixin,
-  Pk,
   OneToOne,
   Map,
   Key,
   Float,
   Raw,
+  Fields,
+  References,
 } from '../';
 
 // from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
@@ -40,23 +41,23 @@ const Timestamps = Mixin()
 
 // prettier-ignore
 User
-  .Field("id",          Int(Id, Default("autoincrement()"), Map("_id"), Raw("@db.Value('foo')")))
-  .Field("email",       String(Unique))
-  .Field("name",        String(Nullable))
-  .Field("height",      Float(Default(1.80)))
-  .Field("role",        Role("USER", Nullable))
-  .Relation("posts",    OneToMany(Post))
-  .Field("bestPostId",  Int())
-  .Relation("bestPost", OneToOne(Post, Pk("id").Fk("bestPostId")))
+  .Field('id',          Int(Id, Default('autoincrement()'), Map('_id'), Raw('@db.Value(\'foo\')')))
+  .Field('email',       String(Unique))
+  .Field('name',        String(Nullable))
+  .Field('height',      Float(Default(1.80)))
+  .Field('role',        Role('USER', Nullable))
+  .Relation('posts',    OneToMany(Post))
+  .Field('bestPostId',  Int())
+  .Relation('bestPost', OneToOne(Post, Fields('bestPostId'), References('id')))
   .Mixin(Timestamps);
 
 // prettier-ignore
 Post
-  .Field("id",          Int(Id, Default("autoincrement()")))
-  .Field("published",   Boolean(Default(false)))
-  .Field("title",       String(Limit(255)))
-  .Field("authorId",    Int(Nullable))
-  .Relation("author",   ManyToOne(User, Pk("id").Fk("authorId"), Nullable))
+  .Field('id',          Int(Id, Default('autoincrement()')))
+  .Field('published',   Boolean(Default(false)))
+  .Field('title',       String(Limit(255)))
+  .Field('authorId',    Int(Nullable))
+  .Relation('author',   ManyToOne(User, Fields('authorId'), References('id'), Nullable))
   .Mixin(Timestamps)
   .Raw(`@@map("comments")`);
 
