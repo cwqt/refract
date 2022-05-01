@@ -6,7 +6,7 @@ import { column } from './column';
 import { del, nonNullable } from '../types/utils';
 import { dedent } from './lib/dedent';
 import { Column, validate } from '../types';
-import { align } from './align';
+import { alignFields, alignKv } from './align';
 
 type CodegenResult = { schema: string; time: number; output: string };
 
@@ -28,14 +28,14 @@ export default (config: Types.Config): CodegenResult => {
   const schema = dedent(
     [
       header('datasource'),
-      block('datasource db', align(kv(datasource), '=')),
+      block('datasource db', alignKv(kv(datasource))),
 
       group(
         header('generators'),
         generators.map(generator =>
           block(
             `generator ${generator.name}`,
-            align(kv(del(generator, 'name')), '='),
+            alignKv(kv(del(generator, 'name'))),
           ),
         ),
       ),
@@ -55,7 +55,7 @@ export default (config: Types.Config): CodegenResult => {
         models.map(model =>
           block(
             `model ${model.name}`,
-            align(model.columns.map(column).join('\n')),
+            alignFields(model.columns.map(column).join('\n')),
           ),
         ),
       ),
