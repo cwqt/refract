@@ -7,7 +7,7 @@ describe('refract', () => {
       datasource: {
         url: 'env("DATABASE_URL")',
         provider: 'postgresql',
-        shadowDatabaseUrl: 'secret-shadow-url',
+        shadowDatabaseUrl: 'env("DATABASE_SHADOW_URL")',
         referentialIntegrity: 'prisma',
       },
       generators: [

@@ -18,20 +18,22 @@ export const alignKv = (value: string): string => {
 export const alignFields = (value: string): string => {
   const lines = value.split('\n');
 
-  let maximumColumnName = 0,
-    MaximumColumnType = 0;
-  for (const line of lines) {
-    const [columnName, columnType] = line.split(' ');
-    maximumColumnName = Math.max(maximumColumnName, columnName.length);
-    MaximumColumnType = Math.max(MaximumColumnType, (columnType ?? '').length);
-  }
+  const [maximumColumnName, maximumColumnType] = lines
+    .map(l => l.split(' '))
+    .reduce(
+      ([maxName, maxType], [name, type]) => [
+        Math.max(maxName, name.length),
+        Math.max(maxType, (type ?? '').length),
+      ],
+      [0, 0],
+    );
 
   return lines
     .map(line => line.split(' '))
     .map(([columnName, columnType, ...rest]) =>
       [
         columnName.padEnd(maximumColumnName + 1),
-        columnType ? columnType.padEnd(MaximumColumnType + 1) : '',
+        columnType ? columnType.padEnd(maximumColumnType + 1) : '',
         ...rest.map(v => v.trim()),
       ].join(' '),
     )

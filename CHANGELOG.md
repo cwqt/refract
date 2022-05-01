@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.12]
+
+- Fixes `String` type to be able to have `@id` decorator <https://github.com/cwqt/refract/pull/3>
+- Improved formatting (decorator alignment) <https://github.com/cwqt/refract/pull/2>
+- Fixes transforming function calls as values <https://github.com/cwqt/refract/pull/1>
+
+Big thanks to [bacali95](https://github.com/bacali95) for these changes :)
+
+## [1.0.11]
+
 ## [1.0.10]
 
 - Adds `Raw` decorator escape hatch, similar to `.Raw()` model method
