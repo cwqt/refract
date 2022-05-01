@@ -5,7 +5,7 @@ describe('refract', () => {
   it('should generate the schema', () => {
     const { schema: prisma } = codegen({
       datasource: {
-        url: 'secret-url',
+        url: 'env("DATABASE_URL")',
         provider: 'postgresql',
         shadowDatabaseUrl: 'secret-shadow-url',
         referentialIntegrity: 'prisma',
