@@ -20,7 +20,7 @@ import {
   Float,
   Raw,
   Fields,
-  References,
+  References, RelationName,
 } from '../';
 
 // from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
@@ -41,14 +41,17 @@ const Timestamps = Mixin()
 
 // prettier-ignore
 User
-  .Field('id',          Int(Id, Default('autoincrement()'), Map('_id'), Raw('@db.Value(\'foo\')')))
-  .Field('email',       String(Unique))
-  .Field('name',        String(Nullable))
-  .Field('height',      Float(Default(1.80)))
-  .Field('role',        Role('USER', Nullable))
-  .Relation('posts',    OneToMany(Post))
-  .Field('bestPostId',  Int())
-  .Relation('bestPost', OneToOne(Post, Fields('bestPostId'), References('id')))
+  .Field('id',            Int(Id, Default('autoincrement()'), Map('_id'), Raw('@db.Value(\'foo\')')))
+  .Field('email',         String(Unique))
+  .Field('name',          String(Nullable))
+  .Field('height',        Float(Default(1.80)))
+  .Field('role',          Role('USER', Nullable))
+  .Relation('posts',      OneToMany(Post))
+  .Field('bestPostId',    Int())
+  .Relation('bestPost',   OneToOne(Post, Fields('bestPostId'), References('id')))
+  .Field('referralId',    Int())
+  .Relation('referral',   ManyToOne(User, RelationName('references'), Fields('referralId'), References('id'), Nullable))
+  .Relation('references', OneToMany(User, RelationName('references')))
   .Mixin(Timestamps);
 
 // prettier-ignore
