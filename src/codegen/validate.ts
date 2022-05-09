@@ -1,12 +1,12 @@
-import { CallableModel } from '../public/model';
+import { $Model } from '../public/model';
 import { isRelation, Relation } from '../types/fields';
 import * as Types from '../types';
 
-export const validateModel = (model: CallableModel): CallableModel => {
+export const validateModel = (model: $Model): $Model => {
   for (const relation of model.columns.filter(isRelation)) {
     const modifiers = relation.modifiers as Types.Modifier<Relation>[];
-    const modelModifier = modifiers[0] as Types.Modifier<Relation, 'model'>;
-    const otherSideModel = modelModifier.value as Types.Blocks.Model;
+    const otherSideModel = (modifiers[0] as Types.Modifier<Relation, 'model'>)
+      .value as Types.Blocks.Model;
 
     const relationName = modifiers.find(
       ({ type }) => type === 'name',
@@ -22,11 +22,10 @@ export const validateModel = (model: CallableModel): CallableModel => {
           ),
         );
 
-      if (!otherSideRelation) {
+      if (!otherSideRelation)
         throw new Error(
           `RelationshipErr: The other side of the relation '${relation.name}' with name '${relationName.value}' don't exist in model '${model.name}'`,
         );
-      }
     }
 
     if (model.name === otherSideModel.name && !relationName)
@@ -39,9 +38,11 @@ export const validateModel = (model: CallableModel): CallableModel => {
     const castedModifiers = modifiers as Types.Modifier<
       'OneToOne' | 'ManyToOne'
     >[];
+
     const fields = castedModifiers.find(
       ({ type }) => type === 'fields',
     ) as Types.Modifier<'OneToOne' | 'ManyToOne', 'fields'>;
+
     if (fields) {
       const missingFields = fields.value.filter(
         f => !model.columns.some(c => c.name === f),
@@ -58,6 +59,7 @@ export const validateModel = (model: CallableModel): CallableModel => {
     const references = castedModifiers.find(
       ({ type }) => type === 'references',
     ) as Types.Modifier<'OneToOne' | 'ManyToOne', 'references'>;
+
     if (references) {
       const missingReferences = references.value.filter(
         f => !otherSideModel.columns.some(c => c.name === f),
@@ -116,7 +118,7 @@ export const validateModel = (model: CallableModel): CallableModel => {
 
     if (relation.type === 'OneToOne' && !isNullable && !fields && !references)
       throw new Error(
-        `RelationshipErr: The side of the one-to-one relation without a relation scalar must be optional (Model '${otherSideModel.name}')`,
+        `RelationshipErr: The side of the one-to-one relation without a relation scalar must be optional \n(Model '${otherSideModel.name}', ${relation.name})`,
       );
   }
 

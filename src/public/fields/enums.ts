@@ -1,7 +1,21 @@
-import * as Types from '../types';
-import { nonNullable } from '../types/utils';
+import * as Types from '../../types';
+import { nonNullable } from '../../types/utils';
 
-export class Enum<K extends Types.Fields.EnumKey[]>
+export const Enum = <E extends Types.Fields.EnumKey[]>(
+  name: string,
+  ...keys: E
+): (<M extends Types.Modifiers<'Enum'>>(
+  initial?: E[number]['name'] | null,
+  ...modifiers: Types.Modifier<'Enum', M>[]
+) => Types.Fields.Field<'Enum', M>) &
+  Types.Blocks.Enum => new $Enum(name, keys) as any; // _call
+
+export const Key = <T extends string>(
+  name: T,
+  ...modifiers: Types.Modifier<'EnumKey'>[]
+): Types.Fields.EnumKey<T> => ({ name, modifiers });
+
+class $Enum<K extends Types.Fields.EnumKey[]>
   extends Function
   implements Types.Blocks.Block<'enum'>
 {
@@ -18,6 +32,8 @@ export class Enum<K extends Types.Fields.EnumKey[]>
       modifiers: k.modifiers,
     }));
 
+    // evil object reference proxy hacking _call overrides
+    // gives us nice curried classes
     return new Proxy(this, {
       apply: (
         target,

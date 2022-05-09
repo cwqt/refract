@@ -6,17 +6,17 @@ See [here for a full demo](./demo.md).
 
 # Model
 
-```ts
-const myModel = Model('ModelName');
+```typescript
+const User = Model('User');
 
-// prettier-ignore
-myModel
-  .Field('id', Int(Id, Default('autoincrement()')));
+User.Field('id', Int(Id, Default('autoincrement()')));
 
-// model ModelName {
+// model User {
 //    id  Int @id @default(autoincrement())
 // }
 ```
+
+`Model` uses a fluid interface, so you can chain the following methods:
 
 - `.Field(name, data-type)`: Add a primitive column to a Model
 - `.Relation(name, relation)`: Add a relationship to a Model
@@ -28,7 +28,7 @@ myModel
 
 All data-types take args (...modifiers), e.g: `DataType`: Modifier(args), Modifier
 
-```ts
+```typescript
 // Int @id @default(autoincrement())
 const PrimaryKey = Int(Id, Default('autoincrement()'));
 ```
@@ -70,7 +70,7 @@ Composed of two parts:
 - `Key(value, ...modifiers)`
   - Map
 
-```ts
+```typescript
 const Animal = Enum(
   'Animal',
   Key('Seacow'),
@@ -84,15 +84,14 @@ model.Field('fave', Animal('Seacow'));
 
 # Mixins
 
-Allows you to re-use groups of fields
+Allows you to re-use groups of fields, a la inheritance.
 
-```ts
-// prettier-ignore
+<!-- prettier-ignore -->
+```typescript
 const Timestamps = Mixin()
   .Field("createdAt", DateTime(Default("now()")))
   .Field("updatedAt", DateTime(Nullable, UpdatedAt))
 
-// prettier-ignore
 const User = Model("User")
   .Field("id", PrimaryKey)
   .Mixin(Timestamps)
@@ -102,33 +101,42 @@ const User = Model("User")
 
 # Relationships
 
-- `OneToMany` (model, ...modifiers)
+- `OneToMany` (model, name?, ...modifiers)
   - Nullable
-- `OneToOne` (model, { fields, references }, ...modifiers)
-- `OneToOne` (model, ...modifiers)
+- `OneToOne` (model, name?, fields, references, ...modifiers)
+- `OneToOne` (model, name?, ...modifiers)
   - Nullable
-- `ManyToOne` (model, { fieleds, references }, ...modifiers)
+- `ManyToOne` (model, name?, fields, references, ...modifiers)
   - Nullable
 
 ## Examples
 
 ### OneToOne
 
-```ts
+<!-- prettier-ignore -->
+```typescript
 const User = Model('User');
 const Something = Model('something');
 
-// prettier-ignore
 Something
   .Field("id",      PrimaryKey)
   // Holds foreign key
   .Field("userId",  Int())
-  .Relation("user", OneToOne(User, Pk("id").Fk("userId")));
+  .Relation("user", OneToOne(User, Fields("userId"), References("id")));
 
-// prettier-ignore
 User
   .Field("id",      PrimaryKey)
   .Relation("thing", OneToOne(Something));
+```
+
+### Ambiguous relations
+
+From <https://www.prisma.io/docs/concepts/components/prisma-schema/relations#disambiguating-relations>
+
+<!-- prettier-ignore -->
+```typescript
+m.Relation('pinnedBy', OneToOne(User, "PinnedPost", Fields('pinnedById'), References('id'), Nullable))
+// pinnedBy   User?   @relation(name: "PinnedPost", fields: [pinnedById], references: [id])
 ```
 
 ### Handling circular relationships
@@ -137,7 +145,7 @@ At some point you'll wanna split the schema across files, which introduces issue
 
 One way to get around this is to have a file with all the models/enums defined, and have files import those & apply the fields, e.g.
 
-```ts
+```typescript
 // models.ts ------------------------------
 const User = Model("User");
 const Post = Model("Posts");
@@ -156,7 +164,7 @@ import { User, Post } from './models'
 Post
   .Field("id",        Int(Id, Default("autoincrement()")))
   .Field("authorId",  Int())
-  .Relation("author", ManyToOne(User, Pk("id").Fk("authorId")))
+  .Relation("author", ManyToOne(User, Fields("authorId"), References("id")))
 
 // refract.ts ------------------------------
 import * as schema from './models'

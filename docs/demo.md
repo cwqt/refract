@@ -2,7 +2,7 @@
 
 `refract.ts`
 
-```ts
+```typescript
 import Refract from '@cwqt/refract';
 import schema from './schema';
 
@@ -30,7 +30,8 @@ Refract({
 
 `schema.ts`
 
-```ts
+<!-- prettier-ignore -->
+```typescript
 // example from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
 
 // Enums
@@ -45,7 +46,6 @@ const Timestamps = Mixin()
   .Field('createdAt', DateTime(Default('now()')))
   .Field('updatedAt', DateTime(UpdatedAt));
 
-// prettier-ignore
 User
   .Field('id',       Int(Id, Default('autoincrement()')))
   .Field('email',    String(Unique))
@@ -55,7 +55,6 @@ User
   // Use a mixin, adds createdAt & updatedAt columns to Model
   .Mixin(Timestamps);
 
-// prettier-ignore
 Post
   .Field('id',        Int(Id, Default('autoincrement()')))
   // Defaults are type-safe
@@ -63,7 +62,7 @@ Post
   .Field('title',     String(Limit(255)))
   .Field('authorId',  Int(Nullable))
   // All kinds of relationships
-  .Relation('author', ManyToOne(User, Pk('id').Fk('authorId'), Nullable))
+  .Relation('author', ManyToOne(User, Fields('authorId'), References('id'), Nullable))
   .Mixin(Timestamps)
   // Escape hatch into raw Prisma
   .Raw(`@@map("comments")`);

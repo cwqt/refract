@@ -55,15 +55,6 @@ const relationship = (column: Types.Column<Types.Fields.Relation>) => {
       >[],
     ];
 
-    if (column.type == 'OneToOne') {
-      // Not FK holder
-      if (isNullable) {
-        return `\t${column.name} ${
-          isString(model.value) ? model.value : model.value.name
-        }${isNullable ? '?' : ''}`;
-      }
-    }
-
     const relationModifier = restModifiers.length
       ? `@relation(${restModifiers
           .sort(({ type }) => (type === 'name' ? -1 : 0))

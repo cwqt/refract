@@ -17,9 +17,9 @@ type Model = {
   ) => Model;
 } & Types.Blocks.Model;
 
-export const Model = (name: string): Model => new CallableModel(name);
+export const Model = (name: string): Model => new $Model(name);
 
-export class CallableModel implements Types.Blocks.Model, Model {
+export class $Model implements Types.Blocks.Model, Model {
   name: string;
   type: 'model' = 'model';
   columns: Types.Column<Types.Type>[] = [];
