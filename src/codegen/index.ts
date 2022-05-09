@@ -10,14 +10,11 @@ import { alignFields, alignKv } from './align';
 import { validateModel } from './validate';
 
 type CodegenResult = { schema: string; time: number; output: string };
-import { inspect } from 'util'; // or directly
 
 // Takes a Config input & returns a generated Prisma schema file as a string
 // which can then be written to a file / formatted by Prisma CLI
 export default (config: Types.Config): CodegenResult => {
   const start = performance.now();
-
-  console.log(inspect(config, { depth: 6 }));
 
   config = validate(config);
 
