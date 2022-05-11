@@ -139,6 +139,24 @@ m.Relation('pinnedBy', OneToOne(User, "PinnedPost", Fields('pinnedById'), Refere
 // pinnedBy   User?   @relation(name: "PinnedPost", fields: [pinnedById], references: [id])
 ```
 
+### Referentials Actions
+
+`OnUpdate` & `OnDelete` modifiers can be used as follows:
+
+```typescript
+// tag    Tag?  @relation(fields: [tagId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+m.Relation(
+  'tag',
+  ManyToOne(
+    Fields('tagId'),
+    References('id'),
+    OnUpdate('Cascade'),
+    OnDelete('Cascade'),
+    Nullable,
+  ),
+);
+```
+
 ### Handling circular relationships
 
 At some point you'll wanna split the schema across files, which introduces issues circular relationships when you're importing for `.Relation()`s
