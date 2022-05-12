@@ -82,7 +82,7 @@ type Relations = Append<
       nullable?: true;
     };
   },
-  { name?: string; model: Model | string }
+  { name?: string; model: Model }
 >;
 
 export type TypeData = Scalars &

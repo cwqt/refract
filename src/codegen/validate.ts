@@ -6,7 +6,7 @@ export const validateModel = (model: $Model): $Model => {
   for (const relation of model.columns.filter(isRelation)) {
     const modifiers = relation.modifiers as Types.Modifier<Relation>[];
     const otherSideModel = (modifiers[0] as Types.Modifier<Relation, 'model'>)
-      .value as Types.Blocks.Model;
+      .value;
 
     const relationName = modifiers.find(
       ({ type }) => type === 'name',

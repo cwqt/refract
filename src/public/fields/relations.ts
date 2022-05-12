@@ -8,7 +8,7 @@ type OptionallyWithName<T extends Relation, M extends Types.Modifier<T>[]> =
   | M;
 
 export const OneToMany = <M extends Types.Blocks.Model>(
-  model: M | string,
+  model: M,
   ...modifiers: OptionallyWithName<'OneToMany', Types.Modifier<'OneToMany'>[]>
 ) =>
   ({
@@ -26,7 +26,7 @@ export const ManyToOne = <
   M extends Types.Blocks.Model,
   K extends Types.Modifiers<'ManyToOne'>,
 >(
-  model: M | string,
+  model: M,
   ...modifiers: OptionallyWithName<
     'ManyToOne',
     [
@@ -56,7 +56,7 @@ export const OneToOne = <
   M extends Types.Blocks.Model,
   K extends Types.Modifiers<'OneToOne'>,
 >(
-  model: M | string,
+  model: M,
   ...modifiers:
     | OptionallyWithName<
         'OneToOne',
