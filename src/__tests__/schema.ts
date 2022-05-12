@@ -20,7 +20,9 @@ import {
   Float,
   Raw,
   Fields,
-  References, OnUpdate, OnDelete,
+  References,
+  OnUpdate,
+  OnDelete,
 } from '../';
 
 // roughly from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
