@@ -20,7 +20,7 @@ import {
   Float,
   Raw,
   Fields,
-  References,
+  References, OnUpdate, OnDelete,
 } from '../';
 
 // roughly from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
@@ -57,7 +57,7 @@ Post
   .Field('published',   Boolean(Default(false)))
   .Field('title',       String(Limit(255)))
   .Field('authorId',    Int(Nullable))
-  .Relation('author',   ManyToOne(User, "WrittenPosts", Fields('authorId'), References('id'), Nullable))
+  .Relation('author',   ManyToOne(User, "WrittenPosts", Fields('authorId'), References('id'), OnUpdate("Restrict"), OnDelete("SetNull"), Nullable))
   .Field('pinnedById',  Int(Nullable))
   .Relation('pinnedBy', OneToOne(User, "PinnedPost", Fields('pinnedById'), References('id'), Nullable))
   .Relation('stars',    OneToMany(Star))
