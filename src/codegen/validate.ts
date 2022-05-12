@@ -90,7 +90,7 @@ export const validateModel = (model: $Model): $Model => {
 
         if (column.type !== otherSideColumn.type)
           throw new Error(
-            `RelationshipErr: The type of the field '${field}' in the model '${model.name}' is not matching the type of the referenced field '${reference}' in model '${otherSideModel.name}'`,
+            `RelationshipErr: The type of the field '${field}' in the model '${model.name}' does not match the type of the referenced field '${reference}' in model '${otherSideModel.name}'`,
           );
       }
     }
@@ -118,7 +118,7 @@ export const validateModel = (model: $Model): $Model => {
 
     if (relation.type === 'OneToOne' && !isNullable && !fields && !references)
       throw new Error(
-        `RelationshipErr: The side of the one-to-one relation without a relation scalar must be optional \n(Model '${otherSideModel.name}', ${relation.name})`,
+        `RelationshipErr: The side of the one-to-one relation without a relation scalar must be optional\n(Model '${otherSideModel.name}', relation '${relation.name}')`,
       );
   }
 
