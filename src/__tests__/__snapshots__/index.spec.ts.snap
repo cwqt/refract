@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`refract should generate the schema 1`] = `
+"// refract https://github.com/cwqt/refract - generated in x ms -----------------
+// datasource ----------------------------------------------------------------------
+
+datasource db {
+	url                   = env(\\"DATABASE_URL\\")
+	provider              = \\"postgresql\\"
+	shadowDatabaseUrl     = env(\\"DATABASE_SHADOW_URL\\")
+	referentialIntegrity  = \\"prisma\\"
+}
+
+// generators ----------------------------------------------------------------------
+
+generator client {
+	provider         = \\"prisma-client-js\\"
+	binaryTargets    = [\\"native\\",\\"rhel-openssl-1.0.x\\",\\"linux-arm64-openssl-1.0.x\\",\\"darwin-arm64\\"]
+	previewFeatures  = [\\"referentialIntegrity\\"]
+}
+
+// enums ---------------------------------------------------------------------------
+
+enum Role {
+	ADMIN @map(\\"admin\\")
+	USER @map(\\"user\\")
+	OWNER @map(\\"owner\\")
+}
+
+// models --------------------------------------------------------------------------
+
+model User {
+	id         Int       @id @default(autoincrement()) @map(\\"_id\\") @db.Value('foo')
+	email      String    @unique
+	name       String?  
+	height     Float     @default(1.8)
+	role       Role      @default(USER)
+	posts      Post[]    @relation(\\"WrittenPosts\\")
+	pinned     Post?     @relation(\\"PinnedPost\\")
+	createdAt  DateTime  @default(now())
+	updatedAt  DateTime  @updatedAt
+}
+
+model Post {
+	id                 Int       @id @default(autoincrement())
+	published          Boolean   @default(false)
+	title              String   
+	authorId           Int?     
+	author             User?     @relation(\\"WrittenPosts\\", fields: [authorId], references: [id], onUpdate: Restrict, onDelete: SetNull)
+	pinnedById         Int?     
+	pinnedBy           User?     @relation(\\"PinnedPost\\", fields: [pinnedById], references: [id])
+	stars              Star[]   
+	createdAt          DateTime  @default(now())
+	updatedAt          DateTime  @updatedAt
+	@@map(\\"comments\\")  
+}
+
+model Star {
+	id         Int       @id @default(autoincrement())
+	postId     Int?     
+	post       Post      @relation(fields: [postId], references: [id])
+	createdAt  DateTime  @default(now())
+	updatedAt  DateTime  @updatedAt
+}"
+`;

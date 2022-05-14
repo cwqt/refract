@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.0]
+
+Should be at parity with Prisma schema now.
+
+- Adds `OnUpdate` & `OnDelete` referential action modifiers
+- Adds pre-generation checks for relations (assert both sides have Ids etc.)
+- Adds support for `name` field to Relation fields for ambigious relations
+- Renames `Pk().Fk()` to `Fields` & `References` modifiers
+
+Once again thanks to [bacali95](https://github.com/bacali95) for contributing!
+
 ## [1.0.12]
 
 - Fixes `String` type to be able to have `@id` decorator <https://github.com/cwqt/refract/pull/3>

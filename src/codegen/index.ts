@@ -7,6 +7,7 @@ import { del, nonNullable } from '../types/utils';
 import { dedent } from './lib/dedent';
 import { Column, validate } from '../types';
 import { alignFields, alignKv } from './align';
+import { validateModel } from './validate';
 
 type CodegenResult = { schema: string; time: number; output: string };
 
@@ -52,12 +53,14 @@ export default (config: Types.Config): CodegenResult => {
 
       group(
         header('models'),
-        models.map(model =>
-          block(
-            `model ${model.name}`,
-            alignFields(model.columns.map(column).join('\n')),
+        models
+          .map(validateModel)
+          .map(model =>
+            block(
+              `model ${model.name}`,
+              alignFields(model.columns.map(column).join('\n')),
+            ),
           ),
-        ),
       ),
     ]
       .filter(nonNullable)

@@ -1,7 +1,9 @@
 export * from './public/modifiers';
-export * from './public/fields';
 export * from './public/model';
 export * from './public/mixin';
+export * from './public/fields/scalars';
+export * from './public/fields/enums';
+export * from './public/fields/relations';
 export * as Types from './types';
 
 import { writeFile } from 'fs/promises';

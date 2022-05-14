@@ -1,6 +1,6 @@
 import { modifier } from './modifiers';
 import * as Types from '../types';
-import { isString } from '../types/utils';
+import { isArray, isString } from '../types/utils';
 
 // Converts a Column to a Prisma row string
 export const column = (column: Types.Column): string => {
@@ -39,41 +39,50 @@ const primitive = (column: Types.Column<Types.Fields.Scalar>) => {
 };
 
 const relationship = (column: Types.Column<Types.Fields.Relation>) => {
-  if (column.type == 'ManyToOne' || column.type == 'OneToOne') {
-    const isNullable = column.modifiers.find(({ type }) => type == 'nullable');
+  if (column.type == 'OneToOne' || column.type == 'ManyToOne') {
+    const modifiers = column.modifiers as Types.Modifier<
+      'OneToOne' | 'ManyToOne'
+    >[];
+    const isNullable = modifiers.find(({ type }) => type === 'nullable');
 
-    const [model, fields, references, ...modifiers] =
-      column.modifiers as unknown as [
-        Types.Modifier<'OneToOne' | 'ManyToOne', 'model'>,
-        Types.Modifier<'OneToOne' | 'ManyToOne', 'fields'>,
-        Types.Modifier<'OneToOne' | 'ManyToOne', 'references'>,
-        Types.Modifier<'OneToOne' | 'ManyToOne'>[],
-      ];
+    const [model, ...restModifiers] = modifiers.filter(
+      ({ type }) => type !== 'nullable',
+    ) as [
+      Types.Modifier<'OneToOne' | 'ManyToOne', 'model'>,
+      ...Types.Modifier<
+        'OneToOne' | 'ManyToOne',
+        'name' | 'fields' | 'references' | 'onUpdate' | 'onDelete'
+      >[],
+    ];
 
-    if (column.type == 'OneToOne') {
-      // Not FK holder
-      if (fields?.type !== 'fields' || references?.type !== 'references') {
-        return `\t${column.name} ${
-          isString(model.value) ? model.value : model.value.name
-        }${isNullable ? '?' : ''}`;
-      }
-    }
+    const relationModifier = restModifiers.length
+      ? `@relation(${restModifiers
+          .sort(({ type }) => (type === 'name' ? -1 : 0))
+          .map(({ type, value }) =>
+            type === 'name'
+              ? `"${value}"`
+              : `${type}: ${isArray(value) ? `[${value.join(', ')}]` : value}`,
+          )
+          .join(', ')})`
+      : '';
 
     return `\t${column.name} ${
       isString(model.value) ? model.value : model.value.name
-    }${isNullable ? '?' : ''} @relation(fields: [${fields.value.join(
-      ', ',
-    )}], references: [${references.value.join(', ')}])`.trimEnd();
+    }${isNullable ? '?' : ''} ${relationModifier}`.trimEnd();
   }
 
   if (column.type == 'OneToMany') {
-    const [model, ...modifiers] = column.modifiers as unknown as [
+    const [model, relationName] = column.modifiers as unknown as [
       Types.Modifier<'OneToMany', 'model'>,
-      Types.Modifier<'OneToMany'>[],
+      Types.Modifier<'OneToMany', 'name'>,
     ];
+
+    const relationModifier = relationName
+      ? `@relation("${relationName.value}")`
+      : '';
 
     return `\t${column.name} ${
       isString(model.value) ? model.value : model.value.name
-    }[]`;
+    }[] ${relationModifier}`.trimEnd();
   }
 };
