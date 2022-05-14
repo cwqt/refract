@@ -1,6 +1,8 @@
 # Changelog
 
-## [1.0.13]
+## [1.1.0]
+
+Should be at parity with Prisma schema now.
 
 - Adds `OnUpdate` & `OnDelete` referential action modifiers
 - Adds pre-generation checks for relations (assert both sides have Ids etc.)
