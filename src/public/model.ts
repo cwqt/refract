@@ -15,6 +15,9 @@ type Model = {
     name: string,
     type: Types.Fields.Field<T>,
   ) => Model;
+  Block: <T extends Types.Fields.Compound>(
+    type: Types.Fields.Field<T>,
+  ) => Model;
 } & Types.Blocks.Model;
 
 export const Model = (name: string): Model => new $Model(name);
@@ -49,7 +52,6 @@ export class $Model implements Types.Blocks.Model, Model {
     name: string,
     type: Types.Fields.Field<T>,
   ) {
-    // FIXME: as unknown cast
     this.columns.push({ name, ...type } as unknown as Types.Column<Types.Type>);
     return this;
   }
@@ -58,8 +60,12 @@ export class $Model implements Types.Blocks.Model, Model {
     name: string,
     type: Types.Fields.Field<T>,
   ) {
-    // FIXME: as unknown cast
     this.columns.push({ name, ...type } as unknown as Types.Column<Types.Type>);
+    return this;
+  }
+
+  Block<T extends Types.Fields.Compound>(type: Types.Fields.Field<T>) {
+    this.columns.push(type as unknown as Types.Column<Types.Type>);
     return this;
   }
 }

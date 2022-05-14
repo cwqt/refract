@@ -2,6 +2,7 @@ import { Column } from './columns';
 import { Modifier, Modifiers } from './modifiers';
 import { Type, TypeData } from './types';
 import { UnionToIntersection } from './utils';
+import * as Types from './types';
 
 // Column data-type, String, Int etc.
 export type Field<T extends Type, M extends Modifiers<T> = Modifiers<T>> = {
@@ -14,21 +15,12 @@ export type EnumKey<T extends string = string> = {
   modifiers: Modifier<'EnumKey'>[];
 };
 
-export type Scalar =
-  | 'Int'
-  | 'Float'
-  | 'BigInt'
-  | 'Bytes'
-  | 'Decimal'
-  | 'String'
-  | 'Boolean'
-  | 'DateTime'
-  | 'Json';
+export type Scalar = keyof Types.Scalars;
+export type Enum = keyof Types.Enums;
+export type Relation = keyof Types.Relations;
+export type Compound = keyof Types.Compounds;
 
-export type Enum = 'Enum' | 'EnumKey';
-export type Relation = 'OneToMany' | 'OneToOne' | 'ManyToOne';
-
-export type Any = Scalar | Relation | Enum | 'Raw';
+export type Any = Scalar | Relation | Enum | Compound | 'Raw';
 
 export type ReferentialAction =
   | 'Cascade'
@@ -51,6 +43,10 @@ export function isRaw(column: TopColumn): column is Column<'Raw'> {
   return column.type == 'Raw';
 }
 
+export function isCompound(column: TopColumn): column is Column<Compound> {
+  return column.type.startsWith('@@');
+}
+
 export function isEnumKey(column: TopColumn): column is Column<'EnumKey'> {
   return column.type == 'EnumKey';
 }
@@ -64,7 +60,10 @@ export function isRelation(column: TopColumn): column is Column<Relation> {
 }
 
 export function isPrimitive(column: TopColumn): column is Column<Scalar> {
-  return [isRelation(column), isEnumKey(column), isEnum(column)].every(
-    v => v == false,
-  );
+  return [
+    isRelation(column),
+    isEnumKey(column),
+    isEnum(column),
+    isCompound(column),
+  ].every(v => v == false);
 }

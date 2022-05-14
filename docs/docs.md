@@ -20,9 +20,9 @@ User.Field('id', Int(Id, Default('autoincrement()')));
 
 - `.Field(name, data-type)`: Add a primitive column to a Model
 - `.Relation(name, relation)`: Add a relationship to a Model
-- `.Raw(value)`: Prisma escape hatch for non-currently-supported features
-  - `.Raw('@@map("comments")')`
+- `.Block(compound)`: Add a block field, e.g. `@@id`, `@@unique`, `@@map`
 - `.Mixin(mixin)`: Inherit columns from a Mixin for compositional Models
+- `.Raw(value)`: Prisma escape hatch for any non-currently-supported features
 
 # Data types
 
@@ -82,11 +82,28 @@ const Animal = Enum(
 model.Field('fave', Animal('Seacow'));
 ```
 
+# Blocks
+
+Used for adding fields like `@@map`, `@@id` etc.
+
+```typescript
+// Creating a compound index
+model
+  .Field("id",        Int(Id, Default("autoincrement()")))
+  .Field("authorId",  Int())
+  .Relation("author", ManyToOne(User, Fields("authorId"), References("id")))
+  .Block(Compound.Id('id', 'authorId'))
+
+// e.g. in MongoDB schemas
+Model("User")
+  .Field("id",       String(Id, Db.ObjectId, Map("_id")))
+  .Block(Compound.Map("users"))
+```
+
 # Mixins
 
 Allows you to re-use groups of fields, a la inheritance.
 
-<!-- prettier-ignore -->
 ```typescript
 const Timestamps = Mixin()
   .Field("createdAt", DateTime(Default("now()")))
@@ -113,7 +130,6 @@ const User = Model("User")
 
 ### OneToOne
 
-<!-- prettier-ignore -->
 ```typescript
 const User = Model('User');
 const Something = Model('something');
@@ -133,7 +149,6 @@ User
 
 From <https://www.prisma.io/docs/concepts/components/prisma-schema/relations#disambiguating-relations>
 
-<!-- prettier-ignore -->
 ```typescript
 m.Relation('pinnedBy', OneToOne(User, "PinnedPost", Fields('pinnedById'), References('id'), Nullable))
 // pinnedBy   User?   @relation(name: "PinnedPost", fields: [pinnedById], references: [id])

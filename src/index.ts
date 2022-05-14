@@ -4,7 +4,9 @@ export * from './public/mixin';
 export * from './public/fields/scalars';
 export * from './public/fields/enums';
 export * from './public/fields/relations';
+export * as Compound from './public/fields/compounds';
 export * as Types from './types';
+export * from './public/db';
 
 import { writeFile } from 'fs/promises';
 import * as Types from './types';

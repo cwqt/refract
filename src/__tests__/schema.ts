@@ -23,6 +23,8 @@ import {
   References,
   OnUpdate,
   OnDelete,
+  Compound,
+  Mongo as Db
 } from '../';
 
 // roughly from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
@@ -42,7 +44,6 @@ const Timestamps = Mixin()
   .Field('createdAt', DateTime(Default('now()')))
   .Field('updatedAt', DateTime(UpdatedAt));
 
-// prettier-ignore
 User
   .Field('id',          Int(Id, Default('autoincrement()'), Map('_id'), Raw('@db.Value(\'foo\')')))
   .Field('email',       String(Unique))
@@ -53,7 +54,6 @@ User
   .Relation('pinned',   OneToOne(Post, "PinnedPost", Nullable))
   .Mixin(Timestamps);
 
-// prettier-ignore
 Post
   .Field('id',          Int(Id, Default('autoincrement()')))
   .Field('published',   Boolean(Default(false)))
@@ -66,31 +66,16 @@ Post
   .Mixin(Timestamps)
   .Raw(`@@map("comments")`);
 
-// prettier-ignore
 Star
   .Field('id',          Int(Id, Default('autoincrement()')))
   .Field('postId',      Int(Nullable))
   .Relation('post',     ManyToOne(Post, Fields('postId'), References('id')))
   .Mixin(Timestamps)
+  .Block(Compound.Unique("id", "postId"))
+  .Block(Compound.Map("wow"))
 
 export default [Role, User, Post, Star];
 
-// model User {
-//   id           Int     @id @default(autoincrement())
-//   name         String?
-//   writtenPosts Post[]  @relation("WrittenPosts")
-//   pinnedPost   Post?   @relation("PinnedPost")
-// }
-//
-// model Post {
-//   id         Int     @id @default(autoincrement())
-//   title      String?
-//   author     User    @relation("WrittenPosts", fields: [authorId], references: [id])
-//   authorId   Int
-//   pinnedBy   User?   @relation(name: "PinnedPost", fields: [pinnedById], references: [id])
-//   pinnedById Int?
-//   @@map("comments")
-// }
 
 // let x = OneToOne(Post, 'WrittenPosts', Fields('wow'), References('wee'));
 // let a = OneToOne(Post, Fields('bestPostId'), References('id')); // good

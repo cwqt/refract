@@ -16,7 +16,3 @@ yarn add -D @cwqt/refract
 
 See [the docs](./docs/docs.md) for a demo & full overview of features.
 
-## Disclaimer
-
-- Only tested on `mysql`
-- Doesn't have all features yet (PRs welcome!)

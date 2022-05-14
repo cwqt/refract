@@ -4,6 +4,7 @@ import { isArray, isString } from '../types/utils';
 
 // Converts a Column to a Prisma row string
 export const column = (column: Types.Column): string => {
+  if (Types.Fields.isCompound(column)) return compound(column);
   if (Types.Fields.isRaw(column)) return `\t${column.modifiers[0].value}`;
   if (Types.Fields.isEnum(column)) return enumeration(column);
   if (Types.Fields.isEnumKey(column)) return enumKey(column);
@@ -37,6 +38,15 @@ const primitive = (column: Types.Column<Types.Fields.Scalar>) => {
     isNullable ? '?' : ''
   } ${column.modifiers.map(m => modifier(column.type, m)).join(' ')}`.trimEnd();
 };
+
+const compound = (column: Types.Column<Types.Fields.Compound>) =>
+  column.type == '@@ignore'
+    ? `\t${column.type}`
+    : `\t${column.type}(${
+        column.type == '@@map'
+          ? `"${column.modifiers[0].value[0]}"`
+          : column.modifiers[0].value.join(', ')
+      })`;
 
 const relationship = (column: Types.Column<Types.Fields.Relation>) => {
   if (column.type == 'OneToOne' || column.type == 'ManyToOne') {

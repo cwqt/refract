@@ -1,10 +1,21 @@
 import { JsonValue } from '../codegen/lib/json';
+import { Mongo, Pg } from '../public/db';
 import { Model } from './blocks';
 import { ReferentialAction } from './fields';
 
+type Db = Mongo.Types | Pg.Types;
+
 type Append<T, K> = { [index in keyof T]: T[index] & K };
 
-type Scalars = Append<
+type WithDb<T> = {
+  [type in keyof T]: Db extends { [P in type]: infer U }
+    ? Append<T[type], Db[type]>
+    : T[type];
+};
+
+type X = WithDb<{ Int: { default: number }; String: { unique?: true } }>;
+
+export type Scalars = Append<
   {
     Int: {
       unique?: true;
@@ -48,7 +59,7 @@ type Scalars = Append<
   { nullable?: true; map?: string; ignore?: true; raw?: string }
 >;
 
-type Enums = {
+export type Enums = {
   Enum: {
     id?: true;
     nullable?: true;
@@ -64,7 +75,7 @@ type Enums = {
   };
 };
 
-type Relations = Append<
+export type Relations = Append<
   {
     OneToMany: {};
     OneToOne: {
@@ -85,7 +96,19 @@ type Relations = Append<
   { name?: string; model: Model }
 >;
 
+export type Compounds = Append<
+  {
+    ['@@id']: {};
+    ['@@unique']: {};
+    ['@@index']: {};
+    ['@@ignore']: {};
+    ['@@map']: {};
+  },
+  { values: string[] }
+>;
+
 export type TypeData = Scalars &
+  Compounds &
   Enums &
   Relations & {
     // Escape hatch -----------------------------------------
