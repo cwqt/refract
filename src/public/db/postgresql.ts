@@ -6,14 +6,17 @@ export const Inet = {};
 export const Citext = {};
 
 export type Types = {
-  String:
-    | 'Text'
-    | 'Char'
-    | 'VarChar'
-    | 'Bit'
-    | 'VarBit'
-    | 'Uuid'
-    | 'Xml'
-    | 'Inet'
-    | 'Citext';
+  String: {
+    Uuid: true;
+    Citext: true;
+  };
+  // | 'Text'
+  // | 'Char'
+  // | 'VarChar'
+  // | 'Bit'
+  // | 'VarBit'
+  // | 'Uuid'
+  // | 'Xml'
+  // | 'Inet'
+  // | 'Citext';
 };
