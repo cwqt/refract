@@ -16,17 +16,22 @@ type CodegenResult = { schema: string; time: number; output: string };
 export default (config: Types.Config): CodegenResult => {
   const start = performance.now();
 
-  config = validate(config);
+  // Allow direct imports, e.g. `import * as schema from './foo'`
+  const schema = Array.isArray(config.schema)
+    ? config.schema
+    : Object.values(config.schema);
+
+  config = validate({ ...config, schema });
 
   const datasource = config.datasource;
   const generators = config.generators;
-  const enums = config.schema.filter(Types.Blocks.isEnum);
-  const models = config.schema.filter(Types.Blocks.isModel);
+  const enums = schema.filter(Types.Blocks.isEnum);
+  const models = schema.filter(Types.Blocks.isModel);
 
   const group = (header: string, blocks: string[]): string | null =>
     blocks.length == 0 ? null : [header, blocks.join('\n\n')].join('\n\n');
 
-  const schema = dedent(
+  const generated = dedent(
     [
       header('datasource'),
       block('datasource db', alignKv(kv(datasource))),
@@ -79,7 +84,7 @@ export default (config: Types.Config): CodegenResult => {
       header(
         `refract https://github.com/cwqt/refract - generated in ${time} ms`,
       ),
-      schema,
+      generated,
     ].join('\n'),
   };
 };

@@ -27,6 +27,7 @@ import {
   Unsupported,
   UpdatedAt,
 } from '../';
+import { Decimal } from '../public/fields/scalars';
 
 // roughly from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
 
@@ -73,6 +74,7 @@ Post
 // prettier-ignore
 Star
   .Field('id',          Int(Id, Default('autoincrement()')))
+  .Field('decimal',     Decimal(Db.Decimal(10, 20)))
   .Field('postId',      Int(Nullable))
   .Relation('post',     ManyToOne(Post, Fields('postId'), References('id')))
   .Mixin(Timestamps)

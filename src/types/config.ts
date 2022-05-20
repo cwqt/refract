@@ -38,7 +38,7 @@ export type Config = {
   datasource: Datasource;
   generators: Generator[];
   output?: string;
-  schema: Block[];
+  schema: Block[] | Record<string, Block>;
 };
 
 export const validate = (config: Config): Config => {

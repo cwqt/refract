@@ -57,6 +57,7 @@ model Post {
 
 model Star {
 	id              Int                      @id @default(autoincrement())
+	decimal         Decimal                  @db.Decimal(10,20)
 	postId          Int?
 	post            Post                     @relation(fields: [postId], references: [id])
 	createdAt       DateTime                 @default(now())
