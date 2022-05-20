@@ -37,5 +37,6 @@ export const alignFields = (value: string): string => {
         ...rest.map(v => v.trim()),
       ].join(' '),
     )
+    .map(v => v.trim())
     .join('\n');
 };

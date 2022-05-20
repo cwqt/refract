@@ -1,8 +1,12 @@
-import { $Model } from '../public/model';
-import { isRelation, Relation } from '../types/fields';
 import * as Types from '../types';
+import { Config } from '../types';
+import { isRelation, Relation, isScalar } from '../types/fields';
 
-export const validateModel = (model: $Model): $Model => {
+export const validateModel = (model: Types.Blocks.Model, config: Config) => {
+  for (const field of model.columns.filter(isScalar)) {
+    // if(field.modifiers.filter(isDbModifier).some(v => v.type.includes(cofig)))
+  }
+
   for (const relation of model.columns.filter(isRelation)) {
     const modifiers = relation.modifiers as Types.Modifier<Relation>[];
     const otherSideModel = (modifiers[0] as Types.Modifier<Relation, 'model'>)
@@ -121,6 +125,4 @@ export const validateModel = (model: $Model): $Model => {
         `RelationshipErr: The side of the one-to-one relation without a relation scalar must be optional\n(Model '${otherSideModel.name}', relation '${relation.name}')`,
       );
   }
-
-  return model;
 };

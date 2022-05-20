@@ -53,14 +53,15 @@ export default (config: Types.Config): CodegenResult => {
 
       group(
         header('models'),
-        models
-          .map(validateModel)
-          .map(model =>
+        models.map(
+          model => (
+            validateModel(model, config),
             block(
               `model ${model.name}`,
               alignFields(model.columns.map(column).join('\n')),
-            ),
+            )
           ),
+        ),
       ),
     ]
       .filter(nonNullable)

@@ -59,7 +59,7 @@ export function isRelation(column: TopColumn): column is Column<Relation> {
   return ['OneToMany', 'ManyToOne', 'OneToOne'].includes(column.type);
 }
 
-export function isPrimitive(column: TopColumn): column is Column<Scalar> {
+export function isScalar(column: TopColumn): column is Column<Scalar> {
   return [
     isRelation(column),
     isEnumKey(column),

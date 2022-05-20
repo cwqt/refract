@@ -31,3 +31,10 @@ export function nonNullable<T>(value: T): value is NonNullable<T> {
 type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 export const shift = <T extends readonly any[]>(v: T): T[0] =>
   (v as Mutable<T>).shift();
+
+// expands object types recursively
+export type Expand<T> = T extends object
+  ? T extends infer O
+    ? { [K in keyof O]: Expand<O[K]> }
+    : never
+  : T;

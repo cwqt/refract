@@ -6,27 +6,32 @@ import { Type } from '../../types';
 // };
 
 export type DbModifier<
-  T extends Type,
+  T extends string,
   S extends string,
   N extends string,
   K,
 > = {
-  type: T;
+  _type: T;
   source: S;
   value: K;
-  name: N;
+  type: N;
 };
 
 export const db = <S extends string>(source: S) => {
   const type =
-    <T extends Type>(type: T) =>
-    <N extends string, K>(
+    <T extends string>(type: T) =>
+    <N extends string, K = true>(
       name: N,
       value?: K | undefined,
-    ): DbModifier<T, S, N, K> => ({ name, value, type, source });
+    ): DbModifier<T, S, `@db.${S}.${N}`, K> => ({
+      type: `@db.${source}.${name}`,
+      value,
+      _type: type,
+      source,
+    });
 
-  const BigInt = type('BigInt');
-  const String = type('String');
+  const BigInt = type('BigInt' as const);
+  const String = type('String' as const);
   const Float = type('Float');
   const Json = type('Json');
   const Decimal = type('Decimal');

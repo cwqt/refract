@@ -1,30 +1,30 @@
 import {
+  Boolean,
+  Compound,
   DateTime,
   Default,
   Enum,
+  Fields,
+  Float,
   Id,
-  Boolean,
   Int,
+  Key,
   Limit,
+  ManyToOne,
+  Map,
+  Mixin,
   Model,
+  MySql as Db,
   Nullable,
+  OnDelete,
   OneToMany,
+  OneToOne,
+  OnUpdate,
+  Raw,
+  References,
+  String,
   Unique,
   UpdatedAt,
-  String,
-  ManyToOne,
-  Mixin,
-  OneToOne,
-  Map,
-  Key,
-  Float,
-  Raw,
-  Fields,
-  References,
-  OnUpdate,
-  OnDelete,
-  Compound,
-  Mongo as Db
 } from '../';
 
 // roughly from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
@@ -40,10 +40,12 @@ const Post = Model('Post');
 const User = Model('User');
 const Star = Model('Star');
 
+// prettier-ignore
 const Timestamps = Mixin()
   .Field('createdAt', DateTime(Default('now()')))
-  .Field('updatedAt', DateTime(UpdatedAt));
+  .Field('updatedAt', DateTime(UpdatedAt, Db.Date));
 
+// prettier-ignore
 User
   .Field('id',          Int(Id, Default('autoincrement()'), Map('_id'), Raw('@db.Value(\'foo\')')))
   .Field('email',       String(Unique))
@@ -54,9 +56,10 @@ User
   .Relation('pinned',   OneToOne(Post, "PinnedPost", Nullable))
   .Mixin(Timestamps);
 
+// prettier-ignore
 Post
-  .Field('id',          Int(Id, Default('autoincrement()')))
-  .Field('published',   Boolean(Default(false)))
+  .Field('id',          Int(Id, Default('autoincrement()'), Db.UnsignedSmallInt))
+  .Field('published',   Boolean(Default(false) ))
   .Field('title',       String(Limit(255)))
   .Field('authorId',    Int(Nullable))
   .Relation('author',   ManyToOne(User, "WrittenPosts", Fields('authorId'), References('id'), OnUpdate("Restrict"), OnDelete("SetNull"), Nullable))
@@ -66,6 +69,7 @@ Post
   .Mixin(Timestamps)
   .Raw(`@@map("comments")`);
 
+// prettier-ignore
 Star
   .Field('id',          Int(Id, Default('autoincrement()')))
   .Field('postId',      Int(Nullable))
@@ -75,7 +79,6 @@ Star
   .Block(Compound.Map("wow"))
 
 export default [Role, User, Post, Star];
-
 
 // let x = OneToOne(Post, 'WrittenPosts', Fields('wow'), References('wee'));
 // let a = OneToOne(Post, Fields('bestPostId'), References('id')); // good
