@@ -62,6 +62,20 @@ model.Field('id', String(ObjectId, Map('_id'), Default('auto()')));
 // id   String  @db.ObjectId  @map("_id") @default(auto())
 ```
 
+## `@db` attributes
+
+Currently there's support for `mysql`, `postgresql` & `mongodb` `@db`
+attributes, and can be used like all the other modifiers.
+
+```typescript
+import { MySql as Db } from '@cwqt/refract';
+
+model.Field('name', String(Db.VarChar));
+```
+
+Check `src/public/db/mysql.ts` (`mongo.ts`/`postgresql.ts`) for list of mappings between scalar types &
+attributes.
+
 # Enums
 
 Composed of two parts:
@@ -89,15 +103,15 @@ Used for adding fields like `@@map`, `@@id` etc.
 ```typescript
 // Creating a compound index
 model
-  .Field("id",        Int(Id, Default("autoincrement()")))
-  .Field("authorId",  Int())
-  .Relation("author", ManyToOne(User, Fields("authorId"), References("id")))
-  .Block(Compound.Id('id', 'authorId'))
+  .Field('id', Int(Id, Default('autoincrement()')))
+  .Field('authorId', Int())
+  .Relation('author', ManyToOne(User, Fields('authorId'), References('id')))
+  .Block(Compound.Id('id', 'authorId'));
 
 // e.g. in MongoDB schemas
-Model("User")
-  .Field("id",       String(Id, Db.ObjectId, Map("_id")))
-  .Block(Compound.Map("users"))
+Model('User')
+  .Field('id', String(Id, Db.ObjectId, Map('_id')))
+  .Block(Compound.Map('users'));
 ```
 
 # Mixins
@@ -106,12 +120,10 @@ Allows you to re-use groups of fields, a la inheritance.
 
 ```typescript
 const Timestamps = Mixin()
-  .Field("createdAt", DateTime(Default("now()")))
-  .Field("updatedAt", DateTime(Nullable, UpdatedAt))
+  .Field('createdAt', DateTime(Default('now()')))
+  .Field('updatedAt', DateTime(Nullable, UpdatedAt));
 
-const User = Model("User")
-  .Field("id", PrimaryKey)
-  .Mixin(Timestamps)
+const User = Model('User').Field('id', PrimaryKey).Mixin(Timestamps);
 
 // User will now have `createdAt` & `updatedAt` columns
 ```
@@ -134,15 +146,12 @@ const User = Model("User")
 const User = Model('User');
 const Something = Model('something');
 
-Something
-  .Field("id",      PrimaryKey)
+Something.Field('id', PrimaryKey)
   // Holds foreign key
-  .Field("userId",  Int())
-  .Relation("user", OneToOne(User, Fields("userId"), References("id")));
+  .Field('userId', Int())
+  .Relation('user', OneToOne(User, Fields('userId'), References('id')));
 
-User
-  .Field("id",      PrimaryKey)
-  .Relation("thing", OneToOne(Something));
+User.Field('id', PrimaryKey).Relation('thing', OneToOne(Something));
 ```
 
 ### Ambiguous relations
@@ -150,7 +159,16 @@ User
 From <https://www.prisma.io/docs/concepts/components/prisma-schema/relations#disambiguating-relations>
 
 ```typescript
-m.Relation('pinnedBy', OneToOne(User, "PinnedPost", Fields('pinnedById'), References('id'), Nullable))
+m.Relation(
+  'pinnedBy',
+  OneToOne(
+    User,
+    'PinnedPost',
+    Fields('pinnedById'),
+    References('id'),
+    Nullable,
+  ),
+);
 // pinnedBy   User?   @relation(name: "PinnedPost", fields: [pinnedById], references: [id])
 ```
 
