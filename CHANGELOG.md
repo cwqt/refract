@@ -1,8 +1,16 @@
 # Changelog
 
+## [1.1.1]
+
+Spoke too soon
+
+- Adds all the `@db` attributes for `mysql`, `postgresql` & `mongodb` providers
+- Adds `.Block()` for properties like `@@map`, `@@id` etc.
+- Adds `Unsupported` type
+
 ## [1.1.0]
 
-Should be at parity with Prisma schema now.
+Should be at parity with Prisma schema now
 
 - Adds `OnUpdate` & `OnDelete` referential action modifiers
 - Adds pre-generation checks for relations (assert both sides have Ids etc.)

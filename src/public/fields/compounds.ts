@@ -1,13 +1,14 @@
 import { Types } from '../..';
-import { Fields } from '../../types';
+import { Compounds, Fields, Modifier } from '../../types';
 
 const compound =
-  <T extends Types.Fields.Compound>(type: T) =>
+  <T extends Types.Fields.Compound, M>(type: T) =>
   (
-    ...values: T extends '@@map' ? [name: string] : string[]
+    values: T extends '@@map' ? string : string[],
+    ...modifiers: Modifier<T>[]
   ): Fields.Field<T> => ({
     type,
-    modifiers: [{ type: 'values', value: values as any }],
+    modifiers: [{ type: 'values', value: values as any }, ...modifiers],
   });
 
 export const Id = compound('@@id');

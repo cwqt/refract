@@ -24,6 +24,7 @@ import {
   References,
   String,
   Unique,
+  Unsupported,
   UpdatedAt,
 } from '../';
 
@@ -43,7 +44,7 @@ const Star = Model('Star');
 // prettier-ignore
 const Timestamps = Mixin()
   .Field('createdAt', DateTime(Default('now()')))
-  .Field('updatedAt', DateTime(UpdatedAt, Db.Date));
+  .Field('updatedAt', DateTime(UpdatedAt, Db.Date(6)));
 
 // prettier-ignore
 User
@@ -75,8 +76,10 @@ Star
   .Field('postId',      Int(Nullable))
   .Relation('post',     ManyToOne(Post, Fields('postId'), References('id')))
   .Mixin(Timestamps)
-  .Block(Compound.Unique("id", "postId"))
-  .Block(Compound.Map("wow"))
+  .Field("location",    Unsupported("polygon", Nullable))
+  .Block(Compound.Unique(["A", "B"], Map("_AB_unique")))
+  .Block(Compound.Index(["wow"], Map("_B_index")))
+  .Block(Compound.Map("Group"))
 
 export default [Role, User, Post, Star];
 

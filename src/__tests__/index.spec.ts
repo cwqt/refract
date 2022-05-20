@@ -38,6 +38,8 @@ describe('refract', () => {
   it('should generate the schema', () => {
     const { schema: prisma } = codegen({ ...baseConfig, schema });
 
+    console.log(prisma);
+
     expect(replaceGeneratedTime(prisma)).toMatchSnapshot();
   });
 

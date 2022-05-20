@@ -1,9 +1,10 @@
 import { modifier } from './modifiers';
 import * as Types from '../types';
-import { isArray, isString } from '../types/utils';
+import { isArray, isString, nonNullable } from '../types/utils';
 
 // Converts a Column to a Prisma row string
 export const column = (column: Types.Column): string => {
+  if (Types.Fields.isUnsupported(column)) return unsupported(column);
   if (Types.Fields.isCompound(column)) return compound(column);
   if (Types.Fields.isRaw(column)) return `\t${column.modifiers[0].value}`;
   if (Types.Fields.isEnum(column)) return enumeration(column);
@@ -14,6 +15,15 @@ export const column = (column: Types.Column): string => {
   throw new Error(
     `CodegenError: Couldn't figure out type for column: ${column.name}`,
   );
+};
+
+const unsupported = (column: Types.Column<'Unsupported'>): string => {
+  const isNullable = column.modifiers.find(({ type }) => type == 'nullable');
+
+  return `\t${column.name} Unsupported${modifier(
+    column.type,
+    column.modifiers[0],
+  )}${isNullable ? '?' : ''}`;
 };
 
 // enum { Foo Bar }
@@ -39,14 +49,20 @@ const scalar = (column: Types.Column<Types.Fields.Scalar>) => {
   } ${column.modifiers.map(m => modifier(column.type, m)).join(' ')}`.trimEnd();
 };
 
-const compound = (column: Types.Column<Types.Fields.Compound>) =>
-  column.type == '@@ignore'
-    ? `\t${column.type}`
-    : `\t${column.type}(${
-        column.type == '@@map'
-          ? `"${column.modifiers[0].value[0]}"`
-          : column.modifiers[0].value.join(', ')
-      })`;
+const compound = (column: Types.Column<Types.Fields.Compound>) => {
+  if (column.type == '@@ignore') return `\t${column.type}`;
+
+  if (column.type == '@@map')
+    return `\t${column.type}(${`"${column.modifiers[0].value}"`})`;
+
+  const map = column.modifiers.find(v => (v.type as 'values' | 'map') == 'map');
+  const args = [
+    `[${column.modifiers[0].value.join(', ')}]`,
+    map ? `map: "${map.value}"` : null,
+  ].filter(nonNullable);
+
+  return `\t${column.type}(${args.join(', ')})`;
+};
 
 const relationship = (column: Types.Column<Types.Fields.Relation>) => {
   if (column.type == 'OneToOne' || column.type == 'ManyToOne') {

@@ -11,7 +11,7 @@ type Model = {
     name: string,
     type: Types.Fields.Field<T>,
   ) => Model;
-  Field: <T extends Types.Fields.Scalar | 'Enum'>(
+  Field: <T extends Types.Fields.Scalar | 'Enum' | 'Unsupported'>(
     name: string,
     type: Types.Fields.Field<T>,
   ) => Model;
@@ -56,7 +56,7 @@ export class $Model implements Types.Blocks.Model, Model {
     return this;
   }
 
-  Field<T extends Types.Fields.Scalar | 'Enum'>(
+  Field<T extends Types.Fields.Scalar | 'Enum' | 'Unsupported'>(
     name: string,
     type: Types.Fields.Field<T>,
   ) {

@@ -22,7 +22,7 @@ export type Enum = keyof Types.Enums;
 export type Relation = keyof Types.Relations;
 export type Compound = keyof Types.Compounds;
 
-export type Any = Scalar | Relation | Enum | Compound | 'Raw';
+export type Any = Scalar | Relation | Enum | Compound | 'Raw' | 'Unsupported';
 
 export type ReferentialAction =
   | 'Cascade'
@@ -55,6 +55,12 @@ export function isEnumKey(column: TopColumn): column is Column<'EnumKey'> {
 
 export function isEnum(column: TopColumn): column is Column<'Enum'> {
   return column.type == 'Enum';
+}
+
+export function isUnsupported(
+  column: TopColumn,
+): column is Column<'Unsupported'> {
+  return column.type == 'Unsupported';
 }
 
 export function isRelation(column: TopColumn): column is Column<Relation> {

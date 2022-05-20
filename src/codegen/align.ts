@@ -31,12 +31,15 @@ export const alignFields = (value: string): string => {
   return lines
     .map(line => line.split(' '))
     .map(([columnName, columnType, ...rest]) =>
-      [
-        columnName.padEnd(maximumColumnName + 1),
-        columnType ? columnType.padEnd(maximumColumnType + 1) : '',
-        ...rest.map(v => v.trim()),
-      ].join(' '),
+      (columnName.trim().startsWith('@@')
+        ? [columnName, columnType, ...rest]
+        : [
+            columnName.padEnd(maximumColumnName + 1),
+            columnType ? columnType.padEnd(maximumColumnType + 1) : '',
+            ...rest.map(v => v.trim()),
+          ]
+      ).join(' '),
     )
-    .map(v => v.trim())
+    .map(v => v.trimEnd())
     .join('\n');
 };

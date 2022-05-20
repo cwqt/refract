@@ -1,4 +1,5 @@
 import * as Types from '../types';
+import { Compounds } from '../types';
 
 export const Default = <
   T extends Types.Fields.Scalar,
@@ -8,7 +9,7 @@ export const Default = <
 ): Types.Modifier<T, 'default'> => ({ type: 'default', value });
 
 export const Map = <
-  T extends Types.Fields.Scalar | 'EnumKey',
+  T extends Types.Fields.Scalar | 'EnumKey' | '@@unique' | '@@index',
   K extends Types.TypeData[T]['map'],
 >(
   value: K,

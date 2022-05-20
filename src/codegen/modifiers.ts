@@ -9,8 +9,11 @@ export const modifier = <T extends Type>(
 ): string => {
   // @db.TinyInt etc. modifiers
   if ((modifier.type as string).startsWith('@')) {
+    // this is rapidly deteriorating lmao
     const type = (modifier.type as string).split('.').pop();
-    return `@db.${type}`;
+    return `@db.${type}${
+      (modifier.value as any) == undefined ? '' : `(${modifier.value})`
+    }`;
   }
 
   // Non @db modifiers
@@ -29,6 +32,8 @@ export const modifier = <T extends Type>(
       return '@ignore';
     case 'map':
       return `@map("${modifier.value}")`;
+    case 'unsupported':
+      return `("${modifier.value}")`;
     case 'raw':
       return modifier.value as unknown as string;
   }

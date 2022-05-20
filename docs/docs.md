@@ -62,6 +62,9 @@ model.Field('id', String(ObjectId, Map('_id'), Default('auto()')));
 // id   String  @db.ObjectId  @map("_id") @default(auto())
 ```
 
+Additionally there's `Unsupported`, see
+<https://www.prisma.io/docs/concepts/components/prisma-schema/data-model#unsupported-types>
+
 ## `@db` attributes
 
 Currently there's support for `mysql`, `postgresql` & `mongodb` `@db`

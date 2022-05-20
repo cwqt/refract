@@ -88,9 +88,9 @@ export type Relations = Append<
 
 export type Compounds = Append<
   {
-    ['@@id']: { map: string };
-    ['@@unique']: {};
-    ['@@index']: {};
+    ['@@id']: {};
+    ['@@unique']: { map: string };
+    ['@@index']: { map: string };
     ['@@ignore']: {};
     ['@@map']: {};
   },
@@ -101,8 +101,8 @@ export type TypeData = MergeDbModifiers<Scalars> &
   Compounds &
   Enums &
   Relations & {
-    // Escape hatch -----------------------------------------
     Raw: { value: string };
+    Unsupported: { unsupported: string; nullable?: true };
   };
 
 // All possible column datatypes & their accepted modifiers/parameters
