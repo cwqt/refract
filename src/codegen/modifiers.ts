@@ -7,6 +7,13 @@ export const modifier = <T extends Type>(
   type: T,
   modifier: Modifier<T>,
 ): string => {
+  // @db.TinyInt etc. modifiers
+  if ((modifier.type as string).startsWith('@')) {
+    const type = (modifier.type as string).split('.').pop();
+    return `@db.${type}`;
+  }
+
+  // Non @db modifiers
   switch (modifier.type) {
     case 'default':
       return `@default(${

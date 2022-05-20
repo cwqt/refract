@@ -9,10 +9,22 @@ export type Modifier<
 export type Modifiers<T extends Type> = keyof TypeData[T];
 
 // -------------------------------------------------------
-import { Mongo, MySql } from '../public/db';
-type Db = { mysql: typeof MySql; mongo: typeof Mongo };
+import { Mongo, MySql, Postgres } from '../public/db';
+import { Provider } from './config';
 
-type DbModifer = { _type: string; type: string; value: any; source: string };
+type Db = {
+  mysql: typeof MySql;
+  mongodb: typeof Mongo;
+  postgresql: typeof Postgres;
+};
+
+type DbModifer = {
+  scalar: string;
+  type: string;
+  value: any;
+  provider: Provider;
+};
+
 type DbMap = Record<string, DbModifer | ((...args: any) => DbModifer)>;
 
 // Converts the Function modifiers to the resulting DbModifiers
@@ -43,7 +55,7 @@ type Transform<T extends Record<string, any>> = {
   [index in keyof T]: { [i in T[index]['type']]: T[index]['value'] };
 };
 
-type Map = Transform<GroupBy<FlatFlatUnion, '_type'>>;
+type Map = Transform<GroupBy<FlatFlatUnion, 'scalar'>>;
 
 // Merge Map into Scalars
 export type MergeDbModifiers<T> = {

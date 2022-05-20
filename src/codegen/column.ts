@@ -8,7 +8,7 @@ export const column = (column: Types.Column): string => {
   if (Types.Fields.isRaw(column)) return `\t${column.modifiers[0].value}`;
   if (Types.Fields.isEnum(column)) return enumeration(column);
   if (Types.Fields.isEnumKey(column)) return enumKey(column);
-  if (Types.Fields.isPrimitive(column)) return primitive(column);
+  if (Types.Fields.isScalar(column)) return scalar(column);
   if (Types.Fields.isRelation(column)) return relationship(column);
 
   throw new Error(
@@ -31,7 +31,7 @@ export const enumeration = (column: Types.Column<'Enum'>) => {
     .join(' ')}`.trimEnd();
 };
 
-const primitive = (column: Types.Column<Types.Fields.Scalar>) => {
+const scalar = (column: Types.Column<Types.Fields.Scalar>) => {
   const isNullable = column.modifiers.find(({ type }) => type == 'nullable');
 
   return `\t${column.name} ${column.type}${

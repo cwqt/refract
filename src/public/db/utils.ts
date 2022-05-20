@@ -1,33 +1,28 @@
-import { Type } from '../../types';
-
-// export type Db<T extends string, K> = {
-//   type: `@db.${T}`;
-//   modifiers: [{ type: 'source'; value: string }, { type: 'value'; value: K }];
-// };
+import { Provider } from '../../types';
 
 export type DbModifier<
   T extends string,
-  S extends string,
+  P extends Provider,
   N extends string,
   K,
 > = {
-  _type: T;
-  source: S;
+  scalar: T;
+  provider: P;
   value: K;
   type: N;
 };
 
-export const db = <S extends string>(source: S) => {
+export const db = <P extends Provider>(provider: P) => {
   const type =
-    <T extends string>(type: T) =>
+    <T extends string>(scalar: T) =>
     <N extends string, K = true>(
       name: N,
       value?: K | undefined,
-    ): DbModifier<T, S, `@db.${S}.${N}`, K> => ({
-      type: `@db.${source}.${name}`,
+    ): DbModifier<T, P, `@db.${P}.${N}`, K> => ({
+      type: `@db.${provider}.${name}`,
       value,
-      _type: type,
-      source,
+      scalar,
+      provider,
     });
 
   const BigInt = type('BigInt' as const);

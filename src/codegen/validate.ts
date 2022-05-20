@@ -1,16 +1,29 @@
+import { DbModifier } from '../public/db/utils';
 import * as Types from '../types';
-import { Config } from '../types';
-import { isRelation, Relation, isScalar } from '../types/fields';
+import { Config, Provider } from '../types';
+import { isRelation, Relation, isScalar, isDbModifier } from '../types/fields';
 
 export const validateModel = (model: Types.Blocks.Model, config: Config) => {
+  // Check not using mysql db with mongo @db modifiers etc.
   for (const field of model.columns.filter(isScalar)) {
-    // if(field.modifiers.filter(isDbModifier).some(v => v.type.includes(cofig)))
+    const mismatches = field.modifiers
+      .filter(isDbModifier)
+      .map(c => c as any as DbModifier<string, Provider, string, any>)
+      .filter(v => !v.type.includes(config.datasource.provider));
+
+    if (mismatches.length) {
+      throw new Error(
+        `ModifierErr: Provider is "${config.datasource.provider}", but ${model.name} is using a non-${config.datasource.provider} @db modifier`,
+      );
+    }
   }
 
   for (const relation of model.columns.filter(isRelation)) {
     const modifiers = relation.modifiers as Types.Modifier<Relation>[];
-    const otherSideModel = (modifiers[0] as Types.Modifier<Relation, 'model'>)
-      .value;
+    const { value: otherSideModel } = modifiers[0] as Types.Modifier<
+      Relation,
+      'model'
+    >;
 
     const relationName = modifiers.find(
       ({ type }) => type === 'name',

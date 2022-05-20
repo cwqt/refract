@@ -15,7 +15,7 @@ import { Nullable } from '../public/modifiers';
 const baseConfig: Omit<Types.Config, 'schema'> = {
   datasource: {
     url: 'env("DATABASE_URL")',
-    provider: 'postgresql',
+    provider: 'mysql',
     shadowDatabaseUrl: 'env("DATABASE_SHADOW_URL")',
     referentialIntegrity: 'prisma',
   },

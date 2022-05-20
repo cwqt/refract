@@ -1,34 +1,36 @@
-// https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#mysql
-
 import { db } from './utils';
 
+// https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#mysql
 const _ = db('mysql');
 
+// prettier-ignore
 export default {
-  Char: (value: string) => _.String('Char' as const, value),
-  VarChar: (value: string) => _.String('VarChar' as const, value),
-  TinyInt: (value: number) => _.Boolean('TinyInt' as const, value),
-  UnsignedSmallInt: _.Int('UnsignedSmallInt' as const),
-  UnsignedBigInt: _.BigInt('UnsignedBigInt' as const),
-  BigInt: _.BigInt('BigInt' as const),
-  VarBinary: _.Bytes('VarBinary' as const),
-  LongBlob: _.Bytes('LongBlog' as const),
-  TinyBlob: _.Bytes('TinyBlob' as const),
-  MediumBlob: _.Bytes('MediumBlob' as const),
-  Blob: _.Bytes('Blob' as const),
-  Binary: _.Bytes('Binary' as const),
-  Date: _.DateTime('Date' as const),
-  DateTime: _.DateTime('DateTime' as const),
-  Timestamp: _.DateTime('Timestamp' as const),
-  Time: _.DateTime('Time' as const),
-  Float: _.Float('Float' as const),
-  Double: _.Float('Double' as const),
-  SmallInt: _.BigInt('SmallInt' as const),
-  MediumInt: _.Int('MediumInt' as const),
-  UnsignedMediumInt: _.Int('UnsignedMediumInt' as const),
-  Year: _.Int('Year' as const),
-  Json: _.Json('Json' as const),
-  Text: _.String('Text' as const),
-  Bit: (value: number) => _.Bytes('Bit' as const, value),
-  Decimal: (x: number, y: number) => _.Decimal('Decimal' as const, [x, y]),
+  Char: (value: string) =>       _.String('Char', value),
+  VarChar: (value: string) =>    _.String('VarChar', value),
+  TinyInt: (value: number) =>    _.Boolean('TinyInt', value),
+  UnsignedBigInt:                _.BigInt('UnsignedBigInt'),
+  BigInt:                        _.BigInt('BigInt'),
+  SmallInt:                      _.BigInt('SmallInt'),
+  UnsignedSmallInt:              _.Int('UnsignedSmallInt'),
+  MediumInt:                     _.Int('MediumInt'),
+  UnsignedMediumInt:             _.Int('UnsignedMediumInt'),
+  Year:                          _.Int('Year'),
+  Float:                         _.Float('Float'),
+  Double:                        _.Float('Double'),
+  VarBinary:                     _.Bytes('VarBinary'),
+  LongBlob:                      _.Bytes('LongBlog'),
+  TinyBlob:                      _.Bytes('TinyBlob'),
+  MediumBlob:                    _.Bytes('MediumBlob'),
+  Blob:                          _.Bytes('Blob'),
+  Binary:                        _.Bytes('Binary'),
+  Bit: (value: number) =>        _.Bytes('Bit', value),
+  Date:                          _.DateTime('Date'),
+  DateTime:                      _.DateTime('DateTime'),
+  Timestamp:                     _.DateTime('Timestamp'),
+  Time:                          _.DateTime('Time'),
+  Json:                          _.Json('Json'),
+  Text:                          _.String('Text'),
+  Decimal: (...coords:Coords) => _.Decimal('Decimal', coords),
 };
+
+type Coords = [x: number, y: number];

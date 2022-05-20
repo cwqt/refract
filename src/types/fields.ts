@@ -3,6 +3,8 @@ import { Modifier, Modifiers } from './modifiers';
 import { Type, TypeData } from './types';
 import { UnionToIntersection } from './utils';
 import * as Types from './types';
+import { Provider } from './config';
+import { DbModifier } from '../public/db/utils';
 
 // Column data-type, String, Int etc.
 export type Field<T extends Type, M extends Modifiers<T> = Modifiers<T>> = {
@@ -57,6 +59,12 @@ export function isEnum(column: TopColumn): column is Column<'Enum'> {
 
 export function isRelation(column: TopColumn): column is Column<Relation> {
   return ['OneToMany', 'ManyToOne', 'OneToOne'].includes(column.type);
+}
+
+export function isDbModifier(
+  column: Modifier<any>,
+): column is DbModifier<string, Provider, string, any> {
+  return (column.type as string).startsWith('@db');
 }
 
 export function isScalar(column: TopColumn): column is Column<Scalar> {

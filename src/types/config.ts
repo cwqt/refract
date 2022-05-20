@@ -1,8 +1,15 @@
 import path from 'path';
 import { Block } from './blocks';
 
+export type Provider =
+  | 'mongodb'
+  | 'postgresql'
+  | 'mysql'
+  | 'sqlite'
+  | 'sqlserver';
+
 export type Datasource = {
-  provider: 'postgresql' | 'mysql' | 'sqlite' | 'sqlserver'; //'mongodb';
+  provider: Provider;
   url: string;
   shadowDatabaseUrl?: string;
   referentialIntegrity?: 'prisma' | 'foreignKeys';
