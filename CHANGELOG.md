@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.2]
+
+- Allows for direct schema imports into `Refract`
+  - e.g. `import schema from './schema'`
+
 ## [1.1.1]
 
 Spoke too soon

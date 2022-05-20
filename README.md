@@ -8,11 +8,10 @@ Generate [Prisma](https://www.prisma.io) from TypeScript
 
 ## Installation & usage
 
-```sh
+```bash
 npm install @cwqt/refract --save-dev
 
 yarn add -D @cwqt/refract
 ```
 
 See [the docs](./docs/docs.md) for a demo & full overview of features.
-
