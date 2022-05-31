@@ -48,7 +48,7 @@ class $Enum<K extends Types.Fields.EnumKey[]>
   }
 
   _call(
-    initial?: K[number] | null,
+    initial: K[number] | null = null,
     ...modifiers: Types.Modifier<'Enum'>[]
   ): Types.Fields.Field<'Enum'> {
     return {

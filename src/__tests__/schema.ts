@@ -14,7 +14,7 @@ import {
   Map,
   Mixin,
   Model,
-  MySql as Db,
+  MySql as db,
   Nullable,
   OnDelete,
   OneToMany,
@@ -45,7 +45,7 @@ const Star = Model('Star');
 // prettier-ignore
 const Timestamps = Mixin()
   .Field('createdAt', DateTime(Default('now()')))
-  .Field('updatedAt', DateTime(UpdatedAt, Db.Date(6)));
+  .Field('updatedAt', DateTime(UpdatedAt, db.Date(6)));
 
 // prettier-ignore
 User
@@ -60,7 +60,7 @@ User
 
 // prettier-ignore
 Post
-  .Field('id',          Int(Id, Default('autoincrement()'), Db.UnsignedSmallInt))
+  .Field('id',          Int(Id, Default('autoincrement()'), db.UnsignedSmallInt))
   .Field('published',   Boolean(Default(false) ))
   .Field('title',       String(Limit(255)))
   .Field('authorId',    Int(Nullable))
@@ -74,7 +74,7 @@ Post
 // prettier-ignore
 Star
   .Field('id',          Int(Id, Default('autoincrement()')))
-  .Field('decimal',     Decimal(Db.Decimal(10, 20)))
+  .Field('decimal',     Decimal(db.Decimal(10, 20)))
   .Field('postId',      Int(Nullable))
   .Relation('post',     ManyToOne(Post, Fields('postId'), References('id')))
   .Mixin(Timestamps)

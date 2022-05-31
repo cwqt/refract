@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.3]
+
+- Fixes nullable enums
+
 ## [1.1.2]
 
 - Allows for direct schema imports into `Refract`
