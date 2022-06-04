@@ -12,7 +12,14 @@ export const modifier = <T extends Type>(
     // this is rapidly deteriorating lmao
     const type = (modifier.type as string).split('.').pop();
     return `@db.${type}${
-      (modifier.value as any) == undefined ? '' : `(${modifier.value})`
+      Array.isArray(modifier.value)
+        ? !modifier.value.length ||
+          modifier.value.every(item => item == undefined)
+          ? ''
+          : `(${modifier.value.join(', ')})`
+        : (modifier.value as any) == undefined
+        ? ''
+        : `(${modifier.value})`
     }`;
   }
 
