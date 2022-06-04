@@ -10,7 +10,7 @@ import {
   References,
 } from '../public/fields/relations';
 import { Int, String } from '../public/fields/scalars';
-import { Nullable } from '../public/modifiers';
+import { Array, Nullable } from '../public/modifiers';
 
 const baseConfig: Omit<Types.Config, 'schema'> = {
   datasource: {
@@ -157,6 +157,32 @@ describe('refract', () => {
 
       expect(() => codegen({ ...baseConfig, schema: [User, Post] })).toThrow(
         "RelationshipErr: The side of the one-to-one relation without a relation scalar must be optional\n(Model 'Post', relation 'pinned')",
+      );
+    });
+
+    it('there is a scalar array field and not using the correct datasource', () => {
+      const User = Model('User');
+
+      User.Field('id', Int(Array));
+
+      expect(() => codegen({ ...baseConfig, schema: [User] })).toThrow(
+        'ModifierErr: Scalar lists are only supported when using PostgreSQL or CockroachDB.',
+      );
+    });
+
+    it('there is a scalar optional array field', () => {
+      const User = Model('User');
+
+      User.Field('id', Int(Array, Nullable));
+
+      expect(() =>
+        codegen({
+          ...baseConfig,
+          datasource: { provider: 'postgresql', url: 'url' },
+          schema: [User],
+        }),
+      ).toThrow(
+        "ModifierErr: Field 'id' cannot be an array and optional in the same time",
       );
     });
   });

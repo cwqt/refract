@@ -46,7 +46,7 @@ export type Scalars = Append<
     // TODO: https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#unsupported
     // Unsupported: {},
   },
-  { nullable?: true; map?: string; ignore?: true; raw?: string }
+  { nullable?: true; map?: string; ignore?: true; raw?: string; array?: true }
 >;
 
 export type Enums = {

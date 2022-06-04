@@ -1,5 +1,4 @@
 import * as Types from '../types';
-import { Compounds } from '../types';
 
 export const Default = <
   T extends Types.Fields.Scalar,
@@ -37,6 +36,11 @@ export const Id = {
 
 export const Ignore = {
   type: 'ignore',
+  value: true,
+} as const;
+
+export const Array = {
+  type: 'array',
   value: true,
 } as const;
 
