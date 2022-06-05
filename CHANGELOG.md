@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.4]
+
+- Refactors and fixes bugs in the postgresql native db modifiers (<https://github.com/cwqt/refract/pull/5>)
+- Adds support to CockroachDB native modifiers and scallar array modifier
+  (<https://github.com/cwqt/refract/pull/6>)
+
 ## [1.1.3]
 
 - Fixes nullable enums
