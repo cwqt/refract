@@ -16,6 +16,23 @@ export const validateModel = (model: Types.Blocks.Model, config: Config) => {
         `ModifierErr: Provider is "${config.datasource.provider}", but ${model.name} is using a non-${config.datasource.provider} @db modifier`,
       );
     }
+
+    const isArray = field.modifiers.some(m => m.type === 'array');
+    if (
+      isArray &&
+      !['postgresql', 'cockroachdb'].includes(config.datasource.provider)
+    ) {
+      throw new Error(
+        `ModifierErr: Scalar lists are only supported when using PostgreSQL or CockroachDB.`,
+      );
+    }
+
+    const isNullable = field.modifiers.some(m => m.type === 'nullable');
+    if (isArray && isNullable) {
+      throw new Error(
+        `ModifierErr: Field '${field.name}' cannot be an array and optional in the same time`,
+      );
+    }
   }
 
   for (const relation of model.columns.filter(isRelation)) {

@@ -6,7 +6,8 @@ export type Provider =
   | 'postgresql'
   | 'mysql'
   | 'sqlite'
-  | 'sqlserver';
+  | 'sqlserver'
+  | 'cockroachdb';
 
 export type Datasource = {
   provider: Provider;

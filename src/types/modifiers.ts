@@ -9,13 +9,14 @@ export type Modifier<
 export type Modifiers<T extends Type> = keyof TypeData[T];
 
 // -------------------------------------------------------
-import { Mongo, MySql, Postgres } from '../public/db';
+import { Cockroach, Mongo, MySql, Postgres } from '../public/db';
 import { Provider } from './config';
 
 type Db = {
   mysql: typeof MySql;
   mongodb: typeof Mongo;
   postgresql: typeof Postgres;
+  cockroach: typeof Cockroach;
 };
 
 type DbModifer = {
