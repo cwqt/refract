@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.0]
+
+- Adds ability to add comments to models / enums
+- Adds `Comment` modifier
+
 ## [1.1.4]
 
 - Refactors and fixes bugs in the postgresql native db modifiers (<https://github.com/cwqt/refract/pull/5>)
