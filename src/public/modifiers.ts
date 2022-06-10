@@ -45,6 +45,7 @@ export const Array = {
 } as const;
 
 export const Raw = (value: string) => ({ type: 'raw' as const, value });
+export const Comment = (value: string) => ({ type: 'comment' as const, value });
 
 export const Limit = <K extends Types.TypeData['String']['limit']>(
   value: K,

@@ -5,7 +5,7 @@ export type BlockType = 'model' | 'enum';
 export type Block<T extends BlockType = BlockType> = {
   name: string;
   type: T;
-  columns: T extends 'enum' ? Column<'EnumKey'>[] : Column[];
+  columns: T extends 'enum' ? Column<'EnumKey' | 'Comment'>[] : Column[];
 };
 
 export type Model = Block<'model'>;

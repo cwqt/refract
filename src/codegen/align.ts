@@ -1,3 +1,5 @@
+import { nonNullable } from '../types/utils';
+
 // Align contents of a datasource/generator to that of the longest column
 export const alignKv = (value: string): string => {
   const lines = value.split('\n');
@@ -30,16 +32,23 @@ export const alignFields = (value: string): string => {
 
   return lines
     .map(line => line.split(' '))
-    .map(([columnName, columnType, ...rest]) =>
-      (columnName.trim().startsWith('@@')
-        ? [columnName, columnType, ...rest]
-        : [
-            columnName.padEnd(maximumColumnName + 1),
-            columnType ? columnType.padEnd(maximumColumnType + 1) : '',
-            ...rest.map(v => v.trim()),
-          ]
-      ).join(' '),
-    )
+    .map(([columnName, columnType, ...rest]) => {
+      return (
+        [n => n.startsWith('@@'), n => n == '//'].some(fn =>
+          fn(columnName.trim()),
+        )
+          ? [columnName, columnType, ...rest].filter(nonNullable)
+          : [
+              columnName.padEnd(maximumColumnName + 1),
+              columnType ? columnType.padEnd(maximumColumnType + 1) : '',
+              ...rest.map(v => v.trim()),
+            ]
+      ).join(' ');
+    })
     .map(v => v.trimEnd())
     .join('\n');
 };
+
+function pp(columnName: any): any {
+  console.log(JSON.stringify(columnName));
+}

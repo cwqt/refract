@@ -20,15 +20,24 @@ type Model = {
   ) => Model;
 } & Types.Blocks.Model;
 
-export const Model = (name: string): Model => new $Model(name);
+export const Model = (name: string, comment?: string): Model =>
+  new $Model(name, comment);
 
 export class $Model implements Types.Blocks.Model, Model {
   name: string;
   type: 'model' = 'model';
   columns: Types.Column<Types.Type>[] = [];
 
-  constructor(name: string) {
+  constructor(name: string, comment?: string) {
     this.name = name;
+
+    if (comment) {
+      this.columns.push({
+        name: 'comment',
+        type: 'Comment' as const,
+        modifiers: [{ type: 'value', value: comment }],
+      } as Types.Column<Types.Type>);
+    }
   }
 
   Mixin(mixin: Types.Mixin) {

@@ -6,8 +6,11 @@ import { column } from './column';
 import { del, nonNullable } from '../types/utils';
 import { dedent } from './lib/dedent';
 import { Column, validate } from '../types';
-import { alignFields, alignKv } from './align';
+import { alignKv } from './align';
+import { model } from './model';
 import { validateModel } from './validate';
+import { enumeration } from './enum';
+import { pipe } from './lib/pipe';
 
 type CodegenResult = { schema: string; time: number; output: string };
 
@@ -35,7 +38,6 @@ export default (config: Types.Config): CodegenResult => {
     [
       header('datasource'),
       block('datasource db', alignKv(kv(datasource))),
-
       group(
         header('generators'),
         generators.map(generator =>
@@ -45,29 +47,8 @@ export default (config: Types.Config): CodegenResult => {
           ),
         ),
       ),
-
-      group(
-        header('enums'),
-        enums.map(e =>
-          block(
-            `enum ${e.name}`,
-            e.columns.map(e => column(e as Column)).join('\n'),
-          ),
-        ),
-      ),
-
-      group(
-        header('models'),
-        models.map(
-          model => (
-            validateModel(model, config),
-            block(
-              `model ${model.name}`,
-              alignFields(model.columns.map(column).join('\n')),
-            )
-          ),
-        ),
-      ),
+      group(header('enums'), enums.map(enumeration)),
+      group(header('models'), models.map(pipe(validateModel(config), model))),
     ]
       .filter(nonNullable)
       .flat()

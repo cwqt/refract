@@ -45,6 +45,10 @@ export function isRaw(column: TopColumn): column is Column<'Raw'> {
   return column.type == 'Raw';
 }
 
+export function isComment(column: TopColumn): column is Column<'Comment'> {
+  return column.type == 'Comment';
+}
+
 export function isCompound(column: TopColumn): column is Column<Compound> {
   return column.type.startsWith('@@');
 }

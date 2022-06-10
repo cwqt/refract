@@ -43,10 +43,15 @@ export type Scalars = Append<
       updatedAt?: true;
     };
     Json: { default?: JsonValue };
-    // TODO: https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#unsupported
-    // Unsupported: {},
   },
-  { nullable?: true; map?: string; ignore?: true; raw?: string; array?: true }
+  {
+    nullable?: true;
+    map?: string;
+    ignore?: true;
+    raw?: string;
+    array?: true;
+    comment?: string;
+  }
 >;
 
 export type Enums = {
@@ -55,6 +60,7 @@ export type Enums = {
     nullable?: true;
     default?: string;
     ignore?: true;
+    comment?: string;
 
     // Enum of which this is from
     enum: string;
@@ -62,6 +68,7 @@ export type Enums = {
   // An entry in the enum, e.g. Enum("name", Key("Id", Map("_id")))
   EnumKey: {
     map?: string;
+    comment?: string;
   };
 };
 
@@ -83,7 +90,7 @@ export type Relations = Append<
       nullable?: true;
     };
   },
-  { name?: string; model: Model }
+  { name?: string; model: Model; comment?: string }
 >;
 
 export type Compounds = Append<
@@ -94,13 +101,14 @@ export type Compounds = Append<
     ['@@ignore']: {};
     ['@@map']: {};
   },
-  { values: string[] }
+  { values: string[]; comment?: string }
 >;
 
 export type TypeData = MergeDbModifiers<Scalars> &
   Compounds &
   Enums &
   Relations & {
+    Comment: { value: string };
     Raw: { value: string };
     Unsupported: { unsupported: string; nullable?: true };
   };

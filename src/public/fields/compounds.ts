@@ -1,5 +1,5 @@
 import { Types } from '../..';
-import { Compounds, Fields, Modifier } from '../../types';
+import { Fields, Modifier } from '../../types';
 
 const compound =
   <T extends Types.Fields.Compound, M>(type: T) =>

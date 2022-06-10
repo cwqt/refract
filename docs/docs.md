@@ -7,10 +7,11 @@ See [here for a full demo](./demo.md).
 # Model
 
 ```typescript
-const User = Model('User');
+const User = Model('User', 'This is an optional comment');
 
 User.Field('id', Int(Id, Default('autoincrement()')));
 
+// This is an optional comment
 // model User {
 //    id  Int @id @default(autoincrement())
 // }
@@ -34,30 +35,28 @@ const PrimaryKey = Int(Id, Default('autoincrement()'));
 ```
 
 - `Int`
-  - Default(number), Unique, Id, Nullable, Map, Raw
+  - Default(number), Unique, Id, Nullable, Map, Raw, Comment
 - `Float`
-  - Default(Float), Nullable, Map, Raw
+  - Default(Float), Nullable, Map, Raw, Comment
 - `String`
-  - Default(string), Unique, Limit, Nullable, Map, Raw
+  - Default(string), Unique, Limit, Nullable, Map, Raw, Comment
 - `Boolean`
-  - Default(boolean), Unique, Id, Limit(number), Nullable, Map, Raw
+  - Default(boolean), Unique, Id, Limit(number), Nullable, Map, Raw, Comment
 - `DateTime`
-  - Default("now()"), UpdatedAt, Nullable, Map, Raw
+  - Default("now()"), UpdatedAt, Nullable, Map, Raw, Comment
 - `Json`
-  - Default(JsonValue), Nullable, Map, Raw
+  - Default(JsonValue), Nullable, Map, Raw, Comment
 - `BigInt`
-  - Default(BigInt), Nullable, Map, Raw
+  - Default(BigInt), Nullable, Map, Raw, Comment
 - `Decimal`
-  - Default(number), Nullable, Map, Raw
+  - Default(number), Nullable, Map, Raw, Comment
 - `Bytes`
-  - Nullable, Map, Raw
+  - Nullable, Map, Raw, Comment
 
-You can use the `Raw()` modifier to use currently unsupported decorators, e.g.
+You can use the `Raw()` modifier to use any unsupported decorators, e.g.
 
-```ts
-const ObjectId = Raw('@db.ObjectId');
-
-model.Field('id', String(ObjectId, Map('_id'), Default('auto()')));
+```typescript
+model.Field('id', String(Raw('@db.ObjectId'), Map('_id'), Default('auto()')));
 
 // id   String  @db.ObjectId  @map("_id") @default(auto())
 ```
@@ -67,7 +66,7 @@ Additionally there's `Unsupported`, see
 
 ## `@db` attributes
 
-Currently there's support for `mysql`, `postgresql` & `mongodb` `@db`
+Currently there's support for `mysql`, `postgresql`, `cockroachdb` & `mongodb` `@db`
 attributes, and can be used like all the other modifiers.
 
 ```typescript
@@ -76,14 +75,14 @@ import { MySql as Db } from '@cwqt/refract';
 model.Field('name', String(Db.VarChar));
 ```
 
-Check `src/public/db/mysql.ts` (`mongo.ts`/`postgresql.ts`) for list of mappings between scalar types &
+Check `src/public/db/mysql.ts` (`mongo.ts`/`postgresql.ts`/`cockroach.ts`) for list of mappings between scalar types &
 attributes.
 
 # Enums
 
 Composed of two parts:
 
-- `Enum(name, ...Key)`
+- `Enum(name, comment?, ...Key)`
 - `Key(value, ...modifiers)`
   - Map
 
@@ -97,6 +96,12 @@ const Animal = Enum(
 
 // fave  Animal @default(Seacow)
 model.Field('fave', Animal('Seacow'));
+
+const WithComment = Enum('Foo', 'This is with a comment', Key('Bar'));
+// This is with a comment
+// enum Foo {
+//  Bar
+// }
 ```
 
 # Blocks

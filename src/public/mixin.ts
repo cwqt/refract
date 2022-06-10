@@ -7,7 +7,10 @@ export const Mixin = () => {
     name: string,
     type: Types.Fields.Field<T>,
   ) => {
-    columns.push({ name, ...type } as Types.Column<Types.Fields.Scalar>);
+    columns.push({
+      name,
+      ...type,
+    } as Types.Column<Types.Fields.Scalar>);
 
     return { Field, columns };
   };

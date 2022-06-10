@@ -21,24 +21,30 @@ generator client {
 
 // enums ---------------------------------------------------------------------------
 
+// This is the Role Enum
 enum Role {
+	// This is the admin role
 	ADMIN @map(\\"admin\\")
 	USER @map(\\"user\\")
+	// This is the owner role
 	OWNER @map(\\"owner\\")
 }
 
 // models --------------------------------------------------------------------------
 
+// This is the User model
 model User {
-	id         Int       @id @default(autoincrement()) @map(\\"_id\\") @db.Value('foo')
-	email      String    @unique
+	id         Int        @id @default(autoincrement()) @map(\\"_id\\") @db.Value('foo')
+	email      String     @unique @db.VarChar(4)
 	name       String?
-	height     Float     @default(1.8)
-	role       Role      @default(USER)
-	posts      Post[]    @relation(\\"WrittenPosts\\")
-	pinned     Post?     @relation(\\"PinnedPost\\")
-	createdAt  DateTime  @default(now())
-	updatedAt  DateTime  @updatedAt @db.Date(6)
+	// The user model
+	height     Float      @default(1.8)
+	role       Role       @default(USER)
+	// Relations are cool
+	posts      Post[]     @relation(\\"WrittenPosts\\")
+	pinned     Post?      @relation(\\"PinnedPost\\")
+	createdAt  DateTime   @default(now())
+	updatedAt  DateTime   @updatedAt @db.Date(6)
 }
 
 model Post {
@@ -64,6 +70,7 @@ model Star {
 	updatedAt       DateTime                 @updatedAt @db.Date(6)
 	location        Unsupported(\\"polygon\\")?
 	@@unique([A, B], map: \\"_AB_unique\\")
+	// Block level comments?
 	@@index([wow], map: \\"_B_index\\")
 	@@map(\\"Group\\")
 }"

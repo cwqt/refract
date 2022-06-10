@@ -6,6 +6,8 @@ import { isArray, isString, nonNullable } from '../types/utils';
 export const column = (column: Types.Column): string => {
   if (Types.Fields.isUnsupported(column)) return unsupported(column);
   if (Types.Fields.isCompound(column)) return compound(column);
+  if (Types.Fields.isComment(column))
+    return `\t// ${column.modifiers[0].value}`;
   if (Types.Fields.isRaw(column)) return `\t${column.modifiers[0].value}`;
   if (Types.Fields.isEnum(column)) return enumeration(column);
   if (Types.Fields.isEnumKey(column)) return enumKey(column);
@@ -58,7 +60,7 @@ const compound = (column: Types.Column<Types.Fields.Compound>) => {
 
   const map = column.modifiers.find(v => (v.type as 'values' | 'map') == 'map');
   const args = [
-    `[${column.modifiers[0].value.join(', ')}]`,
+    `[${(column.modifiers[0].value as string[]).join(', ')}]`,
     map ? `map: "${map.value}"` : null,
   ].filter(nonNullable);
 
