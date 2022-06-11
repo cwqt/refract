@@ -1,16 +1,15 @@
-import * as Types from '../types';
 import { performance } from 'perf_hooks';
-import { block, header } from './block';
-import { kv } from './transform';
-import { column } from './column';
+import * as Types from '../types';
+import { validate } from '../types';
 import { del, nonNullable } from '../types/utils';
-import { dedent } from './lib/dedent';
-import { Column, validate } from '../types';
 import { alignKv } from './align';
-import { model } from './model';
-import { validateModel } from './validate';
+import { block, header } from './block';
 import { enumeration } from './enum';
+import { dedent } from './lib/dedent';
 import { pipe } from './lib/pipe';
+import { model } from './model';
+import { kv } from './transform';
+import { validateModel } from './validate';
 
 type CodegenResult = { schema: string; time: number; output: string };
 

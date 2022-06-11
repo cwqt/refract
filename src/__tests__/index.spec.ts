@@ -1,46 +1,74 @@
 import codegen from '../codegen';
 import schema from './schema';
 import * as Types from '../types';
-import { Model } from '../public/model';
 import {
   Fields,
   ManyToOne,
-  OneToMany,
-  OneToOne,
   References,
-} from '../public/fields/relations';
-import { Int, String } from '../public/fields/scalars';
-import { Array, Nullable } from '../public/modifiers';
+  Array,
+  Default,
+  Id,
+  String,
+  OneToOne,
+  Int,
+  Nullable,
+  Model,
+  OneToMany,
+} from '../';
 
-const baseConfig: Omit<Types.Config, 'schema'> = {
-  datasource: {
-    url: 'env("DATABASE_URL")',
-    provider: 'mysql',
-    shadowDatabaseUrl: 'env("DATABASE_SHADOW_URL")',
-    referentialIntegrity: 'prisma',
-  },
-  generators: [
-    {
-      name: 'client',
-      provider: 'prisma-client-js',
-      binaryTargets: [
-        'native',
-        'rhel-openssl-1.0.x',
-        'linux-arm64-openssl-1.0.x',
-        'darwin-arm64',
-      ],
-      previewFeatures: ['referentialIntegrity'],
+const generate = (
+  schema: Types.Config['schema'],
+  overrides: Partial<Types.Config> = {},
+) =>
+  codegen({
+    schema,
+    datasource: {
+      url: 'env("DATABASE_URL")',
+      provider: 'mysql',
+      shadowDatabaseUrl: 'env("DATABASE_SHADOW_URL")',
+      referentialIntegrity: 'prisma',
     },
-  ],
-};
+    generators: [
+      {
+        name: 'client',
+        provider: 'prisma-client-js',
+        binaryTargets: [
+          'native',
+          'rhel-openssl-1.0.x',
+          'linux-arm64-openssl-1.0.x',
+          'darwin-arm64',
+        ],
+        previewFeatures: ['referentialIntegrity'],
+      },
+    ],
+    ...overrides,
+  });
 
 describe('refract', () => {
   it('should generate the schema', () => {
-    const { schema: prisma } = codegen({ ...baseConfig, schema });
+    const { schema: prisma } = generate(schema);
 
     console.log(prisma);
 
     expect(replaceGeneratedTime(prisma)).toMatchSnapshot();
+  });
+
+  describe('should generate implicit many-to-many schema', () => {
+    const Post = Model('Post');
+    const Category = Model('Category');
+
+    Post.Field('id', Int(Id, Default('autoincrement()'))).Relation(
+      'categories',
+      OneToMany(Category),
+    );
+
+    Category.Field('id', Int(Id, Default('autoincrement()'))).Relation(
+      'posts',
+      OneToMany(Post),
+    );
+
+    const implicit = generate([Post, Category]);
+    console.log(implicit.schema);
   });
 
   describe('should validate the schema and throw error when', () => {
@@ -57,7 +85,7 @@ describe('refract', () => {
         ManyToOne(User, Fields('authorId'), References('id'), Nullable),
       );
 
-      expect(() => codegen({ ...baseConfig, schema: [User, Post] })).toThrow(
+      expect(() => generate([User, Post])).toThrow(
         "RelationshipErr: The other side of the relation 'posts' with name 'WrittenPosts' don't exist in model 'User'",
       );
     });
@@ -67,7 +95,7 @@ describe('refract', () => {
 
       User.Relation('friend', OneToOne(User));
 
-      expect(() => codegen({ ...baseConfig, schema: [User] })).toThrow(
+      expect(() => generate([User])).toThrow(
         "RelationshipErr: The model 'User' have an ambiguous self relation. The fields 'friend' and 'User' both refer to 'User'. If they are part of the same relation add the same relation name for them with RelationName(<name>) modifier",
       );
     });
@@ -82,7 +110,7 @@ describe('refract', () => {
         ManyToOne(User, Fields('authorId'), References('id'), Nullable),
       );
 
-      expect(() => codegen({ ...baseConfig, schema: [User, Post] })).toThrow(
+      expect(() => generate([User, Post])).toThrow(
         "RelationshipErr: Columns in 'fields' don't exist in model 'Post': 'authorId'",
       );
     });
@@ -96,7 +124,7 @@ describe('refract', () => {
         ManyToOne(User, Fields('authorId'), References('id'), Nullable),
       );
 
-      expect(() => codegen({ ...baseConfig, schema: [User, Post] })).toThrow(
+      expect(() => generate([User, Post])).toThrow(
         "RelationshipErr: Referenced columns in 'references' don't exist in model 'User': 'id'",
       );
     });
@@ -118,7 +146,7 @@ describe('refract', () => {
           ),
         );
 
-      expect(() => codegen({ ...baseConfig, schema: [User, Post] })).toThrow(
+      expect(() => generate([User, Post])).toThrow(
         "RelationshipErr: You must specify the same number of fields in 'fields' and 'references' for relation 'author' in model 'Post'",
       );
     });
@@ -140,7 +168,7 @@ describe('refract', () => {
           ),
         );
 
-      expect(() => codegen({ ...baseConfig, schema: [User, Post] })).toThrow(
+      expect(() => generate([User, Post])).toThrow(
         "RelationshipErr: The type of the field 'authorName' in the model 'Post' does not match the type of the referenced field 'name' in model 'User'",
       );
     });
@@ -155,7 +183,7 @@ describe('refract', () => {
         OneToOne(User, Fields('pinnedById'), References('id'), Nullable),
       );
 
-      expect(() => codegen({ ...baseConfig, schema: [User, Post] })).toThrow(
+      expect(() => generate([User, Post])).toThrow(
         "RelationshipErr: The side of the one-to-one relation without a relation scalar must be optional\n(Model 'Post', relation 'pinned')",
       );
     });
@@ -165,7 +193,7 @@ describe('refract', () => {
 
       User.Field('id', Int(Array));
 
-      expect(() => codegen({ ...baseConfig, schema: [User] })).toThrow(
+      expect(() => generate([User])).toThrow(
         'ModifierErr: Scalar lists are only supported when using PostgreSQL or CockroachDB.',
       );
     });
@@ -176,10 +204,8 @@ describe('refract', () => {
       User.Field('id', Int(Array, Nullable));
 
       expect(() =>
-        codegen({
-          ...baseConfig,
+        generate([User], {
           datasource: { provider: 'postgresql', url: 'url' },
-          schema: [User],
         }),
       ).toThrow(
         "ModifierErr: Field 'id' cannot be an array and optional in the same time",

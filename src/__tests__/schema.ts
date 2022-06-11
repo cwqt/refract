@@ -1,7 +1,9 @@
 import {
   Boolean,
+  Comment,
   Compound,
   DateTime,
+  Decimal,
   Default,
   Enum,
   Fields,
@@ -26,9 +28,7 @@ import {
   Unique,
   Unsupported,
   UpdatedAt,
-  Comment,
-} from '../';
-import { Decimal } from '../public/fields/scalars';
+} from '..';
 
 // roughly from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
 
