@@ -1,6 +1,6 @@
 {
   "name": "@cwqt/refract",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Generate Prisma from TypeScript",
   "author": "cwqt",
   "license": "GPL-3.0-or-later",
@@ -23,13 +23,12 @@
     "typescript"
   ],
   "bugs": {
-    "url": "https://gitlab.com/cxss/refract/issues"
+    "url": "https://github.com/cwqt/refract/issues"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
-  "homepage": "https://gitlab.com/cxss/refract#readme",
+  "homepage": "https://github.com/cwqt/refract#readme",
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^27.4.1",
