@@ -1,6 +1,6 @@
 {
   "name": "@cwqt/refract",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Generate Prisma from TypeScript",
   "author": "cwqt",
   "license": "GPL-3.0-or-later",
