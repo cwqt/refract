@@ -18,6 +18,7 @@ yarn add -D @cwqt/refract
 
 See [here for a full demo](./DEMO.md).
 
+- [Generating a Prisma file](#generating-a-prisma-file)
 - [Models](#model)
 - [Scalars](#scalars)
   - [`@db` attributes](#--db--attributes)
@@ -33,6 +34,45 @@ See [here for a full demo](./DEMO.md).
 - [Handling circular relationships](#handling-circular-relationships)
 
 ---
+
+# Generating a Prisma file
+
+Use the `Refract` default export of this package to generate a Prisma file.
+
+```typescript
+// schema.ts
+
+// Import the entry-point
+import Refract from '@cwqt/refract';
+// Import your custom Models
+import { Roles, User, Posts } from './models';
+
+Refract({
+  // Supply models/enums for generation
+  schema: [Roles, User, Posts],
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#datasource
+  datasource: {
+    provider: 'postgresql',
+    url: 'env("DATABASE_URL")',
+    shadowDatabaseUrl: 'env("DATABASE_SHADOW_URL")',
+    referentialIntegrity: 'prisma',
+  },
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#generator
+  generators: [
+    {
+      provider: 'prisma-client-js',
+      previewFeatures: ['referentialIntegrity'],
+      engineType: 'library',
+      binaryTargets: ['native'],
+    },
+  ],
+  // Define output path for generated Prisma file
+  output: path.join(process.cwd(), 'schema.prisma'),
+});
+```
+
+A command like `npx ts-node schema.ts` will run this TypeScript code & generate
+the resulting Prisma file in the `output` path.
 
 # Models
 
