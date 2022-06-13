@@ -8,9 +8,8 @@ Generate [Prisma](https://www.prisma.io) from TypeScript
 
 ## Installation
 
-```bash
-npm install @cwqt/refract --save-dev
-
+```shell
+npm i -D @cwqt/refract
 yarn add -D @cwqt/refract
 ```
 
@@ -18,7 +17,6 @@ yarn add -D @cwqt/refract
 
 See [here for a full demo](./DEMO.md).
 
-- [Generating a Prisma file](#generating-a-prisma-file)
 - [Models](#model)
 - [Scalars](#scalars)
   - [`@db` attributes](#--db--attributes)
@@ -34,8 +32,6 @@ See [here for a full demo](./DEMO.md).
 - [Handling circular relationships](#handling-circular-relationships)
 
 ---
-
-# Generating a Prisma file
 
 Use the `Refract` default export of this package to generate a Prisma file.
 
@@ -72,7 +68,7 @@ Refract({
 ```
 
 A command like `npx ts-node schema.ts` will run this TypeScript code & generate
-the resulting Prisma file in the `output` path.
+the resulting Prisma file at the `output` path.
 
 # Models
 
@@ -342,5 +338,5 @@ Refract({
 ```
 
 <div align="center">
-  <img src="https://ftp.cass.si/=799p94e7.png" width="50%" >
+  <img src="https://ftp.cass.si/=799p94e7.png" width="40%" >
 </div>
