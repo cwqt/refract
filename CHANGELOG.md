@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.1]
+
+- Improved documentation
+
 ## [1.2.0]
 
 - Adds ability to add comments to models / enums

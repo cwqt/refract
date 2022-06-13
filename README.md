@@ -24,6 +24,7 @@ See [here for a full demo](./DEMO.md).
 - [Relationships](#relationships)
   - [Examples](#examples)
     - [OneToOne](#onetoone)
+    - [Implicit ManyToMany](#implicit-manytomany)
     - [Ambiguous relations](#ambiguous-relations)
     - [Referentials Actions](#referentials-actions)
 - [Enums](#enums)
@@ -130,6 +131,24 @@ Something.Field('id', PrimaryKey)
 User
   .Field('id', PrimaryKey)
   .Relation('thingy', OneToOne(Something));
+```
+
+### Implicit ManyToMany
+
+<https://www.prisma.io/docs/concepts/components/prisma-schema/relations/many-to-many-relations#implicit-many-to-many-relations>
+
+<!-- prettier-ignore -->
+```typescript
+const Post = Model('Post');
+const Category = Model('Category');
+
+Post
+  .Field('id',            Int(Id, Default('autoincrement()')))
+  .Relation('categories', OneToMany(Category));
+
+Category
+  .Field('id',            Int(Id, Default('autoincrement()')))
+  .Relation('posts',      OneToMany(Post));
 ```
 
 ### [Ambiguous relations](https://www.prisma.io/docs/concepts/components/prisma-schema/relations#disambiguating-relations)
