@@ -3,7 +3,7 @@
 Generate [Prisma](https://www.prisma.io) from TypeScript
 
 <div align="center">
-  <img src="https://ftp.cass.si/9888e=mw7.png" width="75%" />
+  <img src="https://ftp.cass.si/hzywUm159.png" />
 </div>
 
 ## Installation

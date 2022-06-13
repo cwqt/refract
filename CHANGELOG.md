@@ -1,8 +1,15 @@
 # Changelog
 
-## [1.2.1]
+## [1.2.3]
+
+- Update README image
+
+## [1.2.2]
 
 - Adds `@@fulltext` compound field
+
+## [1.2.1]
+
 - Improved documentation
 
 ## [1.2.0]
