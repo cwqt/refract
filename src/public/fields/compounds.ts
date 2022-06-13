@@ -15,6 +15,7 @@ export const Id = compound('@@id');
 export const Map = compound('@@map');
 export const Index = compound('@@index');
 export const Unique = compound('@@unique');
+export const Fulltext = compound('@@fulltext');
 export const Ignore: Fields.Field<'@@ignore'> = {
   type: '@@ignore',
   modifiers: [],

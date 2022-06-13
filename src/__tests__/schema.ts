@@ -84,6 +84,7 @@ Star
   .Block(Compound.Unique(["A", "B"], Map("_AB_unique")))
   .Block(Compound.Index(["wow"], Map("_B_index"), Comment("Block level comments?")))
   .Block(Compound.Map("Group"))
+  .Block(Compound.Fulltext(["location", "decimal"]))
 
 export default [Role, User, Post, Star];
 

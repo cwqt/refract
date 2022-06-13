@@ -100,6 +100,7 @@ export type Compounds = Append<
     ['@@index']: { map: string };
     ['@@ignore']: {};
     ['@@map']: {};
+    ['@@fulltext']: {};
   },
   { values: string[]; comment?: string }
 >;

@@ -2,6 +2,7 @@
 
 ## [1.2.1]
 
+- Adds `@@fulltext` compound field
 - Improved documentation
 
 ## [1.2.0]

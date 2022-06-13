@@ -11,11 +11,11 @@ import { model } from './model';
 import { kv } from './transform';
 import { validateModel } from './validate';
 
-type CodegenResult = { schema: string; time: number; output: string };
-
 // Takes a Config input & returns a generated Prisma schema file as a string
 // which can then be written to a file / formatted by Prisma CLI
-export default (config: Types.Config): CodegenResult => {
+export default (
+  config: Types.Config,
+): { schema: string; time: number; output: string } => {
   const start = performance.now();
 
   // Allow direct imports, e.g. `import * as schema from './foo'`

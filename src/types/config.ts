@@ -54,6 +54,19 @@ export const validate = (config: Config): Config => {
       );
   }
 
+  if (config.datasource.provider == 'mysql') {
+    if (
+      config.generators.some(
+        g =>
+          g.previewFeatures.includes('fullTextSearch') &&
+          !g.previewFeatures.includes('fullTextIndex'),
+      )
+    )
+      throw new Error(
+        'MySQL Users must include both fullTextSearch & fullTextIndex in the preview features.',
+      );
+  }
+
   return {
     ...config,
     output: config.output || path.join(process.cwd(), 'schema.prisma'),

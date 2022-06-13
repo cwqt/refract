@@ -261,7 +261,7 @@ const WithComment = Enum(
 
 # Blocks
 
-Used for adding fields like `@@map`, `@@id` etc.
+Used for adding fields like `@@map`, `@@id`, `@@fulltext` etc.
 
 ```typescript
 import { Compound, Mongo as db } from '@cwqt/refract';

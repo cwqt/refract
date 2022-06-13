@@ -62,16 +62,17 @@ model Post {
 }
 
 model Star {
-	id              Int                      @id @default(autoincrement())
-	decimal         Decimal                  @db.Decimal(10, 20)
-	postId          Int?
-	post            Post                     @relation(fields: [postId], references: [id])
-	createdAt       DateTime                 @default(now())
-	updatedAt       DateTime                 @updatedAt @db.Date(6)
-	location        Unsupported(\\"polygon\\")?
+	id                     Int                      @id @default(autoincrement())
+	decimal                Decimal                  @db.Decimal(10, 20)
+	postId                 Int?
+	post                   Post                     @relation(fields: [postId], references: [id])
+	createdAt              DateTime                 @default(now())
+	updatedAt              DateTime                 @updatedAt @db.Date(6)
+	location               Unsupported(\\"polygon\\")?
 	@@unique([A, B], map: \\"_AB_unique\\")
 	// Block level comments?
 	@@index([wow], map: \\"_B_index\\")
 	@@map(\\"Group\\")
+	@@fulltext([location, decimal])
 }"
 `;
