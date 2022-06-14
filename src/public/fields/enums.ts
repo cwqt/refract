@@ -1,10 +1,26 @@
 import * as Types from '../../types';
-import { nonNullable } from '../../types/utils';
+import { isString, nonNullable } from '../../types/utils';
 
 export const Key = <T extends string>(
-  name: T,
-  ...modifiers: Types.Modifier<'EnumKey'>[]
-): Types.Fields.EnumKey<T> => ({ name, modifiers });
+  ...args:
+    | [name: T, ...modifiers: Types.Modifier<'EnumKey'>[]]
+    | [name: T, ...modifiers: Types.Modifier<'EnumKey'>[], comment: string]
+): Types.Fields.EnumKey<T> => {
+  const [name, ...modifiers] = args;
+
+  return isString(args[args.length - 1])
+    ? {
+        name,
+        modifiers: [
+          ...(modifiers.slice(
+            0,
+            modifiers.length - 1,
+          ) as unknown as Types.Modifier<'EnumKey'>[]),
+          { type: 'comment' as const, value: args[args.length - 1] as string },
+        ],
+      }
+    : { name, modifiers: modifiers as Types.Modifier<'EnumKey'>[] };
+};
 
 class $Enum<K extends Types.Fields.EnumKey[]>
   extends Function

@@ -75,10 +75,11 @@ the resulting Prisma file at the `output` path.
 ```typescript
 const User = Model('User', 'This is an optional comment');
 
-User.Field('id', Int(Id, Default('autoincrement()')));
+User.Field('id', Int(Id, Default('autoincrement()')), 'The primary key');
 
-// This is an optional comment
+// // This is an optional comment
 // model User {
+//    // The primary key
 //    id  Int @id @default(autoincrement())
 // }
 ```
@@ -93,7 +94,32 @@ User.Field('id', Int(Id, Default('autoincrement()')));
 
 # Scalars
 
-All scalars are variadic functions that take values of the modifiers as follows:
+Scalars are the types of data that the column contains, `Int`, `String`
+etc. You can define & re-use Scalars wherever in your models
+
+```typescript
+const PrimaryKey = Int(Id, Default('autoincrement()'));
+
+// id Int   @id @default("autoincrement()")
+m.Field('id', PrimaryKey);
+```
+
+## Modifiers
+
+Modifiers are functions/objects that append attributes to a column e.g.
+
+```typescript
+// String? @default("Hello World")
+String(Default('Hello World'), Nullable);
+
+// Int @id @unique @default(autoincrement())
+Int(Id, Unique, Default('autoincrement()'));
+
+// DateTime @default(now()) @updatedAt
+DateTime(Default('now()'), UpdatedAt);
+```
+
+Certain modifiers are constrained to certain scalars, the mapping is:
 
 - `String`: Unique, Id, Default(string | 'auto()'), Limit(number)
 - `Int`: Unique, Id, Default('cuid' | 'autoincrement()' | 'uuid()' | number)
@@ -105,22 +131,13 @@ All scalars are variadic functions that take values of the modifiers as follows:
 - `DateTime`: Default('now()'), UpdatedAt
 - `Unsupported`
 
-Additionally all scalars can use: Nullable, Map, Ignore, Raw, Array & Comment
-modifiers.
+Additionally all scalars can use: Nullable, Map, Ignore, Raw & Array modifiers.
+
+The `Raw()` modifier can be used as an escape hatch:
 
 ```typescript
-// Int @id @default(autoincrement())
-Int(Id, Default('autoincrement()'));
-
-// DateTime @default(now()) @updatedAt
-DateTime(Default('now()'), UpdatedAt);
-```
-
-The `Raw()` modifier to use any unsupported Prisma decorators, e.g.
-
-```typescript
-// String  @db.ObjectId  @map("_id") @default(auto())
-String(Raw('@db.ObjectId'), Map('_id'), Default('auto()'));
+// String  @db.ObjectId
+String(Raw('@db.ObjectId'));
 ```
 
 ## `@db` attributes
@@ -141,12 +158,12 @@ attributes.
 # Relationships
 
 - `OneToMany` (model, name?, ...modifiers)
-  - Nullable, Comment
+  - Nullable
 - `OneToOne` (model, name?, fields, references, ...modifiers)
 - `OneToOne` (model, name?, ...modifiers)
-  - Nullable, OnUpdate(Action), OnDelete(Action), Comment
+  - Nullable, OnUpdate(Action), OnDelete(Action)
 - `ManyToOne` (model, name?, fields, references, ...modifiers)
-  - Nullable, OnUpdate(Action), OnDelete(Action), Comment
+  - Nullable, OnUpdate(Action), OnDelete(Action)
 
 Where `Action` is one of: `Cascade`, `Restrict`, `NoAction`, `SetNull`, `SetDefault`
 
@@ -229,8 +246,8 @@ m.Relation(
 Composed of two parts:
 
 - `Enum(name, comment?, ...Key)`
-- `Key(value, ...modifiers)`
-  - Map, Comment
+- `Key(value, ...modifiers, comment?)`
+  - Map
 
 <!-- prettier-ignore -->
 ```typescript
@@ -248,9 +265,8 @@ model
   .Field('null', Animal());
 
 const WithComment = Enum(
-  "Foo",
-  "This is with a comment",
-  Key("Bar", Comment("Another comment"))
+  "Foo", "This is with a comment",
+  Key("Bar", "Another comment")
 );
 // // This is with a comment
 // enum Foo {

@@ -1,6 +1,6 @@
 import { db } from './utils';
 
-// https://www.prisma.io/docs/concepts/database-connectors/postgresql
+// https://www.prisma.io/docs/concepts/database-connectors/cockroachdb
 const _ = db('cockroachdb');
 
 // prettier-ignore

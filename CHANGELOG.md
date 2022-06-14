@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.0]
+
+- Deprecated `Comment` modifier over changing `.Field()` & Enum signatures to
+  include an optional ending parameter
+
 ## [1.2.3]
 
 - Update README image

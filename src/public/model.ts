@@ -10,13 +10,16 @@ type Model = {
   Relation: <T extends Types.Fields.Relation>(
     name: string,
     type: Types.Fields.Field<T>,
+    comment?: string,
   ) => Model;
   Field: <T extends Types.Fields.Scalar | 'Enum' | 'Unsupported'>(
     name: string,
     type: Types.Fields.Field<T>,
+    comment?: string,
   ) => Model;
   Block: <T extends Types.Fields.Compound>(
     type: Types.Fields.Field<T>,
+    comment?: string,
   ) => Model;
 } & Types.Blocks.Model;
 
@@ -60,7 +63,10 @@ export class $Model implements Types.Blocks.Model, Model {
   Relation<T extends Types.Fields.Relation>(
     name: string,
     type: Types.Fields.Field<T>,
+    comment?: string,
   ) {
+    if (comment)
+      type.modifiers.push({ type: 'comment', value: comment } as any);
     this.columns.push({ name, ...type } as unknown as Types.Column<Types.Type>);
     return this;
   }
@@ -68,12 +74,20 @@ export class $Model implements Types.Blocks.Model, Model {
   Field<T extends Types.Fields.Scalar | 'Enum' | 'Unsupported'>(
     name: string,
     type: Types.Fields.Field<T>,
+    comment?: string,
   ) {
+    if (comment)
+      type.modifiers.push({ type: 'comment', value: comment } as any);
     this.columns.push({ name, ...type } as unknown as Types.Column<Types.Type>);
     return this;
   }
 
-  Block<T extends Types.Fields.Compound>(type: Types.Fields.Field<T>) {
+  Block<T extends Types.Fields.Compound>(
+    type: Types.Fields.Field<T>,
+    comment?: string,
+  ) {
+    if (comment)
+      type.modifiers.push({ type: 'comment', value: comment } as any);
     this.columns.push(type as unknown as Types.Column<Types.Type>);
     return this;
   }

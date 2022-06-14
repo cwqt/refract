@@ -1,6 +1,5 @@
 import {
   Boolean,
-  Comment,
   Compound,
   DateTime,
   Decimal,
@@ -35,9 +34,9 @@ import {
 const Role = Enum(
   'Role',
   'This is the Role Enum',
-  Key('ADMIN', Map('admin'), Comment('This is the admin role')),
+  Key('ADMIN', Map('admin'), 'This is the admin role'),
   Key('USER', Map('user')),
-  Key('OWNER', Map('owner'), Comment('This is the owner role')),
+  Key('OWNER', Map('owner'), 'This is the owner role'),
 );
 
 const Post = Model('Post');
@@ -54,9 +53,9 @@ User
   .Field('id',          Int(Id, Default('autoincrement()'), Map('_id'), Raw("@db.Value('foo')")))
   .Field('email',       String(Unique, db.VarChar(4)))
   .Field('name',        String(Nullable))
-  .Field('height',      Float(Default(1.80), Comment("The user model")))
+  .Field('height',      Float(Default(1.80)), "The user model")
   .Field('role',        Role('USER', Nullable))
-  .Relation('posts',    OneToMany(Post, "WrittenPosts", Comment("Relations are cool")))
+  .Relation('posts',    OneToMany(Post, "WrittenPosts"), "Relations are cool")
   .Relation('pinned',   OneToOne(Post, "PinnedPost", Nullable))
   .Mixin(Timestamps);
 
@@ -82,7 +81,7 @@ Star
   .Mixin(Timestamps)
   .Field("location",    Unsupported("polygon", Nullable))
   .Block(Compound.Unique(["A", "B"], Map("_AB_unique")))
-  .Block(Compound.Index(["wow"], Map("_B_index"), Comment("Block level comments?")))
+  .Block(Compound.Index(["wow"], Map("_B_index")), "Block level comments?")
   .Block(Compound.Map("Group"))
   .Block(Compound.Fulltext(["location", "decimal"]))
 
