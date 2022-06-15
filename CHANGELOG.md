@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.1]
+
+- Documentation improvements
+
 ## [1.3.0]
 
 - Deprecated `Comment` modifier over changing `.Field()` & Enum signatures to
