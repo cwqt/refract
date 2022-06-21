@@ -78,10 +78,13 @@ export function isDbModifier(
 }
 
 export function isScalar(column: TopColumn): column is Column<Scalar> {
-  return [
-    isRelation(column),
-    isEnumKey(column),
-    isEnum(column),
-    isCompound(column),
-  ].every(v => v == false);
+  return (
+    typeof column == 'object' &&
+    [
+      isRelation(column),
+      isEnumKey(column),
+      isEnum(column),
+      isCompound(column),
+    ].every(v => v == false)
+  );
 }

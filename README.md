@@ -176,10 +176,13 @@ Where `Action` is one of: `Cascade`, `Restrict`, `NoAction`, `SetNull`, `SetDefa
 const User = Model('User');
 const Something = Model('Something');
 
-Something.Field('id', PrimaryKey)
+Something
+  .Field('id', PrimaryKey)
   // Holds foreign key
   .Field('userId', Int())
   .Relation('user', OneToOne(User, Fields('userId'), References('id')));
+  // Alternatively you can do Fields('userId', Int()) to avoid the extra
+  // .Field() call, this'll add the column to the model for you
 
 User
   .Field('id', PrimaryKey)

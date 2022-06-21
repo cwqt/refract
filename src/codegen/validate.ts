@@ -116,9 +116,9 @@ export const validateModel =
             `RelationshipErr: You must specify the same number of fields in 'fields' and 'references' for relation '${relation.name}' in model '${model.name}'`,
           );
 
-        for (let index = 0; index < fields.value.length; index++) {
-          const field = fields.value[index];
-          const reference = references.value[index];
+        for (let i = 0; i < fields.value.length; i++) {
+          const field = fields.value[i];
+          const reference = references.value[i];
 
           const column = model.columns.find(c => c.name === field)!;
           const otherSideColumn = otherSideModel.columns.find(

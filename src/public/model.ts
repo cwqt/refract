@@ -1,4 +1,5 @@
 import * as Types from '../types';
+import { isScalar } from '../types/fields';
 
 // Don't really care about the `as unknown` casts too much
 // as long as the public interface is type-safe....
@@ -67,6 +68,15 @@ export class $Model implements Types.Blocks.Model, Model {
   ) {
     if (comment)
       type.modifiers.push({ type: 'comment', value: comment } as any);
+
+    // Fields('column', Int())
+    const fields = type.modifiers.find(m => m.type == 'fields');
+    if (isScalar(fields?.value?.[1])) {
+      this.Field(fields.value[0], fields.value[1]);
+      // remove scalar from modifiers pre-codegen
+      (fields.value as unknown as any[]).pop();
+    }
+
     this.columns.push({ name, ...type } as unknown as Types.Column<Types.Type>);
     return this;
   }
@@ -78,6 +88,7 @@ export class $Model implements Types.Blocks.Model, Model {
   ) {
     if (comment)
       type.modifiers.push({ type: 'comment', value: comment } as any);
+
     this.columns.push({ name, ...type } as unknown as Types.Column<Types.Type>);
     return this;
   }
@@ -88,6 +99,7 @@ export class $Model implements Types.Blocks.Model, Model {
   ) {
     if (comment)
       type.modifiers.push({ type: 'comment', value: comment } as any);
+
     this.columns.push(type as unknown as Types.Column<Types.Type>);
     return this;
   }

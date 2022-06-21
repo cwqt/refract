@@ -1,6 +1,7 @@
+import { Types } from '..';
 import { JsonValue } from '../codegen/lib/json';
 import { Model } from './blocks';
-import { ReferentialAction } from './fields';
+import { ReferentialAction, Scalar } from './fields';
 import { MergeDbModifiers } from './modifiers';
 
 type Append<T, K> = { [index in keyof T]: T[index] & K };
@@ -72,18 +73,23 @@ export type Enums = {
   };
 };
 
+export type Reference = [
+  reference: string,
+  scalar?: Types.Fields.Field<'Int'> | Types.Fields.Field<'String'>,
+];
+
 export type Relations = Append<
   {
     OneToMany: {};
     OneToOne: {
-      fields?: string[];
+      fields?: string[] | Reference;
       references?: string[];
       onUpdate?: ReferentialAction;
       onDelete?: ReferentialAction;
       nullable?: true;
     };
     ManyToOne: {
-      fields: string[];
+      fields: string[] | Reference;
       references: string[];
       onUpdate?: ReferentialAction;
       onDelete?: ReferentialAction;

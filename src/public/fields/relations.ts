@@ -1,6 +1,8 @@
 import * as Types from '../../types';
+import { Reference } from '../../types';
 import { ReferentialAction, Relation } from '../../types/fields';
 import { isString, nonNullable } from '../../types/utils';
+import { Int, String } from './scalars';
 
 // @relation("name", fields:[foo], references: ["bar"])
 type OptionallyWithName<T extends Relation, M extends Types.Modifier<T>[]> =
@@ -87,7 +89,12 @@ export const OneToOne = <
 });
 
 export const Fields = <T extends 'OneToOne' | 'ManyToOne'>(
-  ...fields: string[]
+  ...fields:
+    | string[]
+    | [
+        reference: string,
+        scalar: Types.Fields.Field<'Int'> | Types.Fields.Field<'String'>,
+      ]
 ): Types.Modifier<T, 'fields'> => ({
   type: 'fields' as const,
   value: fields,

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.2]
+
+- Relationships fields in more type safe and shorter way
+  (<https://github.com/cwqt/refract/issues/9>)
+
 ## [1.3.1]
 
 - Documentation improvements

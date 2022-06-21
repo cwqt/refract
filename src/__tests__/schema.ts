@@ -64,10 +64,29 @@ Post
   .Field('id',          Int(Id, Default('autoincrement()'), db.UnsignedSmallInt))
   .Field('published',   Boolean(Default(false) ))
   .Field('title',       String(Limit(255)))
-  .Field('authorId',    Int(Nullable))
-  .Relation('author',   ManyToOne(User, "WrittenPosts", Fields('authorId'), References('id'), OnUpdate("Restrict"), OnDelete("SetNull"), Nullable))
-  .Field('pinnedById',  Int(Nullable))
-  .Relation('pinnedBy', OneToOne(User, "PinnedPost", Fields('pinnedById'), References('id'), Nullable))
+  .Relation(
+    'author',
+    ManyToOne(
+      User,
+      'WrittenPosts',
+      Fields('authorId', Int(Nullable)),
+      References('id'),
+      OnUpdate('Restrict'),
+      OnDelete('SetNull'),
+      Nullable,
+    ),
+  )
+  .Field('pinnedById', Int(Nullable))
+  .Relation(
+    'pinnedBy',
+    OneToOne(
+      User,
+      'PinnedPost',
+      Fields('pinnedById'),
+      References('id'),
+      Nullable,
+    ),
+  )
   .Relation('stars',    OneToMany(Star))
   .Mixin(Timestamps)
   .Raw(`@@map("comments")`);
