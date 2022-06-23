@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.3]
+
+- Allows `Mixins` to use `.Block()` for `@@index` etc.
+
 ## [1.3.2]
 
 - Relationships fields in more type safe and shorter way

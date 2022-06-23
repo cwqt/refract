@@ -34,17 +34,18 @@ enum Role {
 
 // This is the User model
 model User {
-	id         Int        @id @default(autoincrement()) @map(\\"_id\\") @db.Value('foo')
-	email      String     @unique @db.VarChar(4)
-	name       String?
+	id               Int        @id @default(autoincrement()) @map(\\"_id\\") @db.Value('foo')
+	email            String     @unique @db.VarChar(4)
+	name             String?
 	// The user model
-	height     Float      @default(1.8)
-	role       Role       @default(USER)
+	height           Float      @default(1.8)
+	role             Role       @default(USER)
 	// Relations are cool
-	posts      Post[]     @relation(\\"WrittenPosts\\")
-	pinned     Post?      @relation(\\"PinnedPost\\")
-	createdAt  DateTime   @default(now())
-	updatedAt  DateTime   @updatedAt @db.Date(6)
+	posts            Post[]     @relation(\\"WrittenPosts\\")
+	pinned           Post?      @relation(\\"PinnedPost\\")
+	createdAt        DateTime   @default(now())
+	updatedAt        DateTime   @updatedAt @db.Date(6)
+	@@index([mixin, index])
 }
 
 model Post {
@@ -58,6 +59,7 @@ model Post {
 	stars              Star[]
 	createdAt          DateTime  @default(now())
 	updatedAt          DateTime  @updatedAt @db.Date(6)
+	@@index([mixin, index])
 	@@map(\\"comments\\")
 }
 
@@ -68,6 +70,7 @@ model Star {
 	post                   Post                     @relation(fields: [postId], references: [id])
 	createdAt              DateTime                 @default(now())
 	updatedAt              DateTime                 @updatedAt @db.Date(6)
+	@@index([mixin, index])
 	location               Unsupported(\\"polygon\\")?
 	@@unique([A, B], map: \\"_AB_unique\\")
 	// Block level comments?

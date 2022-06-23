@@ -46,7 +46,8 @@ const Star = Model('Star');
 // prettier-ignore
 const Timestamps = Mixin()
   .Field('createdAt', DateTime(Default('now()')))
-  .Field('updatedAt', DateTime(UpdatedAt, db.Date(6)));
+  .Field('updatedAt', DateTime(UpdatedAt, db.Date(6)))
+  .Block(Compound.Index(["mixin", "index"]))
 
 // prettier-ignore
 User

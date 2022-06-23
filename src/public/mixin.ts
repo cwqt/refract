@@ -1,19 +1,18 @@
-import * as Types from '../types';
+import { Mixin as TMixin } from '../types';
+import { Model } from './model';
 
-export const Mixin = () => {
-  const columns: Types.Column<Types.Fields.Scalar>[] = [];
+// Mixins are simply models that can be composed into other models
+// Perhaps it makes sense to just remove these & allow models to be
+// arbitrarily extended - but I kind of hate the idea of 'extending'
+// & inheritance... this just exposes a couple fields from Models
+// to allow for compositional models
 
-  const Field = <T extends Types.Fields.Scalar>(
-    name: string,
-    type: Types.Fields.Field<T>,
-  ) => {
-    columns.push({
-      name,
-      ...type,
-    } as Types.Column<Types.Fields.Scalar>);
+export const Mixin = (): TMixin => {
+  const model = Model('mixin');
 
-    return { Field, columns };
+  return {
+    Field: model.Field,
+    Block: model.Block,
+    columns: model.columns,
   };
-
-  return { Field, columns };
 };
