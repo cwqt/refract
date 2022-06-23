@@ -6,7 +6,7 @@ import { isScalar } from '../types/fields';
 
 // Self-referential type
 type Model = {
-  Mixin: (mixin: Types.Mixin) => Model;
+  Mixin: (...mixins: Types.Mixin[]) => Model;
   Raw: (value: string) => Model;
   Relation: <T extends Types.Fields.Relation>(
     name: string,
@@ -44,8 +44,11 @@ export class $Model implements Types.Blocks.Model, Model {
     }
   }
 
-  Mixin(mixin: Types.Mixin) {
-    this.columns.push(...(mixin.columns as Types.Column<Types.Type>[]));
+  Mixin(...mixins: Types.Mixin[]) {
+    mixins.forEach(mixin =>
+      this.columns.push(...(mixin.columns as Types.Column<Types.Type>[])),
+    );
+
     return this;
   }
 
