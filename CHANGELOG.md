@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.4]
+
+- Fixes crash when previewFeatures are not available in generator (https://github.com/cwqt/refract/pull/12)
+
 ## [1.3.3]
 
 - Allows `Mixins` to use `.Block()` for `@@index` etc.
