@@ -46,7 +46,7 @@ export const validate = (config: Config): Config => {
   if (config.datasource.referentialIntegrity) {
     if (
       !config.generators.some(g =>
-        g.previewFeatures.includes('referentialIntegrity'),
+        g.previewFeatures?.includes('referentialIntegrity'),
       )
     )
       throw new Error(
@@ -58,8 +58,8 @@ export const validate = (config: Config): Config => {
     if (
       config.generators.some(
         g =>
-          g.previewFeatures.includes('fullTextSearch') &&
-          !g.previewFeatures.includes('fullTextIndex'),
+          g.previewFeatures?.includes('fullTextSearch') &&
+          !g.previewFeatures?.includes('fullTextIndex'),
       )
     )
       throw new Error(
