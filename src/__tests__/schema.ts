@@ -27,20 +27,29 @@ import {
   Unique,
   Unsupported,
   UpdatedAt,
+  Comment,
+  AstComment,
 } from '..';
 
 // roughly from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
 
 const Role = Enum(
   'Role',
-  'This is the Role Enum',
-  Key('ADMIN', Map('admin'), 'This is the admin role'),
+  AstComment('This is the Role Enum'),
+  Key('ADMIN', Map('admin'), Comment('This is the admin role')),
   Key('USER', Map('user')),
-  Key('OWNER', Map('owner'), 'This is the owner role'),
+  Key('OWNER', Map('owner'), AstComment('This is the owner role')),
+);
+
+const Status = Enum(
+  'Status',
+  'This is the Status Enum',
+  Key('NEW', Map('new'), 'This is the new status'),
+  Key('PUBLISHED', Map('published')),
 );
 
 const Post = Model('Post');
-const User = Model('User', 'This is the User model');
+const User = Model('User', AstComment('This is the User model'));
 const Star = Model('Star');
 
 // prettier-ignore
@@ -54,7 +63,7 @@ User
   .Field('id',          Int(Id, Default('autoincrement()'), Map('_id'), Raw("@db.Value('foo')")))
   .Field('email',       String(Unique, db.VarChar(4)))
   .Field('name',        String(Nullable))
-  .Field('height',      Float(Default(1.80)), "The user model")
+  .Field('height',      Float(Default(1.80)), AstComment("The user model"))
   .Field('role',        Role('USER', Nullable))
   .Relation('posts',    OneToMany(Post, "WrittenPosts"), "Relations are cool")
   .Relation('pinned',   OneToOne(Post, "PinnedPost", Nullable))
@@ -65,6 +74,7 @@ Post
   .Field('id',          Int(Id, Default('autoincrement()'), db.UnsignedSmallInt))
   .Field('published',   Boolean(Default(false) ))
   .Field('title',       String(Limit(255)))
+  .Field('status',      Status('NEW'))
   .Relation(
     'author',
     ManyToOne(
@@ -101,11 +111,11 @@ Star
   .Mixin(Timestamps)
   .Field("location",    Unsupported("polygon", Nullable))
   .Block(Compound.Unique(["A", "B"], Map("_AB_unique")))
-  .Block(Compound.Index(["wow"], Map("_B_index")), "Block level comments?")
+  .Block(Compound.Index(["wow"], Map("_B_index")), Comment("Block level comments?"))
   .Block(Compound.Map("Group"))
   .Block(Compound.Fulltext(["location", "decimal"]))
 
-export default [Role, User, Post, Star];
+export default [Role, Status, User, Post, Star];
 
 // let x = OneToOne(Post, 'WrittenPosts', Fields('wow'), References('wee'));
 // let a = OneToOne(Post, Fields('bestPostId'), References('id')); // good

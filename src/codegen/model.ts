@@ -22,22 +22,22 @@ export const extractComments = (
   return [
     // All comment rows for a model are placed outside the model block def
     columns
-      .filter(c => c.type == 'Comment')
-      .map(c => `// ${c.modifiers[0].value}`)
+      .filter(c => c.type == 'Comment' || c.type == 'AstComment')
+      .map(c => c.type == 'Comment' ? `// ${c.modifiers[0].value}` : `/// ${c.modifiers[0].value}`)
       .join('\n'),
 
     columns
-      // Remove Comment rows to prevent re-insertion
-      .filter(c => c.type !== 'Comment')
+      // Remove Comment and AstComment rows to prevent re-insertion
+      .filter(c => c.type !== 'Comment' && c.type !== 'AstComment')
       // Shift all comment modifiers to be on their own row as a Comment column
       .reduce(
         (cols, column) => [
           ...cols,
           ...column.modifiers
-            .filter(c => c.type == 'comment')
+            .filter(c => c.type == 'Comment' || c.type == 'AstComment')
             .map(c => ({
               name: 'comment',
-              type: 'Comment',
+              type: c.type,
               modifiers: [c],
             })),
           column,
