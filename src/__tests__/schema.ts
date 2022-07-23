@@ -66,6 +66,7 @@ User
   .Field('height',      Float(Default(1.80)), AstComment("The user model"))
   .Field('role',        Role('USER', Nullable))
   .Relation('posts',    OneToMany(Post, "WrittenPosts"), "Relations are cool")
+  .Relation('archivedPosts',    OneToMany(Post), AstComment('Archived posts comment'))
   .Relation('pinned',   OneToOne(Post, "PinnedPost", Nullable))
   .Mixin(Timestamps);
 
