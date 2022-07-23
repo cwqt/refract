@@ -8,9 +8,6 @@ import { column } from './column';
 export const model = (model: Types.Blocks.Model): string => {
   const [comments, columns] = extractComments(model.columns);
 
-  console.log('>>> columns im model', columns.filter((col) => col?.name === 'comment').map((c) => c.modifiers));
-  columns.filter((col) => col?.name === 'archivedPosts').map((col) => console.log('archivedPosts', col?.modifiers))
-
   return [
     comments,
     block(`model ${model.name}`, alignFields(columns.map(column).join('\n'))),

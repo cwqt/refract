@@ -80,9 +80,6 @@ export class $Model implements Types.Blocks.Model, Model {
       type.modifiers.push({ type: comment.type, value: comment.value } as any);
     }
 
-    console.log('>>> Relation', type);
-    
-
     // Fields('column', Int())
     const fields = type.modifiers.find(m => m.type == 'fields');
     if (isScalar(fields?.value?.[1])) {
