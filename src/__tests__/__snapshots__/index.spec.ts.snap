@@ -49,6 +49,8 @@ model User {
 	role             Role       @default(USER)
 	// Relations are cool
 	posts            Post[]     @relation(\\"WrittenPosts\\")
+	///              Archived   posts comment
+	archivedPosts    Post[]
 	pinned           Post?      @relation(\\"PinnedPost\\")
 	createdAt        DateTime   @default(now())
 	updatedAt        DateTime   @updatedAt @db.Date(6)
