@@ -21,27 +21,36 @@ generator client {
 
 // enums ---------------------------------------------------------------------------
 
-// This is the Role Enum
+/// This is the Role Enum
 enum Role {
 	// This is the admin role
 	ADMIN @map(\\"admin\\")
 	USER @map(\\"user\\")
-	// This is the owner role
+	/// This is the owner role
 	OWNER @map(\\"owner\\")
+}
+
+// This is the Status Enum
+enum Status {
+	// This is the new status
+	NEW @map(\\"new\\")
+	PUBLISHED @map(\\"published\\")
 }
 
 // models --------------------------------------------------------------------------
 
-// This is the User model
+/// This is the User model
 model User {
 	id               Int        @id @default(autoincrement()) @map(\\"_id\\") @db.Value('foo')
 	email            String     @unique @db.VarChar(4)
 	name             String?
-	// The user model
+	///              The        user model
 	height           Float      @default(1.8)
 	role             Role       @default(USER)
 	// Relations are cool
 	posts            Post[]     @relation(\\"WrittenPosts\\")
+	///              Archived   posts comment
+	archivedPosts    Post[]
 	pinned           Post?      @relation(\\"PinnedPost\\")
 	createdAt        DateTime   @default(now())
 	updatedAt        DateTime   @updatedAt @db.Date(6)
@@ -52,6 +61,7 @@ model Post {
 	id                 Int       @id @default(autoincrement()) @db.UnsignedSmallInt
 	published          Boolean   @default(false)
 	title              String
+	status             Status    @default(NEW)
 	authorId           Int?
 	author             User?     @relation(\\"WrittenPosts\\", fields: [authorId], references: [id], onUpdate: Restrict, onDelete: SetNull)
 	pinnedById         Int?

@@ -49,6 +49,10 @@ export function isComment(column: TopColumn): column is Column<'Comment'> {
   return column.type == 'Comment';
 }
 
+export function isAstComment(column: TopColumn): column is Column<'AstComment'> {
+  return column.type == 'AstComment';
+}
+
 export function isCompound(column: TopColumn): column is Column<Compound> {
   return column.type.startsWith('@@');
 }

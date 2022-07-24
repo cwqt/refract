@@ -1,4 +1,4 @@
-import { Types } from '..';
+import { CommentType, Types } from '..';
 import { JsonValue } from '../codegen/lib/json';
 import { Model } from './blocks';
 import { ReferentialAction, Scalar } from './fields';
@@ -51,7 +51,7 @@ export type Scalars = Append<
     ignore?: true;
     raw?: string;
     array?: true;
-    comment?: string;
+    comment?: CommentType | string;
   }
 >;
 
@@ -61,7 +61,7 @@ export type Enums = {
     nullable?: true;
     default?: string;
     ignore?: true;
-    comment?: string;
+    comment?: CommentType | string;
 
     // Enum of which this is from
     enum: string;
@@ -69,7 +69,7 @@ export type Enums = {
   // An entry in the enum, e.g. Enum("name", Key("Id", Map("_id")))
   EnumKey: {
     map?: string;
-    comment?: string;
+    comment?: CommentType | string;
   };
 };
 
@@ -96,7 +96,7 @@ export type Relations = Append<
       nullable?: true;
     };
   },
-  { name?: string; model: Model; comment?: string }
+  { name?: string; model: Model; comment?: CommentType | string }
 >;
 
 export type Compounds = Append<
@@ -108,14 +108,15 @@ export type Compounds = Append<
     ['@@map']: {};
     ['@@fulltext']: {};
   },
-  { values: string[]; comment?: string }
+  { values: string[]; comment?: CommentType | string }
 >;
 
 export type TypeData = MergeDbModifiers<Scalars> &
   Compounds &
   Enums &
   Relations & {
-    Comment: { value: string };
+    Comment: CommentType | string;
+    AstComment: CommentType | string;
     Raw: { value: string };
     Unsupported: { unsupported: string; nullable?: true };
   };

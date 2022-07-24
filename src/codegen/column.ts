@@ -8,6 +8,8 @@ export const column = (column: Types.Column): string => {
   if (Types.Fields.isCompound(column)) return compound(column);
   if (Types.Fields.isComment(column))
     return `\t// ${column.modifiers[0].value}`;
+  if (Types.Fields.isAstComment(column))
+    return `\t/// ${column.modifiers[0].value}`;
   if (Types.Fields.isRaw(column)) return `\t${column.modifiers[0].value}`;
   if (Types.Fields.isEnum(column)) return enumeration(column);
   if (Types.Fields.isEnumKey(column)) return enumKey(column);

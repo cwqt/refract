@@ -1,5 +1,6 @@
 import * as Types from '../types';
 import { isScalar } from '../types/fields';
+import { CommentType, Comment } from './fields/comments';
 
 // Don't really care about the `as unknown` casts too much
 // as long as the public interface is type-safe....
@@ -11,20 +12,20 @@ type Model = {
   Relation: <T extends Types.Fields.Relation>(
     name: string,
     type: Types.Fields.Field<T>,
-    comment?: string,
+    comment?: CommentType | string,
   ) => Model;
   Field: <T extends Types.Fields.Scalar | 'Enum' | 'Unsupported'>(
     name: string,
     type: Types.Fields.Field<T>,
-    comment?: string,
+    comment?: CommentType | string,
   ) => Model;
   Block: <T extends Types.Fields.Compound>(
     type: Types.Fields.Field<T>,
-    comment?: string,
+    comment?: CommentType | string,
   ) => Model;
 } & Types.Blocks.Model;
 
-export const Model = (name: string, comment?: string): Model =>
+export const Model = (name: string, comment?: CommentType | string): Model =>
   new $Model(name, comment);
 
 export class $Model implements Types.Blocks.Model, Model {
@@ -32,14 +33,17 @@ export class $Model implements Types.Blocks.Model, Model {
   type: 'model' = 'model';
   columns: Types.Column<Types.Type>[] = [];
 
-  constructor(name: string, comment?: string) {
+  constructor(name: string, comment?: CommentType | string) {
     this.name = name;
 
     if (comment) {
+      if (typeof comment === 'string') {
+        comment = Comment(comment);
+      }
       this.columns.push({
         name: 'comment',
-        type: 'Comment' as const,
-        modifiers: [{ type: 'value', value: comment }],
+        type: comment.type as string,
+        modifiers: [{ type: 'value', value: comment.value }],
       } as Types.Column<Types.Type>);
     }
   }
@@ -67,10 +71,14 @@ export class $Model implements Types.Blocks.Model, Model {
   Relation<T extends Types.Fields.Relation>(
     name: string,
     type: Types.Fields.Field<T>,
-    comment?: string,
+    comment?: CommentType | string,
   ) {
-    if (comment)
-      type.modifiers.push({ type: 'comment', value: comment } as any);
+    if (comment) {
+      if (typeof comment === 'string') {
+        comment = Comment(comment);
+      }
+      type.modifiers.push({ type: comment.type, value: comment.value } as any);
+    }
 
     // Fields('column', Int())
     const fields = type.modifiers.find(m => m.type == 'fields');
@@ -87,10 +95,14 @@ export class $Model implements Types.Blocks.Model, Model {
   Field<T extends Types.Fields.Scalar | 'Enum' | 'Unsupported'>(
     name: string,
     type: Types.Fields.Field<T>,
-    comment?: string,
+    comment?: CommentType | string,
   ) {
-    if (comment)
-      type.modifiers.push({ type: 'comment', value: comment } as any);
+    if (comment) {
+      if (typeof comment === 'string') {
+        comment = Comment(comment);
+      }
+      type.modifiers.push({ type: comment.type, value: comment.value } as any);
+    }
 
     this.columns.push({ name, ...type } as unknown as Types.Column<Types.Type>);
     return this;
@@ -98,10 +110,14 @@ export class $Model implements Types.Blocks.Model, Model {
 
   Block<T extends Types.Fields.Compound>(
     type: Types.Fields.Field<T>,
-    comment?: string,
+    comment?: CommentType | string,
   ) {
-    if (comment)
-      type.modifiers.push({ type: 'comment', value: comment } as any);
+    if (comment) {
+      if (typeof comment === 'string') {
+        comment = Comment(comment);
+      }
+      type.modifiers.push({ type: comment.type, value: comment.value } as any);
+    }
 
     this.columns.push(type as unknown as Types.Column<Types.Type>);
     return this;
