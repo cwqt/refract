@@ -33,6 +33,7 @@ export type Generator = {
   previewFeatures?: PreviewFeatures[];
   engineType?: 'library' | 'binary';
   binaryTargets?: string[]; // TODO: enum
+  [key: string]: any;
 };
 
 export type Config = {
