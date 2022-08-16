@@ -5,6 +5,7 @@ export * from './public/fields/scalars';
 export * from './public/fields/enums';
 export * from './public/fields/relations';
 export * from './public/fields/unsupported';
+export * from './public/fields/comments';
 export * as Compound from './public/fields/compounds';
 export * as Types from './types';
 export * from './public/db';

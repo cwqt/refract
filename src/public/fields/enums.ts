@@ -1,14 +1,21 @@
 import * as Types from '../../types';
 import { isString, nonNullable } from '../../types/utils';
+import { CommentType, Comment, CommentsTypes } from './comments';
 
 export const Key = <T extends string>(
   ...args:
     | [name: T, ...modifiers: Types.Modifier<'EnumKey'>[]]
-    | [name: T, ...modifiers: Types.Modifier<'EnumKey'>[], comment: string]
+    | [name: T, ...modifiers: Types.Modifier<'EnumKey'>[], comment: CommentType | string]
 ): Types.Fields.EnumKey<T> => {
   const [name, ...modifiers] = args;
 
-  return isString(args[args.length - 1])
+  let lastElement = args[args.length - 1];
+
+  if (isString(lastElement)) {
+    lastElement = Comment(lastElement);
+  }
+
+  return lastElement.type === CommentsTypes.Comment || lastElement.type === CommentsTypes.AstComment
     ? {
         name,
         modifiers: [
@@ -16,7 +23,7 @@ export const Key = <T extends string>(
             0,
             modifiers.length - 1,
           ) as unknown as Types.Modifier<'EnumKey'>[]),
-          { type: 'comment' as const, value: args[args.length - 1] as string },
+          { type: lastElement.type as unknown as 'comment', value: lastElement.value as string },
         ],
       }
     : { name, modifiers: modifiers as Types.Modifier<'EnumKey'>[] };
@@ -29,7 +36,7 @@ class $Enum<K extends Types.Fields.EnumKey[]>
   type: 'enum' = 'enum' as const;
   columns: Types.Column<'EnumKey' | 'Comment'>[];
 
-  constructor(public name: string, comment: string | null, keys: K) {
+  constructor(public name: string, comment: CommentType | string | null, keys: K) {
     super();
 
     // Define the keys of the enum
@@ -43,11 +50,14 @@ class $Enum<K extends Types.Fields.EnumKey[]>
     );
 
     if (comment) {
+      if (isString(comment)) {
+        comment = Comment(comment);
+      }
       this.columns.unshift({
         name: 'comment',
-        type: 'Comment' as const,
-        modifiers: [{ type: 'value', value: comment }],
-      } as Types.Column<'EnumKey' | 'Comment'>);
+        type: comment.type,
+        modifiers: [{ type: 'value', value: comment.value }],
+      } as unknown as Types.Column<'EnumKey' | 'Comment'>);
     }
 
     // evil object reference proxy hacking _call overrides
@@ -100,17 +110,22 @@ export function Enum<E extends Types.Fields.EnumKey[]>(
 ): R<E>;
 export function Enum<E extends Types.Fields.EnumKey[]>(
   name: string,
-  comment: string,
+  comment: CommentType | string,
   ...keys: E
 ): R<E>;
 export function Enum<E extends Types.Fields.EnumKey[]>(
   name: string,
-  ...args: [string, ...E] | E
+  ...args: [CommentType | string, ...E] | E
 ): R<E> {
-  const [comment, ...keys] = args;
+  let [comment, ...keys] = args;
+  
+  if (typeof comment === 'string') {
+    comment = Comment(comment);
+  }
+  
   return new $Enum(
     name,
-    typeof comment == 'string' ? comment : null,
-    typeof comment == 'string' ? (keys as E) : ([comment, ...keys] as E),
+    comment ? comment as CommentType : null,
+    (keys as E),
   ) as any; // _call
 }
