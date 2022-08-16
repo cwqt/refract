@@ -5,7 +5,7 @@ const _ = db('mysql');
 
 // prettier-ignore
 export default {
-  Char: (value: string) =>       _.String('Char', value),
+  Char: (value: number) =>       _.String('Char', value),
   VarChar: (value: number) =>    _.String('VarChar', value),
   TinyInt: (value: number) =>    _.Boolean('TinyInt', value),
   UnsignedBigInt:                _.BigInt('UnsignedBigInt'),

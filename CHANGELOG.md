@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.5]
+
+- Fixes MySQL native type argument for `Char`
+  (<https://github.com/cwqt/refract/issues/16>)
+
 ## [1.3.4]
 
 - Fixes crash when previewFeatures are not available in generator (https://github.com/cwqt/refract/pull/12)
