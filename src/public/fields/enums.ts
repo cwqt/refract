@@ -8,7 +8,13 @@ export const Key = <T extends string>(
 ): Types.Fields.EnumKey<T> => {
   const [name, ...modifiers] = args;
 
-  return isString(args[args.length - 1])
+  // condition is true for when name & comment, without len check would always insert
+  // a comment with the name of the key, e.g.
+  // enum Foo {
+  //   // Bar
+  //   Bar
+  // }
+  return args.length >= 2 && isString(args[args.length - 1])
     ? {
         name,
         modifiers: [
@@ -66,7 +72,7 @@ class $Enum<K extends Types.Fields.EnumKey[]>
   }
 
   _call(
-    initial: K[number] | null = null,
+    initial: K[number] | null = undefined,
     ...modifiers: Types.Modifier<'Enum'>[]
   ): Types.Fields.Field<'Enum'> {
     return {
@@ -78,7 +84,8 @@ class $Enum<K extends Types.Fields.EnumKey[]>
           ? { type: 'default' as const, value: initial }
           : initial === null
           ? { type: 'nullable' as const, value: true }
-          : null,
+          : // No set default value, but non-nullable
+            undefined,
         ...modifiers,
       ].filter(
         (v, i, a) => nonNullable(v) && a.findIndex(m => m.type == v.type) === i,
@@ -89,7 +96,7 @@ class $Enum<K extends Types.Fields.EnumKey[]>
 
 // _call signature
 type R<E extends Types.Fields.EnumKey[]> = (<M extends Types.Modifiers<'Enum'>>(
-  initial?: E[number]['name'] | null,
+  initial?: E[number]['name'] | null | undefined,
   ...modifiers: Types.Modifier<'Enum', M>[]
 ) => Types.Fields.Field<'Enum', M>) &
   Types.Blocks.Enum;

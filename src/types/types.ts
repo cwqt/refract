@@ -46,7 +46,7 @@ export type Scalars = Append<
     Json: { default?: JsonValue };
   },
   {
-    nullable?: true;
+    nullable?: boolean;
     map?: string;
     ignore?: true;
     raw?: string;
@@ -58,7 +58,7 @@ export type Scalars = Append<
 export type Enums = {
   Enum: {
     id?: true;
-    nullable?: true;
+    nullable?: boolean;
     default?: string;
     ignore?: true;
     comment?: string;
@@ -86,14 +86,14 @@ export type Relations = Append<
       references?: string[];
       onUpdate?: ReferentialAction;
       onDelete?: ReferentialAction;
-      nullable?: true;
+      nullable?: boolean;
     };
     ManyToOne: {
       fields: string[] | Reference;
       references: string[];
       onUpdate?: ReferentialAction;
       onDelete?: ReferentialAction;
-      nullable?: true;
+      nullable?: boolean;
     };
   },
   { name?: string; model: Model; comment?: string }
@@ -117,7 +117,7 @@ export type TypeData = MergeDbModifiers<Scalars> &
   Relations & {
     Comment: { value: string };
     Raw: { value: string };
-    Unsupported: { unsupported: string; nullable?: true };
+    Unsupported: { unsupported: string; nullable?: boolean };
   };
 
 // All possible column datatypes & their accepted modifiers/parameters

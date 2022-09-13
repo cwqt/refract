@@ -31,6 +31,7 @@ import {
 
 // roughly from: https://www.prisma.io/docs/concepts/components/prisma-schema#example
 
+// with comment
 const Role = Enum(
   'Role',
   'This is the Role Enum',
@@ -38,6 +39,9 @@ const Role = Enum(
   Key('USER', Map('user')),
   Key('OWNER', Map('owner'), 'This is the owner role'),
 );
+
+// without comment
+const Foo = Enum('Foo', Key('Bar'), Key('Baz'));
 
 const Post = Model('Post');
 const User = Model('User', 'This is the User model');
@@ -56,6 +60,7 @@ User
   .Field('name',        String(Nullable))
   .Field('height',      Float(Default(1.80)), "The user model")
   .Field('role',        Role('USER', Nullable))
+  .Field('foo',         Foo()) // no-default non-nullable enum
   .Relation('posts',    OneToMany(Post, "WrittenPosts"), "Relations are cool")
   .Relation('pinned',   OneToOne(Post, "PinnedPost", Nullable))
   .Mixin(Timestamps);
@@ -105,7 +110,7 @@ Star
   .Block(Compound.Map("Group"))
   .Block(Compound.Fulltext(["location", "decimal"]))
 
-export default [Role, User, Post, Star];
+export default [Role, User, Post, Star, Foo];
 
 // let x = OneToOne(Post, 'WrittenPosts', Fields('wow'), References('wee'));
 // let a = OneToOne(Post, Fields('bestPostId'), References('id')); // good

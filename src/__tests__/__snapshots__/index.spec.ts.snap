@@ -30,6 +30,11 @@ enum Role {
 	OWNER @map(\\"owner\\")
 }
 
+enum Foo {
+	Bar
+	Baz
+}
+
 // models --------------------------------------------------------------------------
 
 // This is the User model
@@ -40,6 +45,7 @@ model User {
 	// The user model
 	height           Float      @default(1.8)
 	role             Role       @default(USER)
+	foo              Foo
 	// Relations are cool
 	posts            Post[]     @relation(\\"WrittenPosts\\")
 	pinned           Post?      @relation(\\"PinnedPost\\")

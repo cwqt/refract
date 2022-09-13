@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.7]
+
+- Fixes inability to have non-nullable non-default enum columns
+- Fixes issue where enum keys without a comment, would always have a comment
+  which would be the name of the key itself
+
 ## [1.3.5]
 
 - Fixes MySQL native type argument for `Char`
