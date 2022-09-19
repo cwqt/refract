@@ -1,20 +1,24 @@
-import codegen from '../codegen';
-import schema from './schema';
-import * as Types from '../types';
 import {
-  Fields,
-  ManyToOne,
-  References,
   Array,
   Default,
+  Fields,
   Id,
-  String,
-  OneToOne,
   Int,
-  Nullable,
+  ManyToOne,
+  Map,
   Model,
+  Nullable,
   OneToMany,
+  OneToOne,
+  References,
+  String,
 } from '../';
+import codegen from '../codegen';
+import { enumeration } from '../codegen/enum';
+import { enumeration as enumerationColumn } from '../codegen/column';
+import { Enum, Key } from '../public/fields/enums';
+import * as Types from '../types';
+import schema from './schema';
 
 const generate = (
   schema: Types.Config['schema'],
@@ -69,6 +73,56 @@ describe('refract', () => {
 
     const implicit = generate([Post, Category]);
     console.log(implicit.schema);
+  });
+
+  describe('enum block generation', () => {
+    it('should generate an enum', () => {
+      const e = enumeration(
+        Enum(
+          'Example',
+          Key('Qux'),
+          Key('Foo', 'This is a comment'),
+          Key('Bar', Map('Baz')),
+        ),
+      );
+
+      expect(e).toMatchSnapshot();
+    });
+
+    it('should generate an enum with a comment', () => {
+      const e = enumeration(
+        Enum(
+          'Example',
+          'An Enum with a comment',
+          Key('Qux'),
+          Key('Foo', 'This is a comment'),
+          Key('Bar', Map('Baz')),
+        ),
+      );
+
+      expect(e).toMatchSnapshot();
+    });
+  });
+
+  describe('enum column generation', () => {
+    const e = Enum('Example', Key('Foo'), Key('Bar'));
+
+    const asColumn = (e: Types.Fields.Field<'Enum'>): Types.Column<'Enum'> => ({
+      name: 'test',
+      ...(e as any),
+    });
+
+    const nonNullableNoDefault = e();
+    expect(enumerationColumn(asColumn(nonNullableNoDefault))).toMatchSnapshot();
+
+    const nullableNoDefault = e(Nullable);
+    expect(enumerationColumn(asColumn(nullableNoDefault))).toMatchSnapshot();
+
+    const nonNullableDefault = e('Foo');
+    expect(enumerationColumn(asColumn(nonNullableDefault))).toMatchSnapshot();
+
+    const nullableDefault = e('Foo', Nullable);
+    expect(enumerationColumn(asColumn(nullableDefault))).toMatchSnapshot();
   });
 
   describe('should validate the schema and throw error when', () => {

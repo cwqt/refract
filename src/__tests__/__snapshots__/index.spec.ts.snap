@@ -1,5 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[` 1`] = `"	test Example"`;
+
+exports[` 2`] = `"	test Example?"`;
+
+exports[` 3`] = `"	test Example @default(Foo)"`;
+
+exports[` 4`] = `"	test Example? @default(Foo)"`;
+
+exports[`refract enum block generation should generate an enum 1`] = `
+"enum Example {
+	Qux
+	// This is a comment
+	Foo
+	Bar @map(\\"Baz\\")
+}"
+`;
+
+exports[`refract enum block generation should generate an enum with a comment 1`] = `
+"// An Enum with a comment
+enum Example {
+	Qux
+	// This is a comment
+	Foo
+	Bar @map(\\"Baz\\")
+}"
+`;
+
 exports[`refract should generate the schema 1`] = `
 "// refract https://github.com/cwqt/refract - generated in x ms -----------------
 // datasource ----------------------------------------------------------------------
@@ -44,8 +71,9 @@ model User {
 	name             String?
 	// The user model
 	height           Float      @default(1.8)
-	role             Role       @default(USER)
+	role             Role?      @default(USER)
 	foo              Foo
+	bar              Foo?
 	// Relations are cool
 	posts            Post[]     @relation(\\"WrittenPosts\\")
 	pinned           Post?      @relation(\\"PinnedPost\\")

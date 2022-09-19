@@ -54,7 +54,6 @@ const scalar = (column: Types.Column<Types.Fields.Scalar>) => {
 
 const compound = (column: Types.Column<Types.Fields.Compound>) => {
   if (column.type == '@@ignore') return `\t${column.type}`;
-
   if (column.type == '@@map')
     return `\t${column.type}(${`"${column.modifiers[0].value}"`})`;
 

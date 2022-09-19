@@ -61,6 +61,7 @@ User
   .Field('height',      Float(Default(1.80)), "The user model")
   .Field('role',        Role('USER', Nullable))
   .Field('foo',         Foo()) // no-default non-nullable enum
+  .Field('bar',         Foo(Nullable))
   .Relation('posts',    OneToMany(Post, "WrittenPosts"), "Relations are cool")
   .Relation('pinned',   OneToOne(Post, "PinnedPost", Nullable))
   .Mixin(Timestamps);

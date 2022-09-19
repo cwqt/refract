@@ -62,31 +62,29 @@ class $Enum<K extends Types.Fields.EnumKey[]>
       apply: (
         target,
         _,
-        args: [K[number] | null, ...Types.Modifier<'Enum'>[]],
-      ) =>
-        target._call(
-          args[0] as K[number],
-          ...(args.slice(1, args.length - 1) as Types.Modifier<'Enum'>[]),
-        ),
+        args: [K[number] | Types.Modifier<'Enum'>, ...Types.Modifier<'Enum'>[]],
+      ) => target._call(...(args as any)),
     });
   }
 
+  _call(...modifiers: Types.Modifier<'Enum'>[]): Types.Fields.Field<'Enum'>;
   _call(
-    initial: K[number] | null = undefined,
+    initial: K[number] | Types.Modifier<'Enum'>,
     ...modifiers: Types.Modifier<'Enum'>[]
   ): Types.Fields.Field<'Enum'> {
     return {
       type: 'Enum' as const,
       modifiers: [
-        // welcome to hell
         { type: 'enum' as const, value: this.name },
-        initial
-          ? { type: 'default' as const, value: initial }
-          : initial === null
-          ? { type: 'nullable' as const, value: true }
-          : // No set default value, but non-nullable
-            undefined,
-        ...modifiers,
+        ...[
+          typeof initial == 'string'
+            ? {
+                type: 'default',
+                value: initial,
+              }
+            : (initial as Types.Modifier<'Enum'>),
+          ...modifiers,
+        ],
       ].filter(
         (v, i, a) => nonNullable(v) && a.findIndex(m => m.type == v.type) === i,
       ) as Types.Modifier<'Enum'>[],
@@ -94,9 +92,9 @@ class $Enum<K extends Types.Fields.EnumKey[]>
   }
 }
 
-// _call signature
+// return type _call signature
 type R<E extends Types.Fields.EnumKey[]> = (<M extends Types.Modifiers<'Enum'>>(
-  initial?: E[number]['name'] | null | undefined,
+  initial?: E[number]['name'] | Types.Modifier<'Enum', M>,
   ...modifiers: Types.Modifier<'Enum', M>[]
 ) => Types.Fields.Field<'Enum', M>) &
   Types.Blocks.Enum;

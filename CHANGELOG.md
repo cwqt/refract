@@ -1,5 +1,9 @@
 # Changelog
 
+# [1.3.8]
+
+- Actually fix Enum fields
+
 ## [1.3.7]
 
 - Fixes inability to have non-nullable non-default enum columns
