@@ -312,6 +312,18 @@ const User = Model('User').Field('id', PrimaryKey).Mixin(Timestamps);
 // User will now have `createdAt` & `updatedAt` columns
 ```
 
+## Programmatic usage
+
+```typescript
+const prisma = Refract.generate({
+  datasource: {...},
+  generators: [...],
+  schema
+})
+
+console.log(prisma); // schema.prisma contents
+```
+
 ---
 
 # Handling circular relationships

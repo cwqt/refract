@@ -1,5 +1,9 @@
 # Changelog
 
+# [1.3.9]
+
+- Expose schema generation without writing via `Refract.generate`
+
 # [1.3.8]
 
 - Actually fix Enum fields

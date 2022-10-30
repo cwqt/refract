@@ -56,8 +56,7 @@ class $Enum<K extends Types.Fields.EnumKey[]>
       } as Types.Column<'EnumKey' | 'Comment'>);
     }
 
-    // evil object reference proxy hacking _call overrides
-    // gives us nice curried classes
+    // evil object reference proxy hacking _call overrides gives us nice curried classes
     return new Proxy(this, {
       apply: (
         target,

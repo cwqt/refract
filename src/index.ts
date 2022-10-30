@@ -13,8 +13,12 @@ import { writeFile } from 'fs/promises';
 import * as Types from './types';
 import codegen from './codegen';
 
-export default (config: Types.Config) =>
-  (({ schema, output, time }) =>
-    writeFile(output, schema, 'utf8').then(() =>
-      console.log(`Created schema at: ${output} (${time} ms)`),
-    ))(codegen(config));
+export default (config: Types.Config) => {
+  const { schema, output, time } = codegen(config);
+
+  return writeFile(output, schema, 'utf8')
+    .then(() => console.log(`Created schema at: ${output} (${time} ms)`));
+}
+
+export const generate = (config:Types.Config) => codegen(config).output;
+
