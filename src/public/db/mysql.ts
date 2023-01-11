@@ -30,7 +30,7 @@ export default {
   Time: (value:number) =>        _.DateTime('Time', value),
   Json:                          _.Json('Json'),
   Text:                          _.String('Text'),
-  Decimal: (...coords:Coords) => _.Decimal('Decimal', coords),
+  Decimal: (precision: number, scale: number) => _.Decimal('Decimal', [precision, scale]),
 };
 
 type Coords = [x: number, y: number];

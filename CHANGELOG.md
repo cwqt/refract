@@ -1,6 +1,10 @@
 # Changelog
 
-# [1.3.9]
+# [1.3.11]
+
+- Better argument names for Decimal types for MySQL
+
+# [1.3.9] [1.3.10]
 
 - Expose schema generation without writing via `Refract.generate`
 
