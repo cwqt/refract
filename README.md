@@ -27,6 +27,7 @@ See [here for a full demo](./DEMO.md).
     - [Ambiguous relations](#ambiguous-relations)
     - [Referentials Actions](#referentials-actions)
 - [Enums](#enums)
+- [Composite Types](#composite-types)
 - [Blocks](#blocks)
 - [Mixins](#mixins)
 - [Handling circular relationships](#handling-circular-relationships)
@@ -275,6 +276,37 @@ const WithComment = Enum(
 // enum Foo {
 //  // Another comment
 //  Bar
+// }
+```
+
+# Composite Types
+
+Used for adding [Composite Types](https://www.prisma.io/docs/orm/prisma-schema/data-model/models#defining-composite-types) for MongoDB datasources.
+
+<!-- prettier-ignore -->
+```typescript
+import { Model, Type, Mongo as db } from '@cwqt/refract';
+
+const User = Model('User');
+const Profile = Type('Profile', 'Describes the user public profile');
+
+Profile
+  .Field('fullname',  String())
+  .Field('bio',       String())
+
+// // Describes the user public profile
+// type Profile {
+//   fullname   String
+//   bio        String
+// }
+
+User
+  .Field('id', String(Id, db.ObjectId, Map('_id')))
+  .Field('profile',     Profile(Nullable))
+
+// model User {
+//   id       Int   @id @db.ObjectId @map("_id")
+//   profile  Profile?
 // }
 ```
 
