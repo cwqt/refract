@@ -22,10 +22,12 @@ export const validateModel =
       const isArray = field.modifiers.some(m => m.type === 'array');
       if (
         isArray &&
-        !['postgresql', 'cockroachdb'].includes(config.datasource.provider)
+        !['postgresql', 'cockroachdb', 'mongodb'].includes(
+          config.datasource.provider,
+        )
       ) {
         throw new Error(
-          `ModifierErr: Scalar lists are only supported when using PostgreSQL or CockroachDB.`,
+          `ModifierErr: Scalar lists are only supported when using PostgreSQL, CockroachDB or MongoDB.`,
         );
       }
 

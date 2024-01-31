@@ -62,6 +62,13 @@ enum Foo {
 	Baz
 }
 
+// types ---------------------------------------------------------------------------
+
+type Profile {
+	fullname  String
+	bio       String
+}
+
 // models --------------------------------------------------------------------------
 
 // This is the User model
@@ -74,6 +81,7 @@ model User {
 	role             Role?      @default(USER)
 	foo              Foo
 	bar              Foo?
+	profile          Profile?
 	// Relations are cool
 	posts            Post[]     @relation(\\"WrittenPosts\\")
 	pinned           Post?      @relation(\\"PinnedPost\\")

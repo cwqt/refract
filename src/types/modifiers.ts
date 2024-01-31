@@ -1,12 +1,12 @@
-import { Type, TypeData } from './types';
+import { FieldType, TypeData } from './types';
 
 // Column modifiers, e.g. @default(), @nullable() etc.
 export type Modifier<
-  T extends Type = Type,
+  T extends FieldType = FieldType,
   Property extends Modifiers<T> = Modifiers<T>,
 > = { type: Property; value: TypeData[T][Property] };
 
-export type Modifiers<T extends Type> = keyof TypeData[T];
+export type Modifiers<T extends FieldType> = keyof TypeData[T];
 
 // -------------------------------------------------------
 import { Cockroach, Mongo, MySql, Postgres } from '../public/db';

@@ -13,7 +13,7 @@ type Model = {
     type: Types.Fields.Field<T>,
     comment?: string,
   ) => Model;
-  Field: <T extends Types.Fields.Scalar | 'Enum' | 'Unsupported'>(
+  Field: <T extends Types.Fields.Scalar | 'Enum' | 'Unsupported' | 'Type'>(
     name: string,
     type: Types.Fields.Field<T>,
     comment?: string,
@@ -30,7 +30,7 @@ export const Model = (name: string, comment?: string): Model =>
 export class $Model implements Types.Blocks.Model, Model {
   name: string;
   type: 'model' = 'model';
-  columns: Types.Column<Types.Type>[] = [];
+  columns: Types.Column<Types.FieldType>[] = [];
 
   constructor(name: string, comment?: string) {
     this.name = name;
@@ -40,13 +40,13 @@ export class $Model implements Types.Blocks.Model, Model {
         name: 'comment',
         type: 'Comment' as const,
         modifiers: [{ type: 'value', value: comment }],
-      } as Types.Column<Types.Type>);
+      } as Types.Column<Types.FieldType>);
     }
   }
 
   Mixin(...mixins: Types.Mixin[]) {
     mixins.forEach(mixin =>
-      this.columns.push(...(mixin.columns as Types.Column<Types.Type>[])),
+      this.columns.push(...(mixin.columns as Types.Column<Types.FieldType>[])),
     );
 
     return this;
@@ -60,7 +60,7 @@ export class $Model implements Types.Blocks.Model, Model {
       modifiers: [modifier],
     };
 
-    this.columns.push(column as Types.Column<Types.Type>);
+    this.columns.push(column as Types.Column<Types.FieldType>);
     return this;
   }
 
@@ -80,11 +80,14 @@ export class $Model implements Types.Blocks.Model, Model {
       (fields.value as unknown as any[]).pop();
     }
 
-    this.columns.push({ name, ...type } as unknown as Types.Column<Types.Type>);
+    this.columns.push({
+      name,
+      ...type,
+    } as unknown as Types.Column<Types.FieldType>);
     return this;
   }
 
-  Field<T extends Types.Fields.Scalar | 'Enum' | 'Unsupported'>(
+  Field<T extends Types.Fields.Scalar | 'Enum' | 'Unsupported' | 'Type'>(
     name: string,
     type: Types.Fields.Field<T>,
     comment?: string,
@@ -92,7 +95,10 @@ export class $Model implements Types.Blocks.Model, Model {
     if (comment)
       type.modifiers.push({ type: 'comment', value: comment } as any);
 
-    this.columns.push({ name, ...type } as unknown as Types.Column<Types.Type>);
+    this.columns.push({
+      name,
+      ...type,
+    } as unknown as Types.Column<Types.FieldType>);
     return this;
   }
 
@@ -103,7 +109,7 @@ export class $Model implements Types.Blocks.Model, Model {
     if (comment)
       type.modifiers.push({ type: 'comment', value: comment } as any);
 
-    this.columns.push(type as unknown as Types.Column<Types.Type>);
+    this.columns.push(type as unknown as Types.Column<Types.FieldType>);
     return this;
   }
 }

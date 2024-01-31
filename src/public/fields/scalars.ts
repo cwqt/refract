@@ -1,7 +1,7 @@
 import * as Types from '../../types';
 
 const scalar =
-  <T extends Types.Type>(type: T) =>
+  <T extends Types.FieldType>(type: T) =>
   <M extends Types.Modifiers<T>>(...modifiers: Types.Modifier<T, M>[]) => ({
     type,
     modifiers,

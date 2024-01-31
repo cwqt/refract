@@ -248,7 +248,7 @@ describe('refract', () => {
       User.Field('id', Int(Array));
 
       expect(() => generate([User])).toThrow(
-        'ModifierErr: Scalar lists are only supported when using PostgreSQL or CockroachDB.',
+        'ModifierErr: Scalar lists are only supported when using PostgreSQL, CockroachDB or MongoDB.',
       );
     });
 
