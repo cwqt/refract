@@ -10,6 +10,7 @@ export const column = (column: Types.Column): string => {
     return `\t// ${column.modifiers[0].value}`;
   if (Types.Fields.isRaw(column)) return `\t${column.modifiers[0].value}`;
   if (Types.Fields.isEnum(column)) return enumeration(column);
+  if (Types.Fields.isType(column)) return typecolumn(column);
   if (Types.Fields.isEnumKey(column)) return enumKey(column);
   if (Types.Fields.isScalar(column)) return scalar(column);
   if (Types.Fields.isRelation(column)) return relationship(column);
@@ -35,6 +36,15 @@ const enumKey = (column: Types.Column<'EnumKey'>) =>
     .join(' ')}`.trimEnd();
 
 export const enumeration = (column: Types.Column<'Enum'>) => {
+  const [type, ...modifiers] = column.modifiers;
+  const isNullable = modifiers.find(({ type }) => type == 'nullable');
+
+  return `\t${column.name} ${type.value}${isNullable ? '?' : ''} ${modifiers
+    .map(m => modifier(column.type, m))
+    .join(' ')}`.trimEnd();
+};
+
+export const typecolumn = (column: Types.Column<'Type'>) => {
   const [type, ...modifiers] = column.modifiers;
   const isNullable = modifiers.find(({ type }) => type == 'nullable');
 

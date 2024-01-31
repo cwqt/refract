@@ -1,5 +1,6 @@
 export * from './public/modifiers';
 export * from './public/model';
+export * from './public/type';
 export * from './public/mixin';
 export * from './public/fields/scalars';
 export * from './public/fields/enums';
@@ -16,9 +17,9 @@ import codegen from './codegen';
 export default (config: Types.Config) => {
   const { schema, output, time } = codegen(config);
 
-  return writeFile(output, schema, 'utf8')
-    .then(() => console.log(`Created schema at: ${output} (${time} ms)`));
-}
+  return writeFile(output, schema, 'utf8').then(() =>
+    console.log(`Created schema at: ${output} (${time} ms)`),
+  );
+};
 
-export const generate = (config:Types.Config) => codegen(config).output;
-
+export const generate = (config: Types.Config) => codegen(config).output;

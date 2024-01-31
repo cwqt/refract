@@ -24,6 +24,7 @@ import {
   Raw,
   References,
   String,
+  Type,
   Unique,
   Unsupported,
   UpdatedAt,
@@ -46,12 +47,18 @@ const Foo = Enum('Foo', Key('Bar'), Key('Baz'));
 const Post = Model('Post');
 const User = Model('User', 'This is the User model');
 const Star = Model('Star');
+const Profile = Type('Profile');
 
 // prettier-ignore
 const Timestamps = Mixin()
   .Field('createdAt', DateTime(Default('now()')))
   .Field('updatedAt', DateTime(UpdatedAt, db.Date(6)))
   .Block(Compound.Index(["mixin", "index"]))
+
+// prettier-ignore
+Profile
+  .Field('fullname',  String())
+  .Field('bio',       String())
 
 // prettier-ignore
 User
@@ -62,6 +69,7 @@ User
   .Field('role',        Role('USER', Nullable))
   .Field('foo',         Foo()) // no-default non-nullable enum
   .Field('bar',         Foo(Nullable))
+  .Field('profile',     Profile(Nullable))
   .Relation('posts',    OneToMany(Post, "WrittenPosts"), "Relations are cool")
   .Relation('pinned',   OneToOne(Post, "PinnedPost", Nullable))
   .Mixin(Timestamps);
@@ -111,7 +119,7 @@ Star
   .Block(Compound.Map("Group"))
   .Block(Compound.Fulltext(["location", "decimal"]))
 
-export default [Role, User, Post, Star, Foo];
+export default [Role, Profile, User, Post, Star, Foo];
 
 // let x = OneToOne(Post, 'WrittenPosts', Fields('wow'), References('wee'));
 // let a = OneToOne(Post, Fields('bestPostId'), References('id')); // good

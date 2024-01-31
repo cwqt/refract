@@ -1,8 +1,8 @@
-import { Fields, Type } from '.';
+import { Fields, FieldType } from '.';
 import { Column } from './columns';
 
 export type Mixin = {
-  Field: <T extends Fields.Scalar | 'Enum' | 'Unsupported'>(
+  Field: <T extends Fields.Scalar | 'Enum' | 'Type' | 'Unsupported'>(
     name: string,
     type: Fields.Field<T>,
     comment?: string,
@@ -11,5 +11,5 @@ export type Mixin = {
     type: Fields.Field<T>,
     comment?: string,
   ) => Mixin;
-  columns: Column<Type>[];
+  columns: Column<FieldType>[];
 };

@@ -73,6 +73,17 @@ export type Enums = {
   };
 };
 
+export type Type = {
+  Type: {
+    nullable?: boolean;
+    default?: string;
+    map?: string;
+    raw?: string;
+    array?: true;
+    comment?: string;
+  };
+};
+
 export type Reference = [
   reference: string,
   scalar?: Types.Fields.Field<'Int'> | Types.Fields.Field<'String'>,
@@ -114,6 +125,7 @@ export type Compounds = Append<
 export type TypeData = MergeDbModifiers<Scalars> &
   Compounds &
   Enums &
+  Type &
   Relations & {
     Comment: { value: string };
     Raw: { value: string };
@@ -121,4 +133,4 @@ export type TypeData = MergeDbModifiers<Scalars> &
   };
 
 // All possible column datatypes & their accepted modifiers/parameters
-export type Type = keyof TypeData;
+export type FieldType = keyof TypeData;

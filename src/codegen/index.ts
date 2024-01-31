@@ -8,6 +8,7 @@ import { enumeration } from './enum';
 import { dedent } from './lib/dedent';
 import { pipe } from './lib/pipe';
 import { model } from './model';
+import { type } from './type';
 import { kv } from './transform';
 import { validateModel } from './validate';
 
@@ -28,6 +29,7 @@ export default (
   const datasource = config.datasource;
   const generators = config.generators;
   const enums = schema.filter(Types.Blocks.isEnum);
+  const types = schema.filter(Types.Blocks.isType);
   const models = schema.filter(Types.Blocks.isModel);
 
   const group = (header: string, blocks: string[]): string | null =>
@@ -47,6 +49,7 @@ export default (
         ),
       ),
       group(header('enums'), enums.map(enumeration)),
+      group(header('types'), types.map(type)),
       group(header('models'), models.map(pipe(validateModel(config), model))),
     ]
       .filter(nonNullable)

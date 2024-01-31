@@ -1,9 +1,9 @@
 import { Modifier } from '../types/modifiers';
-import { Type } from '../types/types';
+import { FieldType } from '../types/types';
 import { transform } from './transform';
 
 // TODO: less shitty way of doing this
-export const modifier = <T extends Type>(
+export const modifier = <T extends FieldType>(
   type: T,
   modifier: Modifier<T>,
 ): string => {
